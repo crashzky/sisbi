@@ -12,7 +12,7 @@ const Header: React.FC<Props> = ({ className = '', items = [], ...props }) => {
 					<FullLogoIcon />
 				</a>
 			</Link>
-			<div className='flex gap-6'>
+			<nav className='flex gap-6'>
 				{items.map((i, num) => (
 					<Link href={i.href} key={num}>
 						<a className='text-text-secondary text-sm hover:text-text hover:font-semibold'>
@@ -20,7 +20,8 @@ const Header: React.FC<Props> = ({ className = '', items = [], ...props }) => {
 						</a>
 					</Link>
 				))}
-			</div>
+			</nav>
+			<div></div>
 			<div>
 				<button className='mr-8'>
 					Войти

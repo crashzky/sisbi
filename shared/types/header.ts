@@ -1,8 +1,8 @@
-interface HeaderItem {
+interface IHeaderItem {
 	title: string;
 	href: string;
 }
 
 export type {
-	HeaderItem,
+	IHeaderItem,
 };
