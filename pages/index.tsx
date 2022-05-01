@@ -1,9 +1,10 @@
+import Header from '../layouts/Header';
+import { HEADER_LANDING_ITEMS } from '../shared/consts/header';
+
 const MainPage = (): JSX.Element => {
 	return (
 		<main>
-			<h1 className='text-text font-bold text-2xl'>
-				Hello react!
-			</h1>
+			<Header items={HEADER_LANDING_ITEMS} />
 		</main>
 	);
 };
