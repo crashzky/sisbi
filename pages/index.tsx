@@ -1,3 +1,4 @@
+import LatestVacanciesSection from '../landing-secitions/LatestVacanciesSection';
 import MainSection from '../landing-secitions/MainSection';
 import MainLayout from '../layouts/MainLayout';
 import SearchPanel from '../layouts/SearchPanel';
@@ -8,6 +9,7 @@ const MainPage = (): JSX.Element => {
 		<MainLayout headerItems={HEADER_LANDING_ITEMS}>
 			<MainSection className='px-40 pt-14 pb-[267px]' />
 			<SearchPanel />
+			<LatestVacanciesSection className='pt-10 px-40' />
 		</MainLayout>
 	);
 };
