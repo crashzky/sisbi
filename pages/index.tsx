@@ -1,13 +1,12 @@
-import Footer from '../layouts/Footer';
-import Header from '../layouts/Header';
+import MainSection from '../landing-secitions/MainSection';
+import MainLayout from '../layouts/MainLayout';
 import { HEADER_LANDING_ITEMS } from '../shared/consts/header';
 
 const MainPage = (): JSX.Element => {
 	return (
-		<main>
-			<Header items={HEADER_LANDING_ITEMS} />
-			<Footer />
-		</main>
+		<MainLayout headerItems={HEADER_LANDING_ITEMS}>
+			<MainSection className='px-40 pt-14 pb-[267px]' />
+		</MainLayout>
 	);
 };
 

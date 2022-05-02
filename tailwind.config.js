@@ -5,6 +5,7 @@ module.exports = {
 		'./layouts/**/*.{js,ts,jsx,tsx}',
 		'./modals/**/*.{js,ts,jsx,tsx}',
 		'./stories/**/*.{js,ts,jsx,tsx}',
+		'./landing-secitions/**/*.{js,ts,jsx,tsx}',
 	],
 	theme: {
 		extend: {
@@ -26,6 +27,12 @@ module.exports = {
 
 				'text': '#575FCC',
 				'text-secondary': '#74767A',
+			},
+			spacing: {
+				'4.5': '1.125rem',
+			},
+			gridTemplateColumns: {
+				'between': 'auto 1fr auto',
 			},
 		},
 	},

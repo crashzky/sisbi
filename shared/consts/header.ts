@@ -23,7 +23,7 @@ const HEADER_LANDING_ITEMS: IHeaderItem[] = [
 	},
 ];
 
-const HEADER_EMPLOYEE_ITEMS: IHeaderItem[] = [
+const HEADER_PRIMARY_ITEMS: IHeaderItem[] = [
 	{
 		title: 'Главная страница',
 		href: '/',
@@ -31,17 +31,6 @@ const HEADER_EMPLOYEE_ITEMS: IHeaderItem[] = [
 	{
 		title: 'Вакансии',
 		href: '/vacancies',
-	},
-	{
-		title: 'Помощь',
-		href: '/#help',
-	},
-];
-
-const HEADER_EMPLOYER_ITEMS: IHeaderItem[] = [
-	{
-		title: 'Главная страница',
-		href: '/',
 	},
 	{
 		title: 'Резюме',
@@ -55,6 +44,5 @@ const HEADER_EMPLOYER_ITEMS: IHeaderItem[] = [
 
 export {
 	HEADER_LANDING_ITEMS,
-	HEADER_EMPLOYEE_ITEMS,
-	HEADER_EMPLOYER_ITEMS,
+	HEADER_PRIMARY_ITEMS,
 };
