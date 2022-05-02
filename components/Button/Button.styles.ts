@@ -4,7 +4,7 @@ const BUTTON_COMMON_STYLES = 'rounded-xl text-sm ';
 
 const BUTTON_PRIMARY_STYLES = BUTTON_COMMON_STYLES + 'bg-button text-white';
 const BUTTON_SECONDARY_STYLES = BUTTON_COMMON_STYLES + 'bg-button-secondary ';
-const BUTTON_OUTLINE_STYLES = BUTTON_COMMON_STYLES + 'border-[1px] border-darkBlue text-darkBlue';
+const BUTTON_OUTLINE_STYLES = BUTTON_COMMON_STYLES + 'border-[1px] border-darkBlue text-darkBlue bg-white';
 const BUTTON_OUTLINE_SECONDARY_STYLES = BUTTON_COMMON_STYLES + 'border-1 border-button-secondary';
 
 const BUTTON_L_STYLES = 'font-semibold';
