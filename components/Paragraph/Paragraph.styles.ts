@@ -4,8 +4,8 @@ const PARAGRAPH_1_STYLES = 'text-2xl';
 const PARAGRAPH_2_STYLES = 'text-xl';
 const PARAGRAPH_3_STYLES = 'text-lg leading-6';
 const PARAGRAPH_4_STYLES = 'leading-[22px]';
-const PARAGRAPH_5_STYLES = 'text-[1.25rem] leading-[1.375rem]';
-const PARAGRAPH_6_STYLES = 'text-sm';
+const PARAGRAPH_5_STYLES = 'text-sm';
+const PARAGRAPH_6_STYLES = 'text-xs';
 
 function getParagraphStyles(variant: ParagraphVariants): string {
 	switch(variant) {

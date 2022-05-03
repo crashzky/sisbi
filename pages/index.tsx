@@ -1,4 +1,5 @@
 import FeaturesSection from '../landing-secitions/FeaturesSection';
+import HelpSection from '../landing-secitions/HelpSection';
 import LatestVacanciesSection from '../landing-secitions/LatestVacanciesSection';
 import MainSection from '../landing-secitions/MainSection';
 import MobileAppSection from '../landing-secitions/MobileAppSection';
@@ -14,6 +15,7 @@ const MainPage = (): JSX.Element => {
 			<LatestVacanciesSection className='pt-10 px-40' />
 			<FeaturesSection className='my-[120px]' />
 			<MobileAppSection />
+			<HelpSection className='m mt-[120px] mx-40 mb-40' />
 		</MainLayout>
 	);
 };
