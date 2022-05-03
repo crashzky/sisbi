@@ -6,7 +6,7 @@ import Props from './MainSection';
 
 const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 	return (
-		<section className={className + ' grid grid-cols-between'} {...props}>
+		<section id='main' className={className + ' grid grid-cols-between'} {...props}>
 			<div className='self-center'>
 				<Headline className='font-bold' tag='h1' variant='2'>
 					SISBI — новый сервис

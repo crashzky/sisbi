@@ -1,10 +1,19 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import AOS from 'aos';
+
+import 'aos/dist/aos.css';
 
 import '../styles/globals.css';
 import '../styles/font.css';
+import { useEffect } from 'react';
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
+	useEffect(() => {
+		AOS.init();
+		AOS.refresh();
+	}, []);
+
 	return (
 		<>
 			<Head>

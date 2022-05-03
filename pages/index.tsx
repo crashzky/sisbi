@@ -10,12 +10,28 @@ import { HEADER_LANDING_ITEMS } from '../shared/consts/header';
 const MainPage = (): JSX.Element => {
 	return (
 		<MainLayout headerItems={HEADER_LANDING_ITEMS}>
-			<MainSection className='px-40 pt-14 pb-[267px]' />
-			<SearchPanel />
-			<LatestVacanciesSection className='pt-10 px-40' />
-			<FeaturesSection className='my-[120px]' />
-			<MobileAppSection />
-			<HelpSection className='m mt-[120px] mx-40 mb-40' />
+			<MainSection
+				className='px-40 pt-14 pb-[267px]' 
+				data-aos='fade-up'
+				data-aos-duration='1000' />
+			<SearchPanel
+				data-aos='fade-up'
+				data-aos-duration='1000' />
+			<LatestVacanciesSection
+				className='pt-10 px-40'
+				data-aos='fade-up'
+				data-aos-duration='1000' />
+			<FeaturesSection
+				className='py-[120px]'
+				data-aos='fade-up'
+				data-aos-duration='1000' />
+			<MobileAppSection
+				data-aos='fade-up'
+				data-aos-duration='1000' />
+			<HelpSection
+				className='pt-[120px] px-40 pb-40'
+				data-aos='fade-up'
+				data-aos-duration='1000' />
 		</MainLayout>
 	);
 };

@@ -9,13 +9,13 @@ import Link from 'next/link';
 
 const MobileAppSection: React.FC<Props> = ({ className = '', ...props }) => {
 	return (
-		<section className={className + ' bg-[#F3F3F5] pt-[22px] grid grid-cols-[auto_1fr] gap-[172px]'} {...props}>
+		<section id='mobile' className={className + ' bg-[#F3F3F5] pt-[22px] grid grid-cols-[auto_1fr] gap-[172px]'} {...props}>
 			<Image
 				src='/assets/mobile_app.png'
 				width={461}
 				height={324}
 				alt='mobile app' />
-			<div>
+			<div className='self-center'>
 				<Headline variant='4' tag='h2' className='font-bold mb-2'>
 					Скачайте наше
 					{' '}

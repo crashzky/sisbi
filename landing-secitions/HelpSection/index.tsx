@@ -5,7 +5,7 @@ import Props from './HelpSection.props';
 
 const HelpSection: React.FC<Props> = ({ className = '', ...props }) => {
 	return (
-		<section className={className + ' '} {...props}>
+		<section id='help' className={className + ' '} {...props}>
 			<Headline variant='3' tag='h2' className='font-bold text-center mb-10'>
 				Самые часто задаваемые вопросы
 			</Headline>

@@ -6,7 +6,7 @@ import Arrow14SolidIcon from '../../assets/arrows/14_solid.svg';
 
 const LatestVacanciesSection: React.FC<Props> = ({ className = '', ...props }) => {
 	return (
-		<section className={className + ' '} {...props}>
+		<section id='vacancies' className={className + ' '} {...props}>
 			<Headline variant='5' tag='h2' className='font-bold mb-10'>
 				Недавние вакансии
 			</Headline>

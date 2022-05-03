@@ -7,7 +7,7 @@ import Props from './FeaturesSections.props';
 
 const FeaturesSection: React.FC<Props> = ({ className = '', ...props }) => {
 	return (
-		<section className={className + ' '} {...props}>
+		<section id='resumes' className={className + ' '} {...props}>
 			<Headline variant='3' tag='h2' className='font-bold text-center'>
 				Особенности сервиса
 			</Headline>
