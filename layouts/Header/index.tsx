@@ -27,7 +27,7 @@ const Header: React.FC<Props> = ({ className = '', items = [], ...props }) => {
 					Войти
 				</button>
 				<button className='font-semibold text-sm text-text'>
-					<SolidFlashIcon className='inline-block mr-1' />
+					<SolidFlashIcon className='fill-text inline-block mr-1' />
 					Регистрация
 				</button>
 			</div>

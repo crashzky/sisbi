@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import Paragraph from '../Paragraph';
 import Props from './ShortVacancyCard.props';
 
 const ShortVacancyCard: React.FC<Props> = ({ className = '', lastUpdate, label, minPrice, description, tags, ...props }) => {
@@ -11,18 +12,18 @@ const ShortVacancyCard: React.FC<Props> = ({ className = '', lastUpdate, label, 
 			<p className='text-xs text-text-secondary mb-[2px]'>
 				{format(lastUpdate, 'Обновлено dd MMMM в HH:mm', { locale: ru })}
 			</p>
-			<p className='font-semibold mb-[2px]'>
+			<h3 className='font-semibold mb-[2px]'>
 				{label}
-			</p>
+			</h3>
 			<p className='text-text font-semibold mb-2'>
 				от
 				{' '}
 				{minPrice.toLocaleString()}
 				{' ₽'}
 			</p>
-			<p className='text-xs mb-[52px]'>
+			<Paragraph variant='6' tag='p' className='mb-[52px]'>
 				{description.length > 145 ? description.slice(0, 142) + '...' : description}
-			</p>
+			</Paragraph>
 			<div className='flex flex-wrap gap-2'>
 				{tags.map((i, num) => (
 					<span key={num} className='px-1 py-[2px] bg-softGold text-xs rounded-[4px]'>

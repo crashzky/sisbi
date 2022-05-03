@@ -16,9 +16,9 @@ const Footer: React.FC<Props> = ({ className = '', ...props }) => {
 			<div className='flex justify-between'>
 				{FOOTER_ITEMS.map((i, num) => (
 					<div key={num} className='flex flex-col items-start'>
-						<h3 className='text-sm font-semibold text-text-secondary mb-4'>
+						<p className='text-sm font-semibold text-text-secondary mb-4'>
 							{i.title}
-						</h3>
+						</p>
 						{i.items.map((j, num2) => (
 							<button
 								className='text-text text-sm mb-2'
@@ -36,9 +36,9 @@ const Footer: React.FC<Props> = ({ className = '', ...props }) => {
 					</div>
 				))}
 				<div className='flex flex-col items-start'>
-					<h3 className='text-sm font-semibold text-text-secondary mb-4'>
+					<p className='text-sm font-semibold text-text-secondary mb-4'>
 						Мобильное приложение
-					</h3>
+					</p>
 					<button className='mb-2'>
 						<AppStoreIcon />
 					</button>

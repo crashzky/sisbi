@@ -10,10 +10,11 @@ const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 			<div className='self-center'>
 				<Headline className='font-bold' tag='h1' variant='2'>
 					SISBI — новый сервис
+					{' '}
 					<br />
 					по поиску работы
 				</Headline>
-				<Paragraph variant='3' className='mt-4'>
+				<Paragraph variant='3' tag='p' className='mt-4'>
 					Создайте резюме в пару шагов, общайтесь с
 					<br />
 					работодателями через наш встроенный мессенджер!
