@@ -18,6 +18,6 @@ Primary.args = {
 	maxSteps: 7,
 	label: 'Выберите ваш пол',
 	HeaderImage: SingupStep1Icon,
-	onClickBack: () => console.log('black'),
+	onClickBack: () => console.log('back'),
 	onClickContinue: () => console.log('continue'),
 };
