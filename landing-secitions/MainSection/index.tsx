@@ -1,10 +1,13 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import Button from '../../components/Button';
 import Headline from '../../components/Headline';
 import Paragraph from '../../components/Paragraph';
 import Props from './MainSection';
 
 const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
+	const router = useRouter();
+
 	return (
 		<section id='main' className={className + ' grid grid-cols-between'} {...props}>
 			<div className='self-center'>
@@ -20,10 +23,28 @@ const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 					работодателями через наш встроенный мессенджер!
 				</Paragraph>
 				<div className='grid grid-cols-2 gap-4 h-12 w-[363px] mt-8'>
-					<Button>
+					<Button onClick={() => {
+						router.push({
+							pathname: '/',
+							query: {
+								modal: 'signup',
+							},
+						});
+					}}
+					>
 						Искать работу
 					</Button>
-					<Button variant='outline'>
+					<Button
+						variant='outline'
+						onClick={() => {
+							router.push({
+								pathname: '/',
+								query: {
+									modal: 'signup',
+								},
+							});
+						}}
+					>
 						Искать сотрудников
 					</Button>
 				</div>

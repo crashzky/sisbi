@@ -4,6 +4,7 @@ import { SelectVariants } from './Select.props';
 const SELECT_PRIMARY_STYLES: StylesConfig = {
 	control: (provided, state) => ({
 		...provided,
+		cursor: 'pointer',
 		borderRadius: state.menuIsOpen ? '12px 12px 0 0' : '12px',
 		border: state.menuIsOpen ? '1px solid #739EF1' : 'none',
 		borderColor: 'transparent',
@@ -55,6 +56,7 @@ const SELECT_PRIMARY_STYLES: StylesConfig = {
 const SELECT_WITH_GAP_STYLES: StylesConfig = {
 	control: (provided) => ({
 		...provided,
+		cursor: 'pointer',
 		borderRadius: '12px',
 		border: 'none',
 		borderColor: 'transparent',

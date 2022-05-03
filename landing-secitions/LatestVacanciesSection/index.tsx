@@ -35,7 +35,7 @@ const LatestVacanciesSection: React.FC<Props> = ({ className = '', ...props }) =
 						возможностями современных технологий. Контролировать реализацию UI/UX, быть ответственным
 						за сдачу проекта в срок.`}
 					tags={['Опыт от 3 лет', 'Полный день', 'Удаленная работа', 'Любой город']} />
-				<button className='bg-[#F3F3F5] rounded-xl text-lg text-text font-semibold px-[77px] whitespace-nowrap'>
+				<button className='bg-gray-40 rounded-xl text-lg text-text font-semibold px-[77px] whitespace-nowrap'>
 					<Arrow14SolidIcon className='mb-2 mx-auto' />
 					Смотреть все
 					<br />

@@ -27,6 +27,9 @@ module.exports = {
 
 				'text': '#575FCC',
 				'text-secondary': '#74767A',
+
+				'gray-40': '#F3F3F5',
+				'gray-100': '#E0E1E6',
 			},
 			spacing: {
 				'4.5': '1.125rem',
