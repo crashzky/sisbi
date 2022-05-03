@@ -1,12 +1,13 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useEffect } from 'react';
 import AOS from 'aos';
 
 import 'aos/dist/aos.css';
 
 import '../styles/globals.css';
 import '../styles/font.css';
-import { useEffect } from 'react';
+import '../styles/radio.css';
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 	useEffect(() => {

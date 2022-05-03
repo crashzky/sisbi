@@ -9,9 +9,14 @@ const ModalLayout: React.FC<Props> = ({ children, modals, ...props }) => {
 
 	useEffect(() => {
 		setOpenedModal(null);
+
+		let foundedElement = null;
+		
 		Object.keys(modals).forEach((i) => {
-			if(!openedModal && router.query.modal === i)
+			if(!foundedElement && router.query.modal === i) {
+				foundedElement = i;
 				setOpenedModal(i);
+			}
 		});
 	}, [router]);
 	

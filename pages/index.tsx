@@ -7,12 +7,14 @@ import MainLayout from '../layouts/MainLayout';
 import ModalLayout from '../layouts/ModalLayout';
 import SearchPanel from '../layouts/SearchPanel';
 import LoginModal from '../modals/LoginModal';
+import SignupModal from '../modals/SignupModal';
 import { HEADER_LANDING_ITEMS } from '../shared/consts/header';
 
 const MainPage = (): JSX.Element => {
 	return (
 		<ModalLayout modals={{
 			'login': <LoginModal />,
+			'signup': <SignupModal />,
 		}}
 		>
 			<MainLayout headerItems={HEADER_LANDING_ITEMS}>
