@@ -16,8 +16,13 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 		initialValues: {
 			phone: '',
 		},
-		onSubmit: (values) => {
-			
+		onSubmit: () => {
+			router.push({
+				pathname: '/',
+				query: {
+					modal: 'signup1',
+				},
+			});
 		},
 	});
 

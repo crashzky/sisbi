@@ -9,6 +9,7 @@ import '../styles/globals.css';
 import '../styles/font.css';
 import '../styles/radio.css';
 import '../styles/checkbox.css';
+import '../styles/number.css';
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 	useEffect(() => {

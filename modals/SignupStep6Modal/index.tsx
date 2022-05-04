@@ -1,20 +1,22 @@
 import SignupStepLayout from '../../layouts/SignupStepLayout';
 import Props from './SignupStep6Modal.props';
-
-import Step1Image from '../../assets/signup_steps/1.svg';
-import Radio from '../../components/Radio';
 import Paragraph from '../../components/Paragraph';
 import Checkbox from '../../components/Checkbox';
+import { useRouter } from 'next/router';
+
+import Step1Image from '../../assets/signup_steps/1.svg';
 
 const SingupStep6Modal: React.FC<Props> = () => {
+	const router = useRouter();
+
 	return (
 		<SignupStepLayout
 			label='Выберите условия работы'
 			currentStep={6}
 			maxSteps={7}
 			HeaderImage={Step1Image}
-			onClickBack={() => console.log('back')}
-			onClickContinue={() => console.log('continue')}
+			onClickBack={() => router.push({ pathname: '/', query: { modal: 'signup5' } })}
+			onClickContinue={() => router.push({ pathname: '/', query: { modal: 'signupFinal' } })}
 		>
 			<div className='grid grid-cols-2'>
 				<div className='grid gap-3'>

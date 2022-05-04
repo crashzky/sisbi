@@ -2,18 +2,21 @@ import SignupStepLayout from '../../layouts/SignupStepLayout';
 import Props from './SignupStep4Modal.props';
 import Select from '../../components/Select';
 import { DAYS, MONTHS, YEARS } from '../../shared/consts/time';
+import { useRouter } from 'next/router';
 
 import Step4Image from '../../assets/signup_steps/4.svg';
 
 const SingupStep4Modal: React.FC<Props> = () => {
+	const router = useRouter();
+
 	return (
 		<SignupStepLayout
 			label='Дата вашего рождения'
 			currentStep={4}
 			maxSteps={7}
 			HeaderImage={Step4Image}
-			onClickBack={() => console.log('back')}
-			onClickContinue={() => console.log('continue')}
+			onClickBack={() => router.push({ pathname: '/', query: { modal: 'signup3' } })}
+			onClickContinue={() => router.push({ pathname: '/', query: { modal: 'signup5' } })}
 		>
 			<div className='grid grid-cols-3 gap-2'>
 				<Select
