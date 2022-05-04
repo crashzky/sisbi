@@ -8,6 +8,7 @@ import 'aos/dist/aos.css';
 import '../styles/globals.css';
 import '../styles/font.css';
 import '../styles/radio.css';
+import '../styles/checkbox.css';
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 	useEffect(() => {

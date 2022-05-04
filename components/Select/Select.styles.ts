@@ -4,6 +4,8 @@ import { SelectVariants } from './Select.props';
 const SELECT_PRIMARY_STYLES: StylesConfig = {
 	control: (provided, state) => ({
 		...provided,
+		height: '48px',
+		background: '#F3F3F5',
 		cursor: 'pointer',
 		borderRadius: state.menuIsOpen ? '12px 12px 0 0' : '12px',
 		border: state.menuIsOpen ? '1px solid #739EF1' : 'none',
@@ -26,7 +28,7 @@ const SELECT_PRIMARY_STYLES: StylesConfig = {
 		fontSize: '14px',
 		color: '#74767A',
 	}),
-	indicatorsContainer: () => ({
+	indicatorSeparator: () => ({
 		display: 'none',
 	}),
 	menu: (provided) => ({

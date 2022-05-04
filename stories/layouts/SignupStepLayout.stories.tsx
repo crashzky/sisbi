@@ -13,9 +13,18 @@ const Template: ComponentStory<typeof SignupStepLayout> = (args) => <SignupStepL
 
 export const Primary = Template.bind({});
 
+export const WithoutSteps = Template.bind({});
+
 Primary.args = {
 	currentStep: 1,
 	maxSteps: 7,
+	label: 'Выберите ваш пол',
+	HeaderImage: SingupStep1Icon,
+	onClickBack: () => console.log('back'),
+	onClickContinue: () => console.log('continue'),
+};
+
+WithoutSteps.args = {
 	label: 'Выберите ваш пол',
 	HeaderImage: SingupStep1Icon,
 	onClickBack: () => console.log('back'),
