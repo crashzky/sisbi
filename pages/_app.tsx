@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import AOS from 'aos';
 
 import 'aos/dist/aos.css';
@@ -11,6 +12,8 @@ import '../styles/radio.css';
 import '../styles/checkbox.css';
 import '../styles/number.css';
 
+const queryClient = new QueryClient();
+
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 	useEffect(() => {
 		AOS.init();
@@ -18,7 +21,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 	}, []);
 
 	return (
-		<>
+		<QueryClientProvider client={queryClient}>
 			<Head>
 				<title>
 					SISBI — новый сервис по поиску работы
@@ -51,7 +54,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 					content='/assets/og_image.svg' />
 			</Head>
 			<Component {...pageProps} />
-		</>
+		</QueryClientProvider>
 	);
 };
 

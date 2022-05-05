@@ -1,19 +1,32 @@
 import Props from './SignupStepLayout.props';
 import { useRouter } from 'next/router';
-
-import CloseIcon from '../../assets/general/close.svg';
 import Paragraph from '../../components/Paragraph';
 import Button from '../../components/Button';
 
+import CloseIcon from '../../assets/general/close.svg';
+import LoaderIcon from '../../assets/loader.svg';
+
 const SignupStepLayout: React.FC<Props> = ({
-	className = '', currentStep, children, maxSteps, label, HeaderImage,
+	className = '', currentStep, children, maxSteps, label, HeaderImage, isLoading,
 	onClickBack, onClickContinue, continueButtonLabel = 'Продолжить', backButtonLabel = 'Назад', ...props }) => {
 	const router = useRouter();
 
+	function getContinueButton() {
+		if(isLoading)
+			return <LoaderIcon className='w-14 h-14 mx-auto' />;
+		else if(onClickContinue) {
+			return (
+				<Button className='h-14' onClick={onClickContinue}>
+					{continueButtonLabel}
+				</Button>
+			);
+		}
+	}
+
 	return (
 		<aside className={className + ' bg-white rounded-2xl w-[457px]'} {...props}>
-			<div className='relative bg-[#283244] rounded-t-2xl'>
-				<button className='absolute z-10 top-6 right-6' onClick={() => router.push('/')}>
+			<div className='relative bg-[rgb(40,50,68)] rounded-t-2xl'>
+				<button className='absolute top-6 right-6' onClick={() => router.push('/')}>
 					<CloseIcon className='fill-white' />
 				</button>
 				<HeaderImage className='mx-auto' />
@@ -37,11 +50,7 @@ const SignupStepLayout: React.FC<Props> = ({
 						{backButtonLabel}
 					</Button>
 				)}
-				{onClickContinue && (
-					<Button className='h-14' onClick={onClickContinue}>
-						{continueButtonLabel}
-					</Button>
-				)}
+				{getContinueButton()}
 			</div>
 		</aside>
 	);

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Props from './SmsCode.props';
+import { getBorder } from './SmsCode.styles';
 
-const SmsCode: React.FC<Props> = ({ className = '', onCodeSubmit, ...props }) => {
+const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...props }) => {
 	const [code, setCode] = useState('');
 	const [focusedItem, setFocusedItem] = useState(null);
 
@@ -13,8 +14,7 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeSubmit, ...props }) =>
 	const BLOCKS_REFS = [ref1, ref2, ref3, ref4];
 
 	useEffect(() => {
-		if(code.length === 4)
-			onCodeSubmit(code);
+		onCodeChanged(code);
 	}, [code]);
 
 	return (
@@ -24,7 +24,7 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeSubmit, ...props }) =>
 					key={num}
 					className=' w-14 h-14 bg-gray-40 rounded-lg p-4'
 					style={{
-						boxShadow: focusedItem === num && 'inset 0 0 0 1.5px #739EF1',
+						boxShadow: getBorder(focusedItem === num, isDanger),
 					}}
 				>
 					<input

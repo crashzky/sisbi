@@ -6,8 +6,12 @@ import Button from '../../components/Button';
 import { useRouter } from 'next/router';
 import Radio from '../../components/Radio';
 import Link from 'next/link';
+import { useMutation } from 'react-query';
+import { getSmsCode, signup } from '../../shared/api/auth';
 
 import CrossIcon from '../../assets/general/close.svg';
+import LoaderIcon from '../../assets/loader.svg';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => {
 	const router = useRouter();
@@ -16,12 +20,32 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 		initialValues: {
 			phone: '',
 		},
-		onSubmit: () => {
-			router.push({
-				pathname: '/',
-				query: {
-					modal: 'signup1',
-				},
+		validate: (values) => {
+			let errors: any = {};
+
+			if(values.phone.length !== 13 || !isValidPhoneNumber('+7' + values.phone))
+				errors.phone = 'length';
+
+			return errors;
+		},
+		onSubmit: (values) => {
+			signupMutation.mutate({
+				phone: '+7' + values.phone,
+			});
+		},
+	});
+
+	const smsCodeMutation = useMutation(getSmsCode, {
+		onSuccess: () => {
+			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone);
+			router.push(router.pathname + '/?modal=code');
+		},
+	});
+
+	const signupMutation = useMutation(signup, {
+		onSuccess: () => {
+			smsCodeMutation.mutate({
+				phone: '+7' + formik.values.phone,
 			});
 		},
 	});
@@ -45,6 +69,7 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 				</button>
 			</div>
 			<InputPhone
+				isDanger={!!formik.errors.phone && !!formik.submitCount}
 				className='mb-6'
 				name='phone'
 				value={formik.values.phone}
@@ -56,12 +81,21 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 					'Ищу работу',
 					'Ищу сотрудников',
 				]} />
-			<Button className='w-full h-14 mb-6'>
-				Зарегистрироваться
-			</Button>
+			{signupMutation.isLoading || smsCodeMutation.isLoading ? (
+				<LoaderIcon className='h-14 w-14 mx-auto mb-3' />
+			) : (
+				<Button className='w-full h-14 mb-3'>
+					Зарегистрироваться
+				</Button>
+			)}
+			{signupMutation.isError && (
+				<Paragraph variant='5' tag='p' className='text-center text-red'>
+					Аккаунт с таким телефоном уже зарегистрирован
+				</Paragraph>
+			)}
 			<Button
 				variant='outline'
-				className='w-full h-14 mb-4'
+				className='w-full h-14 mt-3 mb-4'
 				onClick={() => {
 					router.push({
 						pathname: '/',

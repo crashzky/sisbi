@@ -1,12 +1,21 @@
+import { useQuery } from 'react-query';
+import { getMyProfile } from '../../shared/api/user';
 import { HEADER_PRIMARY_ITEMS } from '../../shared/consts/header';
 import Footer from '../Footer';
 import Header from '../Header';
 import Props from './MainLayout.props';
 
 const MainLayout: React.FC<Props> = ({ children, headerItems = HEADER_PRIMARY_ITEMS, ...props }) => {
+	const { data } = useQuery('my_profile', getMyProfile, {
+		retryDelay: 4,
+	});
+
 	return (
 		<>
-			<Header items={headerItems} className='py-4 px-40' />
+			<Header
+				items={headerItems}
+				userData={data}
+				className='py-4 px-40' />
 			<main {...props}>
 				{children}
 			</main>

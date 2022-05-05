@@ -30,7 +30,7 @@ const InputPhone: React.FC<Props> = ({ className = '', onFocus, onBlur, value,
 				onChange={(e) => {
 					const NUMS = '1234567890';
 					
-					if(NUMS.includes(e.target.value[e.target.value.length - 1])) {
+					if(NUMS.includes(e.target.value[e.target.value.length - 1]) || e.target.value === '') {
 						const prettied = formatPhoneNumberIntl('+7' + e.target.value).slice(3)
 							? formatPhoneNumberIntl('+7' + e.target.value).slice(3)
 							: e.target.value;

@@ -4,8 +4,12 @@ import { useFormik } from 'formik';
 import InputPhone from '../../components/InputPhone';
 import Button from '../../components/Button';
 import { useRouter } from 'next/router';
+import { useMutation } from 'react-query';
+import { getSmsCode } from '../../shared/api/auth';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 import CrossIcon from '../../assets/general/close.svg';
+import LoaderIcon from '../../assets/loader.svg';
 
 const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => {
 	const router = useRouter();
@@ -14,8 +18,25 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 		initialValues: {
 			phone: '',
 		},
+		validate: (values) => {
+			let errors: any = {};
+
+			if(values.phone.length !== 13 || !isValidPhoneNumber('+7' + values.phone))
+				errors.phone = 'length';
+
+			return errors;
+		},
 		onSubmit: (values) => {
-			
+			smsCodeMutation.mutate({
+				phone: '+7' + values.phone,
+			});
+		},
+	});
+
+	const smsCodeMutation = useMutation(getSmsCode, {
+		onSuccess: () => {
+			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone);
+			router.push(router.pathname + '/?modal=code');
 		},
 	});
 
@@ -38,13 +59,23 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 				</button>
 			</div>
 			<InputPhone
-				className='mb-6'
+				className='mb-3'
 				name='phone'
+				isDanger={!!formik.errors.phone && !!formik.submitCount}
 				value={formik.values.phone}
 				onChange={formik.handleChange} />
-			<Button className='w-full h-14 mb-6'>
-				Войти
-			</Button>
+			{smsCodeMutation.isError && (
+				<Paragraph variant='5' tag='p' className='text-center text-red'>
+					Такого аккаунта не существует
+				</Paragraph>
+			)}
+			{smsCodeMutation.isLoading ? (
+				<LoaderIcon className='w-14 h-14 mx-auto mt-3 mb-6' />
+			) : (
+				<Button className='w-full h-14 mt-3 mb-6'>
+					Войти
+				</Button>
+			)}
 			<Button
 				variant='outline'
 				className='w-full h-14'

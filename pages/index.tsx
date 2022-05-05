@@ -7,8 +7,12 @@ import MainLayout from '../layouts/MainLayout';
 import ModalLayout from '../layouts/ModalLayout';
 import SearchPanel from '../layouts/SearchPanel';
 import { HEADER_PRIMARY_ITEMS } from '../shared/consts/header';
+import withCheckAuthLayout from '../layouts/CheckAuthLayout';
+import { ICheckAuthConfig } from '../layouts/CheckAuthLayout/CheckAuthLayout.props';
+import { useRouter } from 'next/router';
 
 import LoginModal from '../modals/LoginModal';
+import SmsCodeModal from '../modals/SmsCodeModal';
 import SignupModal from '../modals/SignupModal';
 import SingupStep1Modal from '../modals/SignupStep1Modal';
 import SingupStep2Modal from '../modals/SignupStep2Modal';
@@ -19,17 +23,30 @@ import SingupStep6Modal from '../modals/SignupStep6Modal';
 import SingupStepFinalModal from '../modals/SignupStepFinalModal';
 
 const MainPage = (): JSX.Element => {
+	const router = useRouter();
+
+	const checkAuthConfig: ICheckAuthConfig = {
+		checkLoggined: false,
+		onAccessDenited: () => router.push(router.pathname),
+	};
+
+	const checkAuthConfig2: ICheckAuthConfig = {
+		checkLoggined: true,
+		onAccessDenited: () => router.push(router.pathname),
+	};
+
 	return (
 		<ModalLayout modals={{
-			'login': <LoginModal />,
-			'signup': <SignupModal />,
-			'signup1': <SingupStep1Modal />,
-			'signup2': <SingupStep2Modal />,
-			'signup3': <SingupStep3Modal />,
-			'signup4': <SingupStep4Modal />,
-			'signup5': <SingupStep5Modal />,
-			'signup6': <SingupStep6Modal />,
-			'signupFinal': <SingupStepFinalModal />,
+			'login': withCheckAuthLayout(LoginModal, checkAuthConfig),
+			'code': withCheckAuthLayout(SmsCodeModal, checkAuthConfig),
+			'signup': withCheckAuthLayout(SignupModal, checkAuthConfig),
+			'signup1': withCheckAuthLayout(SingupStep1Modal, checkAuthConfig2),
+			'signup2': withCheckAuthLayout(SingupStep2Modal, checkAuthConfig2),
+			'signup3': withCheckAuthLayout(SingupStep3Modal, checkAuthConfig2),
+			'signup4': withCheckAuthLayout(SingupStep4Modal, checkAuthConfig2),
+			'signup5': withCheckAuthLayout(SingupStep5Modal, checkAuthConfig2),
+			'signup6': withCheckAuthLayout(SingupStep6Modal, checkAuthConfig2),
+			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2),
 		}}
 		>
 			<MainLayout headerItems={HEADER_PRIMARY_ITEMS}>

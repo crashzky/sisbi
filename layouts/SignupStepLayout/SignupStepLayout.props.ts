@@ -4,6 +4,7 @@ interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDi
 	currentStep?: number;
 	maxSteps?: number;
 	label?: string;
+	isLoading?: boolean;
 	HeaderImage: React.FC<any>;
 	onClickBack?: () => void;
 	onClickContinue?: () => void;

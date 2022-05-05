@@ -27,6 +27,7 @@ interface Props {
 	onMenuScrollToTop?: (e) => void;
 	onMenuScrollToBottom?: (e) => void;
 	isLazyLoad?: boolean;
+	value?: ISelectOption;
 }
 
 type SelectVariants = 'primary' | 'with_gap';
@@ -40,4 +41,5 @@ export default Props;
 
 export type {
 	SelectVariants,
+	ISelectOption,
 };

@@ -18,7 +18,7 @@ const ModalLayout: React.FC<Props> = ({ children, modals, ...props }) => {
 				setOpenedModal(i);
 			}
 		});
-	}, [router]);
+	}, [router, router.query]);
 	
 	return (
 		<div

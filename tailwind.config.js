@@ -28,6 +28,7 @@ module.exports = {
 				'text': '#575FCC',
 				'text-secondary': '#74767A',
 
+				'gray-20': '#F9F9FA',
 				'gray-40': '#F3F3F5',
 				'gray-100': '#E0E1E6',
 			},

@@ -12,7 +12,7 @@ const VacanciesFiltres: React.FC<Props> = ({ className = '', ...props }) => {
 				<Paragraph variant='5' tag='h3' className='font-semibold mb-3'>
 					Сфера деятельности
 				</Paragraph>
-				<Button variant='secondary' className='w-[88px] h-9'>
+				<Button variant='secondary' className='w-[88px] font-normal h-9'>
 					Выбрать
 				</Button>
 			</div>

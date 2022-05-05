@@ -4,8 +4,9 @@ import Link from 'next/link';
 import FullLogoIcon from '../../assets/full-logo.svg';
 import SolidFlashIcon from '../../assets/custom/solid_flash.svg';
 import { useRouter } from 'next/router';
+import ProfileTab from '../../components/ProfileTab';
 
-const Header: React.FC<Props> = ({ className = '', items = [], ...props }) => {
+const Header: React.FC<Props> = ({ className = '', items = [], userData, ...props }) => {
 	const router = useRouter();
 
 	return (
@@ -25,35 +26,39 @@ const Header: React.FC<Props> = ({ className = '', items = [], ...props }) => {
 				))}
 			</nav>
 			<div></div>
-			<div>
-				<button
-					className='mr-8'
-					onClick={() => {
-						router.push({
-							pathname: '/',
-							query: {
-								modal: 'login',
-							},
-						});
-					}}
-				>
-					Войти
-				</button>
-				<button
-					className='font-semibold text-sm text-text'
-					onClick={() => {
-						router.push({
-							pathname: '/',
-							query: {
-								modal: 'signup',
-							},
-						});
-					}}
-				>
-					<SolidFlashIcon className='fill-text inline-block mr-1' />
-					Регистрация
-				</button>
-			</div>
+			{!userData ? (
+				<div>
+					<button
+						className='mr-8'
+						onClick={() => {
+							router.push({
+								pathname: '/',
+								query: {
+									modal: 'login',
+								},
+							});
+						}}
+					>
+						Войти
+					</button>
+					<button
+						className='font-semibold text-sm text-text'
+						onClick={() => {
+							router.push({
+								pathname: '/',
+								query: {
+									modal: 'signup',
+								},
+							});
+						}}
+					>
+						<SolidFlashIcon className='fill-text inline-block mr-1' />
+						Регистрация
+					</button>
+				</div>
+			) : (
+				<ProfileTab avatar={userData.avatar} />
+			)}
 		</header>
 	);
 };
