@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import Button from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
 import Input from '../../components/Input';
@@ -6,13 +7,21 @@ import Radio from '../../components/Radio';
 import Props from './VacanciesFiltres.props';
 
 const VacanciesFiltres: React.FC<Props> = ({ className = '', ...props }) => {
+	const router = useRouter();
+
 	return (
 		<aside className={className + ' grid gap-10'} {...props}>
 			<div>
 				<Paragraph variant='5' tag='h3' className='font-semibold mb-3'>
 					Сфера деятельности
 				</Paragraph>
-				<Button variant='secondary' className='w-[88px] font-normal h-9'>
+				<Button
+					variant='secondary'
+					className='w-[88px] font-normal h-9'
+					onClick={() => {
+						router.push('/vacancies' + '?modal=job_categories');
+					}}
+				>
 					Выбрать
 				</Button>
 			</div>

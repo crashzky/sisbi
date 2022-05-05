@@ -17,6 +17,7 @@ import SingupStep4Modal from '../modals/SignupStep4Modal';
 import SingupStep5Modal from '../modals/SignupStep5Modal';
 import SingupStep6Modal from '../modals/SignupStep6Modal';
 import SingupStepFinalModal from '../modals/SignupStepFinalModal';
+import SelectJobModal from '../modals/SelectJobModal';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -43,6 +44,7 @@ const VacanciesPage = (): JSX.Element => {
 			'signup5': withCheckAuthLayout(SingupStep5Modal, checkAuthConfig2),
 			'signup6': withCheckAuthLayout(SingupStep6Modal, checkAuthConfig2),
 			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2),
+			'job_categories': <SelectJobModal />,
 		}}
 		>
 			<SearchLayout className='px-40'>

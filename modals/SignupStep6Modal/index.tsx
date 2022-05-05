@@ -3,14 +3,23 @@ import Props from './SignupStep6Modal.props';
 import Paragraph from '../../components/Paragraph';
 import Checkbox from '../../components/Checkbox';
 import { useRouter } from 'next/router';
+import { useFormik } from 'formik';
+import { useMutation, useQuery } from 'react-query';
+import { putProfile } from '../../shared/api/user';
+import { getSchedules } from '../../shared/api/schedules';
 
 import Step1Image from '../../assets/signup_steps/1.svg';
-import { useFormik } from 'formik';
-import { useMutation } from 'react-query';
-import { putProfile } from '../../shared/api/user';
+import { getTypeEmployments } from '../../shared/api/type_employments';
 
 const SingupStep6Modal: React.FC<Props> = () => {
 	const router = useRouter();
+	
+	const schedulesQuery = useQuery('schedules', getSchedules, {
+		initialData: [],
+	});
+	const typeEmploymentsQuery = useQuery('type_employments', getTypeEmployments, {
+		initialData: [],
+	});
 
 	const formik = useFormik({
 		initialValues: {
@@ -48,51 +57,27 @@ const SingupStep6Modal: React.FC<Props> = () => {
 					<Paragraph variant='4' tag='h3' className='font-semibold'>
 						График работы
 					</Paragraph>
-					<Checkbox
-						name='schedule'
-						onChange={formik.handleChange}
-						value='Удалённая работа'
-						label='Удалённая работа' />
-					<Checkbox
-						name='schedule'
-						onChange={formik.handleChange}
-						value='Полный день'
-						label='Полный день' />
-					<Checkbox
-						name='schedule'
-						onChange={formik.handleChange}
-						value='Сменный график'
-						label='Сменный график' />
-					<Checkbox
-						name='schedule'
-						onChange={formik.handleChange}
-						value='Гибкий график'
-						label='Гибкий график' />
+					{schedulesQuery.data.map((i) => (
+						<Checkbox
+							key={i.id}
+							name='schedule'
+							onChange={formik.handleChange}
+							value={i.id}
+							label={i.name} />
+					))}
 				</div>
 				<div className='grid gap-3'>
 					<Paragraph variant='4' tag='h3' className='font-semibold'>
 						График занятости
 					</Paragraph>
-					<Checkbox
-						name='employment'
-						onChange={formik.handleChange}
-						value='Полная занятость'
-						label='Полная занятость' />
-					<Checkbox
-						name='employment'
-						onChange={formik.handleChange}
-						value='Частичная занятость'
-						label='Частичная занятость' />
-					<Checkbox
-						name='employment'
-						onChange={formik.handleChange}
-						value='Проектная работа'
-						label='Проектная работа' />
-					<Checkbox
-						name='employment'
-						onChange={formik.handleChange}
-						value='Стажировка'
-						label='Стажировка' />
+					{typeEmploymentsQuery.data.map((i) => (
+						<Checkbox
+							key={i.id}
+							name='employment'
+							onChange={formik.handleChange}
+							value={i.id}
+							label={i.name} />
+					))}
 				</div>	
 			</form>
 		</SignupStepLayout>
