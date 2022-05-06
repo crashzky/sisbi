@@ -37,14 +37,17 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 							0px 0px 0px rgba(35, 47, 59, 0.05)`,
 					}}
 				>
-					<button className='p-4 w-full text-left border-b-[1px] border-button-secondary'>
+					<button
+						className='p-4 w-full text-left border-b-[1px] border-button-secondary'
+						onClick={() => router.push('/profile')}
+					>
 						<Paragraph variant='5' tag='span'>
 							Мое резюме
 						</Paragraph>
 					</button>
 					<button className='p-4 w-full text-left border-b-[1px] border-button-secondary'>
 						<Paragraph variant='5' tag='span'>
-							Личные данные
+							Мессенджер
 						</Paragraph>
 					</button>
 					<button className='p-4 w-full text-left border-b-[1px] border-button-secondary'>

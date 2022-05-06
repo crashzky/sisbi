@@ -15,11 +15,11 @@ const MainLayout: React.FC<Props> = ({ children, headerItems = HEADER_PRIMARY_IT
 			<Header
 				items={headerItems}
 				userData={data}
-				className='py-4 px-40' />
+				className='py-4 px-40 print:hidden' />
 			<main {...props}>
 				{children}
 			</main>
-			<Footer className='pt-24 pb-9 px-40' />
+			<Footer className='pt-24 pb-9 px-40 bg-[#FAFBFC] print:hidden' />
 		</>
 	);
 };

@@ -1,0 +1,7 @@
+.switch:checked ~ .dot {
+	transform: translateX(16px);
+}
+
+.switch:checked ~ .block {
+	background-color: #739EF1;
+}
