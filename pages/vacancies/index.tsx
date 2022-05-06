@@ -1,27 +1,27 @@
 import { useRouter } from 'next/router';
-import Headline from '../components/Headline';
-import VacancyCard from '../components/VacancyCard';
-import withCheckAuthLayout from '../layouts/CheckAuthLayout';
-import { ICheckAuthConfig } from '../layouts/CheckAuthLayout/CheckAuthLayout.props';
-import ModalLayout from '../layouts/ModalLayout';
-import SearchLayout from '../layouts/SearchLayout';
-import VacanciesFiltres from '../layouts/VacanciesFiltres';
-import useModal from '../hooks/useModal';
+import Headline from '../../components/Headline';
+import VacancyCard from '../../components/VacancyCard';
+import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+import { ICheckAuthConfig } from '../../layouts/CheckAuthLayout/CheckAuthLayout.props';
+import ModalLayout from '../../layouts/ModalLayout';
+import SearchLayout from '../../layouts/SearchLayout';
+import VacanciesFiltres from '../../layouts/VacanciesFiltres';
+import useModal from '../../hooks/useModal';
 import { slide as Menu } from 'react-burger-menu';
 import { useState } from 'react';
 
-import LoginModal from '../modals/LoginModal';
-import SignupModal from '../modals/SignupModal';
-import SmsCodeModal from '../modals/SmsCodeModal';
-import SingupStep1Modal from '../modals/SignupStep1Modal';
-import SingupStep2Modal from '../modals/SignupStep2Modal';
-import SingupStep3Modal from '../modals/SignupStep3Modal';
-import SingupStep4Modal from '../modals/SignupStep4Modal';
-import SingupStep5Modal from '../modals/SignupStep5Modal';
-import SingupStep6Modal from '../modals/SignupStep6Modal';
-import SingupStepFinalModal from '../modals/SignupStepFinalModal';
-import SelectJobModal from '../modals/SelectJobModal';
-import RespondVacancyMenu from '../components/RespondVacancyMenu';
+import LoginModal from '../../modals/LoginModal';
+import SignupModal from '../../modals/SignupModal';
+import SmsCodeModal from '../../modals/SmsCodeModal';
+import SingupStep1Modal from '../../modals/SignupStep1Modal';
+import SingupStep2Modal from '../../modals/SignupStep2Modal';
+import SingupStep3Modal from '../../modals/SignupStep3Modal';
+import SingupStep4Modal from '../../modals/SignupStep4Modal';
+import SingupStep5Modal from '../../modals/SignupStep5Modal';
+import SingupStep6Modal from '../../modals/SignupStep6Modal';
+import SingupStepFinalModal from '../../modals/SignupStepFinalModal';
+import SelectJobModal from '../../modals/SelectJobModal';
+import RespondVacancyMenu from '../../components/RespondVacancyMenu';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();

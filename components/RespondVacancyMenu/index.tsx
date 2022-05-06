@@ -2,17 +2,20 @@ import { useFormik } from 'formik';
 import Props from './RespondVacancyMenu.props';
 import Paragraph from '../Paragraph';
 import Link from 'next/link';
+import Textarea from '../Textarea';
+import Checkbox from '../Checkbox';
+import Button from '../Button';
+import { useRouter } from 'next/router';
 
 import CloseIcon from '../../assets/general/close.svg';
 import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
-import Textarea from '../Textarea';
-import Checkbox from '../Checkbox';
-import Button from '../Button';
 
 const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vacancyName, minPrice, vacancyId,
 	contactName, contactPhone, contactMail, onContinue, onBack, ...props }) => {
+	const router = useRouter();
+
 	const formik = useFormik({
 		initialValues: {
 			message: '',
@@ -52,8 +55,12 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 							{' ₽'}
 						</Paragraph>
 					</div>
-					<Link href={`/vacancies/${vacancyId}`}>
-						<a className='text-xs text-text'>
+					<Link href={{
+						pathname: `/vacancies/${vacancyId}`,
+						query: router.query,
+					}}
+					>
+						<a target='_blank' className='text-xs text-text'>
 							Открыть вакансию в новой вкладке
 						</a>
 					</Link>
