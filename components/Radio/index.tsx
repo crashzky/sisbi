@@ -1,6 +1,6 @@
 import Props from './Radio.props';
 
-const Radio: React.FC<Props> = ({ className = '', items, name, ...props }) => {
+const Radio: React.FC<Props> = ({ className = '', items, name, value, ...props }) => {
 	return (
 		<div className={className}>
 			{items.map((i, num) => (
@@ -11,6 +11,7 @@ const Radio: React.FC<Props> = ({ className = '', items, name, ...props }) => {
 						id={`${name}-${num}`}
 						name={name}
 						value={i}
+						checked={value === i}
 						{...props} />
 					<label className='cursor-pointer text-sm' htmlFor={`${name}-${num}`}>
 						{i}

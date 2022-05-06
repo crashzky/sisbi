@@ -1,19 +1,42 @@
 import Button from '../../components/Button';
 import Paragraph from '../../components/Paragraph';
 import Props from './SelectJobModal.props';
-
-import CloseIcon from '../../assets/general/close.svg';
 import { useQuery } from 'react-query';
 import { getJobCategories } from '../../shared/api/job_categories';
 import Checkbox from '../../components/Checkbox';
+import { useRouter } from 'next/router';
+
+import CloseIcon from '../../assets/general/close.svg';
+import { useFormik } from 'formik';
 
 const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
+	const router = useRouter();
+
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
 		initialData: [],
 	});
 
+	const formik = useFormik({
+		initialValues: {
+			job_categories: router.query.job_categories ? JSON.parse(router.query.job_categories.toString()) : [],
+		},
+		onSubmit: (values) => {
+			delete router.query.modal;
+			router.query.job_categories = JSON.stringify(values.job_categories);
+
+			router.push({
+				pathname: router.pathname,
+				query: router.query,
+			});
+		},
+	});
+
 	return (
-		<form className={className + ' bg-white rounded-2xl w-[552px] h-[415px] grid grid-rows-[1fr_auto]'} {...props}>
+		<form
+			onSubmit={formik.handleSubmit}
+			className={className + ' bg-white rounded-2xl w-[552px] h-[415px] grid grid-rows-[1fr_auto]'}
+			{...props}
+		>
 			<div className='p-6'>
 				<div className='flex justify-between mb-6'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
@@ -28,6 +51,8 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 						<Checkbox
 							key={i.id}
 							name='job_categories'
+							onChange={formik.handleChange}
+							checked={formik.values.job_categories.includes(i.id.toString())}
 							value={i.id}
 							label={i.name} />
 					))}
@@ -37,11 +62,28 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 				<Button className='h-9 px-4'>
 					Применить
 				</Button>
-				<Button variant='secondary' className='h-9 px-4'>
+				<Button
+					type='button'
+					variant='secondary'
+					className='h-9 px-4'
+					onClick={() => {
+						delete router.query.modal;
+
+						router.push({
+							pathname: router.pathname,
+							query: router.query,
+						});
+					}}
+				>
 					Отменить
 				</Button>
 				<div></div>
-				<Button variant='outline_secondary' className='h-9 px-4'>
+				<Button
+					type='button'
+					variant='outline_secondary'
+					className='h-9 px-4'
+					onClick={() => formik.setValues({ job_categories: [] })}
+				>
 					Очистить все
 				</Button>
 			</div>

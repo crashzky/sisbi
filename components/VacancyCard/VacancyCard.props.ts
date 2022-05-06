@@ -7,6 +7,11 @@ interface Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement
 	minPrice: number;
 	description: string;
 	tags: string[];
+	onRespond: () => void;
+
+	contactName: string;
+	contactPhone: number;
+	contactMail: string;
 }
 
 export default Props;

@@ -11,6 +11,7 @@ import '../styles/font.css';
 import '../styles/radio.css';
 import '../styles/checkbox.css';
 import '../styles/number.css';
+import '../styles/burger-menu.css';
 
 const queryClient = new QueryClient();
 

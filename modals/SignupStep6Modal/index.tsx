@@ -49,7 +49,7 @@ const SingupStep6Modal: React.FC<Props> = () => {
 
 					},
 				});*/
-				router.push(router.pathname + '/?modal=signupFinal');
+				//router.push(router.pathname + '/?modal=signupFinal');
 			}}
 		>
 			<form onSubmit={formik.handleSubmit} className='grid grid-cols-2'>

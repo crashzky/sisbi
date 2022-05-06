@@ -4,7 +4,7 @@ import Props from './SearchPanel.props';
 
 const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 	return (
-		<div className={className + ' bg-darkBlue py-4 px-40 grid grid-cols-between gap-4'} {...props}>
+		<section className={className + ' bg-darkBlue py-4 px-40 grid grid-cols-between gap-4'} {...props}>
 			<Select
 				variant='with_gap'
 				placeholder='Ваш город'
@@ -16,7 +16,7 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 			<Button variant='outline' className='w-[104px] h-12'>
 				Найти
 			</Button>
-		</div>
+		</section>
 	);
 };
 
