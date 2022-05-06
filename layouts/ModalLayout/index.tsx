@@ -11,6 +11,9 @@ const ModalLayout: React.FC<Props> = ({ children, modals, ...props }) => {
 		setOpenedModal(null);
 
 		let foundedElement = null;
+
+		if(props.openedModal)
+			setOpenedModal(props.openedModal);
 		
 		Object.keys(modals).forEach((i) => {
 			if(!foundedElement && router.query.modal === i) {
@@ -18,7 +21,7 @@ const ModalLayout: React.FC<Props> = ({ children, modals, ...props }) => {
 				setOpenedModal(i);
 			}
 		});
-	}, [router, router.query]);
+	}, [router, router.query, props.openedModal]);
 	
 	return (
 		<div
