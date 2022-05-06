@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { putProfile } from '../../shared/api/user';
-import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
 import Step5Image from '../../assets/signup_steps/5.svg';
@@ -17,15 +16,10 @@ const SingupStep5Modal: React.FC<Props> = () => {
 
 	const [selectedValue, setSelectedValue] = useState<string>();
 
-	const validatiionSchema = Yup.object().shape({
-		job: Yup.string().matches(/^[А-Яа-яёЁ]+$/, 'Only russian').required('This field requeres'),
-	});
-
 	const formik = useFormik({
 		initialValues: {
 			job: '',
 		},
-		validationSchema: validatiionSchema,
 		onSubmit: null,
 	});
 
@@ -76,6 +70,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 			<Radio
 				className='grid gap-3'
 				name='experience'
+				value={selectedValue}
 				onChange={(e) => setSelectedValue(e.target.value)}
 				items={['Нет опыта', '1 - 3 года', '2 - 6 лет', 'более 6 лет']} />
 		</SignupStepLayout>

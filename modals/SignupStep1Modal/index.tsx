@@ -7,6 +7,7 @@ import { putProfile } from '../../shared/api/user';
 import { useState } from 'react';
 
 import Step1Image from '../../assets/signup_steps/1.svg';
+import { GENDERS } from '../../shared/consts/profile';
 
 const SingupStep1Modal: React.FC<Props> = () => {
 	const router = useRouter();
@@ -35,6 +36,7 @@ const SingupStep1Modal: React.FC<Props> = () => {
 			<Radio
 				className='grid gap-3'
 				name='sex'
+				value={selectedValue && GENDERS[selectedValue]}
 				onChange={(e) => {
 					const GENDERS = {
 						'Мужской': 'male',

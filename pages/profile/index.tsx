@@ -9,15 +9,20 @@ import MainLayout from '../../layouts/MainLayout';
 import Switch from '../../components/Switch';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
+import { getMyProfile } from '../../shared/api/user';
 
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
 import DownloadSolidIcon from '../../assets/general/download_solid.svg';
+import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
 
 const ProfilePage = (): JSX.Element => {
 	const router = useRouter();
 
+	const { data } = useQuery('my_profile', getMyProfile);
+
 	const birthdayInterval = intervalToDuration({
-		start: new Date(2005, 1, 18),
+		start: data && data.birthday ? new Date(data.birthday) : new Date(Date.now()),
 		end: new Date(Date.now()),
 	});
 
@@ -29,6 +34,24 @@ const ProfilePage = (): JSX.Element => {
 		if(!localStorage.getItem('access_token'))
 			router.push('/?modal=login');
 	}, [router]);
+
+	function getReadyMission() {
+		if(data && data.ready_mission)
+			return 'готов к командировкам';
+		else if(data && !data.ready_mission)
+			return 'не готов к командировкам';
+		else
+			return '';
+	}
+
+	function getReadyMove() {
+		if(data && data.ready_move)
+			return 'готов к переезду';
+		else if(data && !data.ready_move)
+			return 'не готов к переезду';
+		else
+			return '';
+	}
 
 	return (
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40 grid grid-cols-[1fr_268px] gap-[111px] print:block print:px-0'>
@@ -46,7 +69,7 @@ const ProfilePage = (): JSX.Element => {
 					<div>
 						<div className='flex gap-4 items-center mb-4'>
 							<Headline variant='5' tag='h1' className='font-bold'>
-								Алексей Сухоруков
+								{data ? `${data.first_name} ${data.surname} ${data.last_name}` : 'Загрузка...'}
 							</Headline>
 							<Link href='/profile/edit'>
 								<a className='text-xs text-text font-semibold print:hidden'>
@@ -57,57 +80,60 @@ const ProfilePage = (): JSX.Element => {
 						<div className='print:hidden'>
 							{/* For site */}
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{`${birthdayInterval.years} лет, ${birthday_date}`}
+								{data && data.birthday ? `${birthdayInterval.years} лет, ${birthday_date}` : 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
-								Новосибирск
+								{data && data.city}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{formatPhoneNumberIntl('+79223743745')}
+								{data && data.phone ? formatPhoneNumberIntl('+' + data.phone) : ''}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								mail@mail.ru
+								{data && data.email}
 							</Paragraph>
 						</div>
 
 						<div className='hidden print:block'>
 							{/* For print */}
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{`Мужчина, ${birthdayInterval.years} лет, родился ${birthday_date}`}
+								{data && data.birthday
+									? `${GENDERS[data.gender]}, ${birthdayInterval.years} лет, родился ${birthday_date}`
+									: 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
-								Новосибирск, не готов к переезду, не готов к командировкам
+								{data ? `${data.city}, ${getReadyMove()}, ${getReadyMission()}` : ''}
 							</Paragraph>
-
 							<Paragraph variant='4' tag='p' className='font-bold mt-8 mb-2'>
 								Контакты
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{'Мобильный телефон: ' + formatPhoneNumberIntl('+79223743745')}
+								{data && data.phone ? 'Мобильный телефон: ' + formatPhoneNumberIntl('+' + data.phone) : ''}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								Почта: mail@mail.ru
+								{data && data.email ? `Почта: ${data.email}` : ''}
 							</Paragraph>
 
 							<Paragraph variant='4' tag='p' className='font-bold mt-4.5'>
 								Образование
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								Неполное высшее
+								{data && data.education ? EDUCATION[data.education] : ''}
 							</Paragraph>
 						</div>
 					</div>
-					<Image
-						width={173}
-						height={220}
-						className='object-cover rounded-2xl print:rounded-none'
-						src='/assets/DEV_ONLY.png'
-						alt='avatar' />
+					{data && data.avatar ? (
+						<Image
+							width={173}
+							height={220}
+							className='object-cover rounded-2xl print:rounded-none'
+							src={data.avatar}
+							alt='avatar' />
+					) : ''}
 				</div>
 				<div className='pb-8 border-b-[1px] border-gray-80 print:border-none print:pb-0'>
 					<div className='flex items-center gap-4 mb-1'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
-							Junior UI/UX дизайнер
+							{data && data.previous_job}
 						</Paragraph>
 						<Link href='/profile/resume'>
 							<a className='text-xs text-text font-semibold print:hidden'>
@@ -115,19 +141,25 @@ const ProfilePage = (): JSX.Element => {
 							</a>
 						</Link>
 					</div>
-					<Paragraph variant='3' tag='p' className='font-semibold mb-3'>
-						Зарплата от 150 000 ₽
-					</Paragraph>
+					{data && (data.min_salary || data.min_salary === 0) ? (
+						<Paragraph variant='3' tag='p' className='font-semibold mb-3'>
+							{`Зарплата от ${data.min_salary} ₽`}
+						</Paragraph>
+					) : ''}
 					<Paragraph variant='5' tag='p' className='text-text-secondary mb-4 print:hidden'>
 						Дизайн, искусство, развлечения
 					</Paragraph>
 					<div className='grid grid-cols-[repeat(2,auto)] gap-y-7 gap-x-3 print:gap-y-0  w-fit mb-4'>
-						<Paragraph variant='5' tag='p'>
-							Опыт работы
-						</Paragraph>
-						<Paragraph variant='5' tag='p'>
-							без опыта
-						</Paragraph>
+						{data && data.experience ? (
+							<>
+								<Paragraph variant='5' tag='p'>
+									Опыт работы
+								</Paragraph>
+								<Paragraph variant='5' tag='p'>
+									{EXPERIENCE[data.experience]}
+								</Paragraph>
+							</>
+						) : ''}
 						<Paragraph variant='5' tag='p'>
 							Тип занятости
 						</Paragraph>
@@ -144,19 +176,23 @@ const ProfilePage = (): JSX.Element => {
 							Командировки и переезд
 						</Paragraph>
 						<Paragraph variant='5' tag='p' className='print:hidden'>
-							не готов к командировкам, не готов к переезду	
+							{`${getReadyMission()}, ${getReadyMove()}`}
 						</Paragraph>
 					</div>
-					<Paragraph variant='4' tag='h2' className='font-bold mb-2 hidden print:block'>
-						Профессиональные навыки
-					</Paragraph>
-					<div className='flex flex-wrap gap-2'>
-						{['Figma', 'Web-дизайн', 'Графический дизайн', 'iOS', 'Photoshop/ILLustrator'].map((i, num) => (
-							<span key={num} className='py-1 px-2 bg-softGold rounded-[4px] print:px-0 print:py-0'>
-								{i}
-							</span>
-						))}
-					</div>
+					{data && data.skills ? (
+						<>
+							<Paragraph variant='4' tag='h2' className='font-bold mb-2 hidden print:block'>
+								Профессиональные навыки
+							</Paragraph>
+							<div className='flex flex-wrap gap-2'>
+								{data.skills.split(' ').map((i, num) => (
+									<span key={num} className='py-1 px-2 bg-softGold rounded-[4px] print:px-0 print:py-0'>
+										{i}
+									</span>
+								))}
+							</div>
+						</>
+					) : ''}
 				</div>
 				<div className='pb-8 border-b-[1px] border-gray-80 print:border-none'>
 					<div className='flex items-center gap-4 mb-3 print:hidden'>
@@ -173,18 +209,12 @@ const ProfilePage = (): JSX.Element => {
 						Обо мне
 					</Paragraph>
 					<Paragraph variant='5' tag='p'>
-						Lorem Ipsum - это текст-рыбка, часто используемый в печати и вэб-дизайне.
-						Lorem Ipsum является стандартной рыбой для текстов на латинице с начала XVI века.
-						В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов,
-						используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без
-						заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое
-						время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время,
-						программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum.
+						{data && data.about}
 					</Paragraph>
 				</div>
 				<div className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
-						Неполное высшее образование
+						{data && data.education ?`${EDUCATION[data.education]} образование` : 'Нет информации'}
 					</Paragraph>
 					<Link href='/profile/about'>
 						<a className='text-xs text-text font-semibold'>
@@ -207,9 +237,11 @@ const ProfilePage = (): JSX.Element => {
 				<div className='grid rounded-xl border-[1px] border-gray-100'>
 					<button className='p-4 grid grid-cols-[20px_1fr] gap-2 items-center border-b-[1px] border-gray-100'>
 						<ShareSolidIcon className='fill-icon' />
-						<Paragraph variant='5' tag='p' className='text-text text-left'>
-							Поделиться
-						</Paragraph>
+						<Link href='/resumes/1'>
+							<a target='_blank' className='text-text text-left text-sm'>
+								Поделиться
+							</a>
+						</Link>
 					</button>
 					<button className='p-4 grid grid-cols-[20px_1fr] gap-2 items-center' onClick={() => print()}>
 						<DownloadSolidIcon className='fill-icon' />
