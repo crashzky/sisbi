@@ -1,22 +1,23 @@
-import { useRouter } from 'next/router';
-import { useMutation, useQuery } from 'react-query';
+import { useFormik } from 'formik';
 import BackButton from '../../components/BackButton';
 import Headline from '../../components/Headline';
-import Textarea from '../../components/Textarea';
+import Radio from '../../components/Radio';
 import MainLayout from '../../layouts/MainLayout';
-import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
+import { EDUCATION, TO_EDUCATION } from '../../shared/consts/profile';
 
 import LoaderIcon from '../../assets/loader.svg';
 import Button from '../../components/Button';
-import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
+import { useMutation, useQuery } from 'react-query';
+import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 
-const UserAboutPage = (): JSX.Element => {
+const EductionPage = (): JSX.Element => {
 	const router = useRouter();
 
 	useQuery('my_profile_user', getMyProfileUser, {
-		onSuccess: (data) => {
+		onSuccess: (values) => {
 			formik.setValues({
-				about: data.payload.about,
+				education: EDUCATION[values.payload.education],
 			});
 		},
 	});
@@ -27,12 +28,12 @@ const UserAboutPage = (): JSX.Element => {
 
 	const formik = useFormik({
 		initialValues: {
-			about: '',
+			education: null,
 		},
 		onSubmit: (values) => {
 			mutate({
 				user: {
-					about: values.about,
+					education: TO_EDUCATION[values.education],
 				},
 			});
 		},
@@ -42,15 +43,15 @@ const UserAboutPage = (): JSX.Element => {
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
 			<BackButton href='/profile' className='mb-10' />
 			<Headline variant='5' tag='h1' className='font-bold mb-10'>
-				О себе
+				Образование
 			</Headline>
 			<form onSubmit={formik.handleSubmit}>
-				<Textarea
-					name='about'
-					value={formik.values.about}
+				<Radio
+					className='grid gap-3'
+					name='education'
+					value={formik.values.education}
 					onChange={formik.handleChange}
-					className='w-full max-w-[647px] h-[320px]'
-					placeholder='Расскажите немного о себе' />
+					items={Object.keys(EDUCATION).map((i) => EDUCATION[i])} />
 				<div className='grid grid-flow-col w-fit gap-2 mt-8'>
 					{isLoading ? (
 						<LoaderIcon className='h-12 w-[209px]' />
@@ -73,4 +74,4 @@ const UserAboutPage = (): JSX.Element => {
 	);
 };
 
-export default UserAboutPage;
+export default EductionPage;

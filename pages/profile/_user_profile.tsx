@@ -232,9 +232,9 @@ const ProfilePageUser = (): JSX.Element => {
 				</div>
 				<div className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
-						{data && data.education ?`${EDUCATION[data.education]} образование` : 'Нет информации'}
+						{data && data.education ? EDUCATION[data.education] : 'Нет информации'}
 					</Paragraph>
-					<Link href='/profile/about'>
+					<Link href='/profile/education'>
 						<a className='text-xs text-text font-semibold'>
 							Редактировать
 						</a>

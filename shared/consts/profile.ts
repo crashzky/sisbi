@@ -18,14 +18,25 @@ const TO_EXPERIENCE = {
 };
 
 const EDUCATION = {
-	'secondary': 'Среднее',
-	'secondary_special': 'Среднее профессиональное',
-	'incomplete_higher': 'Неоконченное высшее',
-	'higher': 'Высшее',
+	'secondary': 'Среднее образование',
+	'secondary_special': 'Среднее профессиональное образование',
+	'incomplete_higher': 'Неоконченное высшее образование',
+	'higher': 'Высшее образование',
 	'bachelor': 'Бакалавр',
 	'master': 'Магистр',
 	'candidate': 'Кандидат наук',
 	'doctor': 'Доктор наук',
+};
+
+const TO_EDUCATION = {
+	'Среднее образование': 'secondary',
+	'Среднее профессиональное образование': 'secondary_special',
+	'Неоконченное высшее образование': 'incomplete_higher',
+	'Высшее образование': 'higher',
+	'Бакалавр': 'bachelor',
+	'Магистр': 'master',
+	'Кандидат наук': 'candidate',
+	'Доктор наук': 'doctor',
 };
 
 export {
@@ -33,4 +44,5 @@ export {
 	EXPERIENCE,
 	EDUCATION,
 	TO_EXPERIENCE,
+	TO_EDUCATION,
 };
