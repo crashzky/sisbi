@@ -9,8 +9,8 @@ import Switch from '../../components/Switch';
 import MainLayout from '../../layouts/MainLayout';
 import { useFormik } from 'formik';
 import { useMutation, useQuery } from 'react-query';
-import { getSchedules } from '../../shared/api/schedules';
-import { getTypeEmployments } from '../../shared/api/type_employments';
+import { addSchedulesUser, getSchedules, removeSchedulesUser } from '../../shared/api/schedules';
+import { addTypeEmployementUser, getTypeEmployments, removeTypeEmployementUser } from '../../shared/api/type_employments';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
@@ -32,7 +32,7 @@ const ResumePage = (): JSX.Element => {
 	const [jobCategory, setJobCategory] = useState(null);
 	const [showJobSelect, setShowJobSelect] = useState(false);
 
-	useQuery('my_profile', getMyProfileUser, {
+	const { data } = useQuery('my_profile', getMyProfileUser, {
 		onSuccess: (value) => {
 			formik.setValues({
 				vacancyName: value.payload.previous_job,
@@ -85,8 +85,37 @@ const ResumePage = (): JSX.Element => {
 		},
 	});
 
-	const updateProfileMutation = useMutation(putProfileUser, {
+	const removeSchedulesUserMutation = useMutation(removeSchedulesUser, {
+		onSuccess: () => {
+			addSchedulesUserMutattion.mutate({
+				schedules: formik.values.schedule.map((i) => +i),
+			});
+		},
+	});
+	const addSchedulesUserMutattion = useMutation(addSchedulesUser, {
+		onSuccess: () => {
+			removeTypeEmployementUserMutation.mutate({
+				type_employments: data.payload.type_employments.map((i) => i.id),
+			});
+		},
+	});
+	const removeTypeEmployementUserMutation = useMutation(removeTypeEmployementUser, {
+		onSuccess: () => {
+			addTypeEmployementUserMutation.mutate({
+				type_employments: formik.values.employement_type.map((i) => +i),
+			});
+		},
+	});
+	const addTypeEmployementUserMutation = useMutation(addTypeEmployementUser, {
 		onSuccess: () => router.push('/profile'),
+	});
+
+	const updateProfileMutation = useMutation(putProfileUser, {
+		onSuccess: () => {
+			removeSchedulesUserMutation.mutate({
+				schedules: data.payload.schedules.map((i) => i.id),
+			});
+		},
 	});
 
 	const formik = useFormik({
@@ -168,7 +197,8 @@ const ResumePage = (): JSX.Element => {
 							{(jobCategory || jobCategory === 0) && jobCategoriesQuery.isSuccess ? (
 								<div className='grid gap-2 grid-flow-col'>
 									<div className='bg-gray-40 py-3 px-4 rounded-lg'>
-										{jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory).name}
+										{jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory)
+											&& jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory).name}
 									</div>
 									<Button
 										type='button'
@@ -278,13 +308,16 @@ const ResumePage = (): JSX.Element => {
 							</div>
 						</div>
 						<div className='grid grid-flow-col w-fit gap-2 mt-8'>
-							{updateProfileMutation.isLoading ? (
-								<LoaderIcon className='h-12 w-[209px]' />
-							) : (
-								<Button className='h-12 w-[209px]'>
-									Сохранить изменения
-								</Button>
-							)}
+							{(updateProfileMutation.isLoading || removeSchedulesUserMutation.isLoading
+							|| addSchedulesUserMutattion.isLoading || removeTypeEmployementUserMutation.isLoading
+							|| addTypeEmployementUserMutation.isLoading)
+								? (
+									<LoaderIcon className='h-12 w-[209px]' />
+								) : (
+									<Button className='h-12 w-[209px]'>
+										Сохранить изменения
+									</Button>
+								)}
 							<Button
 								type='button'
 								variant='secondary'

@@ -11,10 +11,10 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { getMyProfileUser } from '../../shared/api/user';
+import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
 
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
 import DownloadSolidIcon from '../../assets/general/download_solid.svg';
-import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
 
 const ProfilePageUser = (): JSX.Element => {
 	const router = useRouter();
@@ -119,7 +119,7 @@ const ProfilePageUser = (): JSX.Element => {
 									: 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
-								{data ? `${data.city}, ${getReadyMove()}, ${getReadyMission()}` : ''}
+								{data ? `${data.city ? data.city + ', ' : ''} ${getReadyMove()}, ${getReadyMission()}` : ''}
 							</Paragraph>
 							<Paragraph variant='4' tag='p' className='font-bold mt-8 mb-2'>
 								Контакты
@@ -226,7 +226,7 @@ const ProfilePageUser = (): JSX.Element => {
 					<Paragraph variant='4' tag='h2' className='font-bold mb-2 hidden print:block'>
 						Обо мне
 					</Paragraph>
-					<Paragraph variant='5' tag='p'>
+					<Paragraph variant='5' tag='p' className='max-w-[550px]'>
 						{data && data.about}
 					</Paragraph>
 				</div>
