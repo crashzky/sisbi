@@ -8,56 +8,85 @@ import Radio from '../../components/Radio';
 import Switch from '../../components/Switch';
 import MainLayout from '../../layouts/MainLayout';
 import { useFormik } from 'formik';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { getSchedules } from '../../shared/api/schedules';
 import { getTypeEmployments } from '../../shared/api/type_employments';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getMyProfile } from '../../shared/api/user';
-import { EXPERIENCE } from '../../shared/consts/profile';
+import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
+import { EXPERIENCE, TO_EXPERIENCE } from '../../shared/consts/profile';
 import SkillsSelectPage from './_skills_select';
 import ModalLayout from '../../layouts/ModalLayout';
 import ProfileSelectJobModal from '../../modals/ProfileSelectJobModal';
+import { getJobCategories } from '../../shared/api/job_categories';
 
 import CloseIcon from '../../assets/general/close.svg';
-import { getJobCategories } from '../../shared/api/job_categories';
+import LoaderIcon from '../../assets/loader.svg';
 
 const ResumePage = (): JSX.Element => {
 	const router = useRouter();
 
-	const [skills, setSkills] = useState([]);
+	const [skills, setSkills] = useState(null);
 	const [showSkillsSelect, setShowSkillsSelect] = useState(false);
 
 	const [jobCategory, setJobCategory] = useState(null);
 	const [showJobSelect, setShowJobSelect] = useState(false);
 
-	const profileQuery = useQuery('my_profile', getMyProfile, {
+	useQuery('my_profile', getMyProfileUser, {
 		onSuccess: (value) => {
 			formik.setValues({
-				vacancyName: value.previous_job,
-				minPrice: value.min_salary,
-				experience: EXPERIENCE[value.experience],
-				employement_type: [],
-				schedule: [],
-				ready_move: value.ready_move ? ['on'] : [],
-				ready_mission: value.ready_mission ? ['on'] : [],
+				vacancyName: value.payload.previous_job,
+				minPrice: value.payload.min_salary,
+				experience: EXPERIENCE[value.payload.experience],
+				employement_type: value.payload.type_employments.map((i) => i.id.toString()),
+				schedule: value.payload.schedules.map((i) => i.id.toString()),
+				ready_move: value.payload.ready_move ? ['on'] : [],
+				ready_mission: value.payload.ready_mission ? ['on'] : [],
 			});
 
-			if(profileQuery.isIdle)
-				setSkills(value.skills.split(' ').filter((i) => i !== ''));
+			if(value.payload.job_category)
+				setJobCategory(value.payload.job_category.id);
+
+			if(!skills)
+				setSkills(value.payload.skills.split(' ').filter((i) => i !== ''));
 		},
 	});
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const schedulesQuery = useQuery('schedules', getSchedules, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const typeEmploymentsQuery = useQuery('type_employments', getTypeEmployments, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
+	});
+
+	const updateProfileMutation = useMutation(putProfileUser, {
+		onSuccess: () => router.push('/profile'),
 	});
 
 	const formik = useFormik({
@@ -70,7 +99,19 @@ const ResumePage = (): JSX.Element => {
 			ready_move: [],
 			ready_mission: [],
 		},
-		onSubmit: null,
+		onSubmit: (values) => {
+			updateProfileMutation.mutate({
+				user: {
+					job_category_id: jobCategory,
+					previous_job: values.vacancyName,
+					min_salary: values.minPrice,
+					experience: TO_EXPERIENCE[values.experience],
+					ready_mission: !!values.ready_mission.length,
+					ready_move: !!values.ready_move.length,
+					skills: skills.join(' '),
+				},
+			});
+		},
 	});
 
 	useEffect(() => {
@@ -96,7 +137,8 @@ const ResumePage = (): JSX.Element => {
 				modals={{
 					'job_category': <ProfileSelectJobModal
 						selected={jobCategoriesQuery.isSuccess
-							? jobCategoriesQuery.data.find((i) => i.id === jobCategory).name
+							&& jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory)
+							? jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory).name
 							: null}
 						onCloseModal={() => setShowJobSelect(false)}
 						onContinue={(id) => {
@@ -126,9 +168,10 @@ const ResumePage = (): JSX.Element => {
 							{(jobCategory || jobCategory === 0) && jobCategoriesQuery.isSuccess ? (
 								<div className='grid gap-2 grid-flow-col'>
 									<div className='bg-gray-40 py-3 px-4 rounded-lg'>
-										{jobCategoriesQuery.data.find((i) => i.id === jobCategory).name}
+										{jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory).name}
 									</div>
 									<Button
+										type='button'
 										variant='outline_secondary'
 										className='font-normal'
 										onClick={() => setShowJobSelect(true)}
@@ -138,6 +181,7 @@ const ResumePage = (): JSX.Element => {
 								</div>
 							) : (
 								<Button
+									type='button'
 									variant='secondary'
 									className='h-8 w-[88px] font-normal'
 									onClick={() => setShowJobSelect(true)}
@@ -169,10 +213,12 @@ const ResumePage = (): JSX.Element => {
 								Тип занятости	
 							</Paragraph>
 							<div className='grid gap-3'>
-								{typeEmploymentsQuery.data.map((i) => (
+								{typeEmploymentsQuery.data.payload.map((i) => (
 									<Checkbox
 										key={i.id}
 										value={i.id}
+										checked={formik.values.employement_type.includes(i.id.toString())}
+										onChange={formik.handleChange}
 										name='employement_type'
 										label={i.name} />
 								))}
@@ -181,10 +227,12 @@ const ResumePage = (): JSX.Element => {
 								График работы	
 							</Paragraph>
 							<div className='grid gap-3'>
-								{schedulesQuery.data.map((i) => (
+								{schedulesQuery.data.payload.map((i) => (
 									<Checkbox
 										key={i.id}
 										value={i.id}
+										checked={formik.values.schedule.includes(i.id.toString())}
+										onChange={formik.handleChange}
 										name='schedule'
 										label={i.name} />
 								))}
@@ -215,7 +263,7 @@ const ResumePage = (): JSX.Element => {
 							</Paragraph>
 							<div>
 								<div className='flex flex-wrap gap-2 mb-4'>
-									{skills.map((i, num) => (
+									{skills && skills.map((i, num) => (
 										<span key={num} className='bg-softGold py-1 px-2 grid grid-cols-[1fr_auto] gap-3 rounded'>
 											{i}
 											<button onClick={() => setSkills((prev) => prev.filter((j) => j !== i))}>
@@ -230,9 +278,13 @@ const ResumePage = (): JSX.Element => {
 							</div>
 						</div>
 						<div className='grid grid-flow-col w-fit gap-2 mt-8'>
-							<Button className='h-12 w-[209px]'>
-								Сохранить изменения
-							</Button>
+							{updateProfileMutation.isLoading ? (
+								<LoaderIcon className='h-12 w-[209px]' />
+							) : (
+								<Button className='h-12 w-[209px]'>
+									Сохранить изменения
+								</Button>
+							)}
 							<Button
 								type='button'
 								variant='secondary'

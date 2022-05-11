@@ -1,8 +1,17 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ICheckAuthConfig } from './CheckAuthLayout.props';
 
-function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig = {}): JSX.Element {
+const defaultConfig: ICheckAuthConfig = {
+	checkLoggined: false,
+	onAccessDenited: null,
+	returnRendered: true,
+};
+
+function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig = defaultConfig): JSX.Element | React.FC {
 	function CheckAuthLayout(props): JSX.Element {
+		const router = useRouter();
+
 		const [isAuthed, setIsAuthed] = useState(null);
 
 		useEffect(() => {
@@ -21,11 +30,16 @@ function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig
 		else {
 			if(config.onAccessDenited)
 				config.onAccessDenited();
+			else
+				router.push('/');
 			return <></>;
 		}
 	};
 
-	return <CheckAuthLayout />;
+	if(config.returnRendered)
+		return <CheckAuthLayout />;
+	else
+		return CheckAuthLayout;
 };
 
 export default withCheckAuthLayout;

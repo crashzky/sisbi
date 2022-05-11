@@ -31,7 +31,7 @@ interface IUser {
     job_category: {
         id: number;
         name: string;
-    }
+    };
 }
 
 interface IUserResponse {
@@ -52,8 +52,12 @@ interface IEmployerResponse {
 	payload: IEmployer;
 }
 
+interface IUserRequestFields {
+	job_category_id?: number;
+}
+
 interface IPutUserRequest {
-	user: Partial<Omit<IUser, 'id'>>;
+	user: Partial<Omit<IUser, 'id'>> & IUserRequestFields;
 }
 
 interface IPutEmployerRequest {

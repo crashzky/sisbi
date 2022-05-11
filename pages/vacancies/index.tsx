@@ -35,29 +35,31 @@ const VacanciesPage = (): JSX.Element => {
 
 	const checkAuthConfig: ICheckAuthConfig = {
 		checkLoggined: false,
+		returnRendered: true,
 		onAccessDenited: () => router.push(router.pathname),
 	};
 
 	const checkAuthConfig2: ICheckAuthConfig = {
 		checkLoggined: true,
+		returnRendered: true,
 		onAccessDenited: () => router.push(router.pathname),
 	};
 	
 	return (
 		<ModalLayout modals={{
-			'login': withCheckAuthLayout(LoginModal, checkAuthConfig),
-			'code': withCheckAuthLayout(SmsCodeModal, checkAuthConfig),
-			'signup': withCheckAuthLayout(SignupModal, checkAuthConfig),
-			'signup1': withCheckAuthLayout(SingupStep1Modal, checkAuthConfig2),
-			'signup2': withCheckAuthLayout(SingupStep2Modal, checkAuthConfig2),
-			'signup3': withCheckAuthLayout(SingupStep3Modal, checkAuthConfig2),
-			'signup4': withCheckAuthLayout(SingupStep4Modal, checkAuthConfig2),
-			'signup5': withCheckAuthLayout(SingupStep5Modal, checkAuthConfig2),
-			'signup6': withCheckAuthLayout(SingupStep6Modal, checkAuthConfig2),
-			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2),
+			'login': withCheckAuthLayout(LoginModal, checkAuthConfig) as JSX.Element,
+			'code': withCheckAuthLayout(SmsCodeModal, checkAuthConfig) as JSX.Element,
+			'signup': withCheckAuthLayout(SignupModal, checkAuthConfig) as JSX.Element,
+			'signup1': withCheckAuthLayout(SingupStep1Modal, checkAuthConfig2) as JSX.Element,
+			'signup2': withCheckAuthLayout(SingupStep2Modal, checkAuthConfig2) as JSX.Element,
+			'signup3': withCheckAuthLayout(SingupStep3Modal, checkAuthConfig2) as JSX.Element,
+			'signup4': withCheckAuthLayout(SingupStep4Modal, checkAuthConfig2) as JSX.Element,
+			'signup5': withCheckAuthLayout(SingupStep5Modal, checkAuthConfig2) as JSX.Element,
+			'signup6': withCheckAuthLayout(SingupStep6Modal, checkAuthConfig2) as JSX.Element,
+			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2) as JSX.Element,
 			'job_categories': <SelectJobModal />,
-			'signup1employer': withCheckAuthLayout(SignupStep1EmployerModal, checkAuthConfig2),
-			'signup2employer': withCheckAuthLayout(SignupStep2EmployerModal, checkAuthConfig2),
+			'signup1employer': withCheckAuthLayout(SignupStep1EmployerModal, checkAuthConfig2) as JSX.Element,
+			'signup2employer': withCheckAuthLayout(SignupStep2EmployerModal, checkAuthConfig2) as JSX.Element,
 		}}
 		>
 			<Menu

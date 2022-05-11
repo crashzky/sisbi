@@ -1,7 +1,7 @@
-import { IJobCategory, IJobCategoryByIdRequest } from '../types/api/job_categories';
+import { IJobCategoriesResult, IJobCategory, IJobCategoryByIdRequest } from '../types/api/job_categories';
 import instance from './axios';
 
-const getJobCategories = (): Promise<IJobCategory[]> => {
+const getJobCategories = (): Promise<IJobCategoriesResult> => {
 	return instance.get('/v1/job_categories')
 		.then((res) => res.data);
 };

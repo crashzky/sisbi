@@ -10,7 +10,14 @@ import Radio from '../../components/Radio';
 
 const ProfileSelectJobModal: React.FC<Props> = ({ className = '', onCloseModal, onContinue, selected, ...props }) => {
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const formik = useFormik({
@@ -18,7 +25,7 @@ const ProfileSelectJobModal: React.FC<Props> = ({ className = '', onCloseModal, 
 			job_category: selected,
 		},
 		onSubmit: (values) => {
-			onContinue(jobCategoriesQuery.data.find((i) => i.name === values.job_category).id);
+			onContinue(jobCategoriesQuery.data.payload.find((i) => i.name === values.job_category).id);
 		},
 	});
 
@@ -43,7 +50,7 @@ const ProfileSelectJobModal: React.FC<Props> = ({ className = '', onCloseModal, 
 						className='grid gap-2'
 						value={formik.values.job_category}
 						onChange={formik.handleChange}
-						items={jobCategoriesQuery.data.map((i) => i.name)} />
+						items={jobCategoriesQuery.data.payload.map((i) => i.name)} />
 				</div>
 			</div>
 			<div className='px-6 py-4 grid grid-cols-[auto_auto_1fr_auto] gap-2 border-t-[1px] border-button-secondary'>

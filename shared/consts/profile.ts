@@ -10,6 +10,13 @@ const EXPERIENCE = {
 	'more_6': 'более 6 лет',
 };
 
+const TO_EXPERIENCE = {
+	'Нет опыта': 'no',
+	'1 - 3 года': 'y_1_3',
+	'2 - 6 лет': 'y_2_6',
+	'более 6 лет': 'more_6',
+};
+
 const EDUCATION = {
 	'secondary': 'Среднее',
 	'secondary_special': 'Среднее профессиональное',
@@ -25,4 +32,5 @@ export {
 	GENDERS,
 	EXPERIENCE,
 	EDUCATION,
+	TO_EXPERIENCE,
 };
