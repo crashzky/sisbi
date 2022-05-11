@@ -6,10 +6,11 @@ import Checkbox from '../../components/Checkbox';
 import Headline from '../../components/Headline';
 import MainLayout from '../../layouts/MainLayout';
 import { DRIVING_LICENSES } from '../../shared/consts/profile';
-
-import LoaderIcon from '../../assets/loader.svg';
 import { useMutation, useQuery } from 'react-query';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
+import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+
+import LoaderIcon from '../../assets/loader.svg';
 
 const DrivingLicensesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -77,4 +78,7 @@ const DrivingLicensesPage = (): JSX.Element => {
 	);
 };
 
-export default DrivingLicensesPage;
+export default withCheckAuthLayout(DrivingLicensesPage, {
+	checkLoggined: true,
+	checkUserType: 'user',
+});

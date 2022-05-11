@@ -4,16 +4,17 @@ import Headline from '../../components/Headline';
 import Radio from '../../components/Radio';
 import MainLayout from '../../layouts/MainLayout';
 import { EDUCATION, TO_EDUCATION } from '../../shared/consts/profile';
-
-import LoaderIcon from '../../assets/loader.svg';
 import Button from '../../components/Button';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 
+import LoaderIcon from '../../assets/loader.svg';
+import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+
 const EductionPage = (): JSX.Element => {
 	const router = useRouter();
-
+	
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (values) => {
 			formik.setValues({
@@ -74,4 +75,7 @@ const EductionPage = (): JSX.Element => {
 	);
 };
 
-export default EductionPage;
+export default withCheckAuthLayout(EductionPage, {
+	checkLoggined: true,
+	checkUserType: 'user',
+});

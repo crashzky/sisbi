@@ -11,7 +11,7 @@ import { useFormik } from 'formik';
 import { useMutation, useQuery } from 'react-query';
 import { addSchedulesUser, getSchedules, removeSchedulesUser } from '../../shared/api/schedules';
 import { addTypeEmployementUser, getTypeEmployments, removeTypeEmployementUser } from '../../shared/api/type_employments';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 import { EXPERIENCE, TO_EXPERIENCE } from '../../shared/consts/profile';
@@ -19,6 +19,7 @@ import SkillsSelectPage from './_skills_select';
 import ModalLayout from '../../layouts/ModalLayout';
 import ProfileSelectJobModal from '../../modals/ProfileSelectJobModal';
 import { getJobCategories } from '../../shared/api/job_categories';
+import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 
 import CloseIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
@@ -142,11 +143,6 @@ const ResumePage = (): JSX.Element => {
 			});
 		},
 	});
-
-	useEffect(() => {
-		if(!localStorage.getItem('access_token'))
-			router.push('/?modal=login');
-	}, [router]);
 
 	if(showSkillsSelect) {
 		return (
@@ -334,4 +330,7 @@ const ResumePage = (): JSX.Element => {
 	}
 };
 
-export default ResumePage;
+export default withCheckAuthLayout(ResumePage, {
+	checkLoggined: true,
+	checkUserType: 'user',
+});

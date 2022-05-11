@@ -6,6 +6,7 @@ const defaultConfig: ICheckAuthConfig = {
 	checkLoggined: false,
 	onAccessDenited: null,
 	returnRendered: true,
+	checkUserType: null,
 };
 
 function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig = defaultConfig): JSX.Element | React.FC {
@@ -19,6 +20,13 @@ function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig
 				setIsAuthed(true);
 			else
 				setIsAuthed(false);
+
+			if(config.checkUserType && localStorage.getItem('user_type') !== config.checkUserType) {
+				if(config.onAccessDenited)
+					config.onAccessDenited();
+				else
+					router.push('/');
+			}
 		}, []);
 
 		if(isAuthed && config.checkLoggined)
