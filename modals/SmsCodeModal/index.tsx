@@ -5,12 +5,12 @@ import Button from '../../components/Button';
 import SmsCode from '../../components/SmsCode';
 import { useTimer } from 'react-timer-hook';
 import { useMutation } from 'react-query';
-import { getSmsCode, login } from '../../shared/api/auth';
+import { getSmsCodeEmployer, getSmsCodeUser, loginEmployer, loginUser } from '../../shared/api/auth';
 import { useState } from 'react';
+import { getMyProfileEmployer, getMyProfileUser } from '../../shared/api/user';
 
 import CrossIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
-import { getMyProfile } from '../../shared/api/user';
 
 const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 	const router = useRouter();
@@ -23,25 +23,49 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 		return input.length === 2 ? input : '0' + input;
 	}
 
-	const getProfileMutattion = useMutation(getMyProfile, {
+	const getProfileMutattionUser = useMutation(getMyProfileUser, {
 		onSuccess: (data) => {
-			if(!!data.first_name)
+			if(!!data.payload.first_name)
 				router.push(router.pathname);
 			else
 				router.push(router.pathname + '/?modal=signup1');
 		},
 	});
 
-	const getNewCodeMutattion = useMutation(getSmsCode, {
+	const getProfileMutattionEmployer = useMutation(getMyProfileEmployer, {
+		onSuccess: (data) => {
+			if(!!data.payload.name)
+				router.push(router.pathname);
+			else
+				router.push(router.pathname + '/?modal=signup1employer');
+		},
+	});
+
+	const getNewCodeMutattionUser = useMutation(getSmsCodeUser, {
 		onSuccess: () => {
 			restart(new Date(Date.now() + 120000));
 		},
 	});
 
-	const loginMutattion = useMutation(login, {
+	const getNewCodeMutattionEmployer = useMutation(getSmsCodeEmployer, {
+		onSuccess: () => {
+			restart(new Date(Date.now() + 120000));
+		},
+	});
+
+	const loginMutattionUser = useMutation(loginUser, {
 		onSuccess: (data) => {
 			localStorage.setItem('access_token', data.access_token);
-			getProfileMutattion.mutate();
+			sessionStorage.removeItem('signup_phone');
+			getProfileMutattionUser.mutate();
+		},
+	});
+
+	const loginMutattionEmployer = useMutation(loginEmployer, {
+		onSuccess: (data) => {
+			localStorage.setItem('access_token', data.access_token);
+			sessionStorage.removeItem('signup_phone');
+			getProfileMutattionEmployer.mutate();
 		},
 	});
 
@@ -59,21 +83,31 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 				</button>
 			</div>
 			<SmsCode
-				isDanger={loginMutattion.isError}
+				isDanger={loginMutattionUser.isError || loginMutattionEmployer.isError}
 				className='mb-3 justify-center'
 				onCodeChanged={(code) => setSmsCode(code)} />
-			{loginMutattion.isError && (
+			{(loginMutattionUser.isError || loginMutattionEmployer.isError) && (
 				<Paragraph variant='5' tag='p' className='text-center text-red'>
 					Код не подходит
 				</Paragraph>
 			)}
 			<button
+				type='button'
 				className='mt-3 mb-6 mx-auto block font-semibold text-xs text-darkBlue'
 				onClick={() => {
 					if(minutes === 0 && seconds === 0) {
-						getNewCodeMutattion.mutate({
-							phone: sessionStorage.getItem('signup_phone'),
-						});
+						switch(localStorage.getItem('user_type')) {
+							case 'user':
+								getNewCodeMutattionUser.mutate({
+									phone: sessionStorage.getItem('signup_phone'),
+								});
+								break;
+							case 'employer':
+								getNewCodeMutattionEmployer.mutate({
+									phone: sessionStorage.getItem('signup_phone'),
+								});
+								break;
+						}
 					}
 				}}
 			>
@@ -82,23 +116,37 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 					` через ${addZero(minutes.toString())}:${addZero(seconds.toString())}`
 				)}
 			</button>
-			{(loginMutattion.isLoading || getProfileMutattion.isLoading) ? (
-				<LoaderIcon className='h-14 w-14 mx-auto' />
-			) : (
-				<Button
-					className='w-full h-14'
-					onClick={() => {
-						loginMutattion.mutate({
-							auth: {
-								phone: sessionStorage.getItem('signup_phone'),
-								sms_pin: smsCode,
-							},
-						});
-					}}
-				>
-					Подтвердить
-				</Button>
-			)}
+			{(loginMutattionUser.isLoading || loginMutattionEmployer.isLoading
+			|| getProfileMutattionUser.isLoading || getProfileMutattionEmployer.isLoading)
+				? (
+					<LoaderIcon className='h-14 w-14 mx-auto' />
+				) : (
+					<Button
+						className='w-full h-14'
+						onClick={() => {
+							switch(localStorage.getItem('user_type')) {
+								case 'user':
+									loginMutattionUser.mutate({
+										auth: {
+											phone: sessionStorage.getItem('signup_phone'),
+											sms_pin: smsCode,
+										},
+									});
+									break;
+								case 'employer':
+									loginMutattionEmployer.mutate({
+										auth: {
+											phone: sessionStorage.getItem('signup_phone'),
+											sms_pin: smsCode,
+										},
+									});
+									break;
+							}
+						}}
+					>
+						Подтвердить
+					</Button>
+				)}
 		</aside>
 	);
 };

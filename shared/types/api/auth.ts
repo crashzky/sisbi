@@ -4,6 +4,18 @@ interface IGetSmsRequest {
 	phone: string;
 }
 
+interface ISignupUserRequest {
+	user: {
+		phone: string;
+	}
+}
+
+interface ISignupEmployerRequest {
+	employer: {
+		phone: string;
+	}
+}
+
 interface ISignupResponse {
 	result_code: 'ok';
 	payload: IUserResponse;
@@ -35,4 +47,6 @@ export type {
 	ISignupResponseError,
 	ILoginRequest,
 	ILoginResponse,
+	ISignupUserRequest,
+	ISignupEmployerRequest,
 };

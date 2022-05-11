@@ -1,15 +1,15 @@
 import SignupStepLayout from '../../layouts/SignupStepLayout';
-import Props from './SignupStep3Modal.props';
+import Props from './SignupStep2EmployerModal.props';
 import Input from '../../components/Input';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
-import { putProfileUser } from '../../shared/api/user';
+import { putProfileEmployer } from '../../shared/api/user';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import Step3Image from '../../assets/signup_steps/3.svg';
+import Step2Image from '../../assets/signup_steps/2.svg';
 
-const SingupStep3Modal: React.FC<Props> = () => {
+const SingupStep2EmployerModal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
@@ -18,31 +18,31 @@ const SingupStep3Modal: React.FC<Props> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			email: '',
+			name: '',
 		},
 		validationSchema: validatiionSchema,
 		onSubmit: null,
 	});
 
-	const { mutate, isLoading } = useMutation(putProfileUser, {
+	const { mutate, isLoading } = useMutation(putProfileEmployer, {
 		onSuccess: () => {
-			router.push(router.pathname + '/?modal=signup4');
+			router.push(router.pathname + '/?modal=signupFinal');
 		},
 	});
 
 	return (
 		<SignupStepLayout
-			label='Ваш email-адрес'
-			currentStep={3}
-			maxSteps={7}
-			HeaderImage={Step3Image}
+			label='Название организации'
+			currentStep={2}
+			maxSteps={2}
+			HeaderImage={Step2Image}
 			isLoading={isLoading}
-			onClickBack={() => router.push(router.pathname + '/?modal=signup2')}
+			onClickBack={() => router.push(router.pathname + '/?modal=signup1employer')}
 			onClickContinue={() => {
 				if(formik.isValid) {
 					mutate({
-						user: {
-							email: formik.values.email,
+						employer: {
+							name: formik.values.name,
 						},
 					});
 				}
@@ -50,14 +50,14 @@ const SingupStep3Modal: React.FC<Props> = () => {
 		>
 			<form onSubmit={formik.handleSubmit}>
 				<Input
-					name='email'
-					value={formik.values.email}
+					name='name'
+					value={formik.values.name}
 					onChange={formik.handleChange}
-					type='email'
-					placeholder='Email-адрес' />
+					type='text'
+					placeholder='Название организации' />
 			</form>
 		</SignupStepLayout>
 	);
 };
 
-export default SingupStep3Modal;
+export default SingupStep2EmployerModal;

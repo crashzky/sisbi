@@ -22,6 +22,8 @@ import SingupStep6Modal from '../../modals/SignupStep6Modal';
 import SingupStepFinalModal from '../../modals/SignupStepFinalModal';
 import SelectJobModal from '../../modals/SelectJobModal';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
+import SignupStep1EmployerModal from '../../modals/SignupStep1EmployerModal';
+import SignupStep2EmployerModal from '../../modals/SignupStep2EmployerModal';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -54,6 +56,8 @@ const VacanciesPage = (): JSX.Element => {
 			'signup6': withCheckAuthLayout(SingupStep6Modal, checkAuthConfig2),
 			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2),
 			'job_categories': <SelectJobModal />,
+			'signup1employer': withCheckAuthLayout(SignupStep1EmployerModal, checkAuthConfig2),
+			'signup2employer': withCheckAuthLayout(SignupStep2EmployerModal, checkAuthConfig2),
 		}}
 		>
 			<Menu

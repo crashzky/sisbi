@@ -6,7 +6,7 @@ import Paragraph from '../../components/Paragraph';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
-import { putProfile } from '../../shared/api/user';
+import { putProfileUser } from '../../shared/api/user';
 import { useFormik } from 'formik';
 
 import Step5Image from '../../assets/signup_steps/5.svg';
@@ -23,7 +23,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 		onSubmit: null,
 	});
 
-	const { mutate, isLoading } = useMutation(putProfile, {
+	const { mutate, isLoading } = useMutation(putProfileUser, {
 		onSuccess: () => {
 			router.push(router.pathname + '/?modal=signup6');
 		},

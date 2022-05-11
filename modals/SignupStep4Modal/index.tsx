@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { ISelectOption } from '../../components/Select/Select.props';
 import Paragraph from '../../components/Paragraph';
 import { useMutation } from 'react-query';
-import { putProfile } from '../../shared/api/user';
+import { putProfileUser } from '../../shared/api/user';
 
 import Step4Image from '../../assets/signup_steps/4.svg';
 
@@ -20,7 +20,7 @@ const SingupStep4Modal: React.FC<Props> = () => {
 
 	const [isError, setIsError] = useState(false);
 
-	const { mutate, isLoading } = useMutation(putProfile, {
+	const { mutate, isLoading } = useMutation(putProfileUser, {
 		onSuccess: () => {
 			router.push(router.pathname + '/?modal=signup5');
 		},

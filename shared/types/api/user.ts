@@ -1,6 +1,8 @@
-import { EducationType, EmploymentTypes, ExperienceType, GendersType, UserStatesType } from './common';
+import { EducationType, ExperienceType, GendersType, UserStatesType } from './common';
+import { ISchedule } from './schedules';
+import { ITypeEmployment } from './type_employments';
 
-interface IUserResponse {
+interface IUser {
 	id: number;
     first_name: string;
     last_name: string;
@@ -9,7 +11,7 @@ interface IUserResponse {
     birthday: string;
     gender: GendersType;
     experience: ExperienceType;
-    type_employment: EmploymentTypes;
+    type_employments: ITypeEmployment[];
     city: string;
     state: UserStatesType;
     skills: string;
@@ -23,7 +25,7 @@ interface IUserResponse {
     education: EducationType;
     previous_job: string;
     views: number;
-    schedule: string; //WILL CHANGER
+    schedules: ISchedule[];
     created_at: string;
     updated_at: string;
     job_category: {
@@ -32,17 +34,36 @@ interface IUserResponse {
     }
 }
 
-interface IPutUserRequest {
-	user: Partial<Omit<IUserResponse, 'id'>>;
+interface IUserResponse {
+	result_code: 'ok';
+	payload: IUser;
 }
 
-interface IPutUserResponse {
+interface IEmployer {
+	id: number;
+	name: string;
+	about: string;
+	email: string;
+	avatar: string;
+}
+
+interface IEmployerResponse {
 	result_code: 'ok';
-	payload: IUserResponse;
+	payload: IEmployer;
+}
+
+interface IPutUserRequest {
+	user: Partial<Omit<IUser, 'id'>>;
+}
+
+interface IPutEmployerRequest {
+	employer: Partial<Omit<IEmployerResponse, 'id'>>;
 }
 
 export type {
 	IUserResponse,
 	IPutUserRequest,
-	IPutUserResponse,
+
+	IPutEmployerRequest,
+	IEmployerResponse,
 };

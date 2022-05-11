@@ -7,11 +7,12 @@ import { useRouter } from 'next/router';
 import Radio from '../../components/Radio';
 import Link from 'next/link';
 import { useMutation } from 'react-query';
-import { getSmsCode, signup } from '../../shared/api/auth';
+import { getSmsCodeEmployer, getSmsCodeUser, signupEmployer, signupUser } from '../../shared/api/auth';
+import { isValidPhoneNumber } from 'react-phone-number-input';
+import USER_TYPES from '../../shared/consts/userTypes';
 
 import CrossIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
-import { isValidPhoneNumber } from 'react-phone-number-input';
 
 const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => {
 	const router = useRouter();
@@ -19,6 +20,7 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 	const formik = useFormik({
 		initialValues: {
 			phone: '',
+			radio: 'Ищу работу',
 		},
 		validate: (values) => {
 			let errors: any = {};
@@ -29,24 +31,56 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 			return errors;
 		},
 		onSubmit: (values) => {
-			signupMutation.mutate({
-				phone: '+7' + values.phone,
+			switch(values.radio) {
+				case 'Ищу работу':
+					signupMutationUser.mutate({
+						user: {
+							phone: '+7' + values.phone,
+						},
+					});
+					break;
+				case 'Ищу сотрудников':
+					signupMutationEmployer.mutate({
+						employer: {
+							phone: '+7' + values.phone,
+						},
+					});
+					break;
+			}
+		},
+	});
+
+	const signupMutationUser = useMutation(signupUser, {
+		onSuccess: () => {
+			smsCodeMutationUser.mutate({
+				phone: '+7' + formik.values.phone,
 			});
 		},
 	});
 
-	const smsCodeMutation = useMutation(getSmsCode, {
+	const smsCodeMutationUser = useMutation(getSmsCodeUser, {
 		onSuccess: () => {
 			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone);
+			localStorage.setItem('user_type', USER_TYPES[formik.values.radio]);
+
 			router.push(router.pathname + '/?modal=code');
 		},
 	});
 
-	const signupMutation = useMutation(signup, {
+	const signupMutationEmployer = useMutation(signupEmployer, {
 		onSuccess: () => {
-			smsCodeMutation.mutate({
+			smsCodeMutationEmployer.mutate({
 				phone: '+7' + formik.values.phone,
 			});
+		},
+	});
+
+	const smsCodeMutationEmployer = useMutation(getSmsCodeEmployer, {
+		onSuccess: () => {
+			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone);
+			localStorage.setItem('user_type', USER_TYPES[formik.values.radio]);
+
+			router.push(router.pathname + '/?modal=code');
 		},
 	});
 
@@ -77,18 +111,22 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 			<Radio
 				className='mb-6 flex gap-4'
 				name='radio'
+				onChange={formik.handleChange}
+				value={formik.values.radio}
 				items={[
 					'Ищу работу',
 					'Ищу сотрудников',
 				]} />
-			{signupMutation.isLoading || smsCodeMutation.isLoading ? (
-				<LoaderIcon className='h-14 w-14 mx-auto mb-3' />
-			) : (
-				<Button className='w-full h-14 mb-3'>
-					Зарегистрироваться
-				</Button>
-			)}
-			{signupMutation.isError && (
+			{signupMutationUser.isLoading || signupMutationEmployer.isLoading
+			|| smsCodeMutationUser.isLoading || smsCodeMutationEmployer.isLoading
+				? (
+					<LoaderIcon className='h-14 w-14 mx-auto mb-3' />
+				) : (
+					<Button className='w-full h-14 mb-3'>
+						Зарегистрироваться
+					</Button>
+				)}
+			{(signupMutationUser.isError || signupMutationEmployer.isError) && (
 				<Paragraph variant='5' tag='p' className='text-center text-red'>
 					Аккаунт с таким телефоном уже зарегистрирован
 				</Paragraph>

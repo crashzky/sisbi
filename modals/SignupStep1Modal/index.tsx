@@ -3,7 +3,7 @@ import Props from './SignupStep1Modal.props';
 import Radio from '../../components/Radio';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
-import { putProfile } from '../../shared/api/user';
+import { putProfileUser } from '../../shared/api/user';
 import { useState } from 'react';
 
 import Step1Image from '../../assets/signup_steps/1.svg';
@@ -14,7 +14,7 @@ const SingupStep1Modal: React.FC<Props> = () => {
 
 	const [selectedValue, setSelectedValue] = useState();
 
-	const { mutate, isLoading } = useMutation(putProfile, {
+	const { mutate, isLoading } = useMutation(putProfileUser, {
 		onSuccess: () => {
 			router.push(router.pathname + '/?modal=signup2');
 		},

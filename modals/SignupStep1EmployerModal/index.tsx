@@ -1,15 +1,15 @@
 import SignupStepLayout from '../../layouts/SignupStepLayout';
-import Props from './SignupStep3Modal.props';
+import Props from './SignupStep1EmployerModal.props';
 import Input from '../../components/Input';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
-import { putProfileUser } from '../../shared/api/user';
+import { putProfileEmployer } from '../../shared/api/user';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import Step3Image from '../../assets/signup_steps/3.svg';
 
-const SingupStep3Modal: React.FC<Props> = () => {
+const SingupStep1EmployerModal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
@@ -24,24 +24,23 @@ const SingupStep3Modal: React.FC<Props> = () => {
 		onSubmit: null,
 	});
 
-	const { mutate, isLoading } = useMutation(putProfileUser, {
+	const { mutate, isLoading } = useMutation(putProfileEmployer, {
 		onSuccess: () => {
-			router.push(router.pathname + '/?modal=signup4');
+			router.push(router.pathname + '/?modal=signup2employer');
 		},
 	});
 
 	return (
 		<SignupStepLayout
 			label='Ваш email-адрес'
-			currentStep={3}
-			maxSteps={7}
+			currentStep={1}
+			maxSteps={2}
 			HeaderImage={Step3Image}
 			isLoading={isLoading}
-			onClickBack={() => router.push(router.pathname + '/?modal=signup2')}
 			onClickContinue={() => {
 				if(formik.isValid) {
 					mutate({
-						user: {
+						employer: {
 							email: formik.values.email,
 						},
 					});
@@ -60,4 +59,4 @@ const SingupStep3Modal: React.FC<Props> = () => {
 	);
 };
 
-export default SingupStep3Modal;
+export default SingupStep1EmployerModal;

@@ -3,7 +3,7 @@ import Props from './SignupStep2Modal.props';
 import Input from '../../components/Input';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
-import { putProfile } from '../../shared/api/user';
+import { putProfileUser } from '../../shared/api/user';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -26,7 +26,7 @@ const SingupStep2Modal: React.FC<Props> = () => {
 		onSubmit: null,
 	});
 
-	const { mutate, isLoading } = useMutation(putProfile, {
+	const { mutate, isLoading } = useMutation(putProfileUser, {
 		onSuccess: () => {
 			router.push(router.pathname + '/?modal=signup3');
 		},
