@@ -246,7 +246,7 @@ const ProfilePageUser = (): JSX.Element => {
 						{' '}
 						{data && data.driving_license}
 					</Paragraph>
-					<Link href='/profile/about'>
+					<Link href='/profile/driving_licenses'>
 						<a className='text-xs text-text font-semibold'>
 							Редактировать
 						</a>

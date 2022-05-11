@@ -1,22 +1,23 @@
-import { useRouter } from 'next/router';
-import { useMutation, useQuery } from 'react-query';
-import BackButton from '../../components/BackButton';
-import Headline from '../../components/Headline';
-import Textarea from '../../components/Textarea';
-import MainLayout from '../../layouts/MainLayout';
-import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
-import Button from '../../components/Button';
 import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
+import BackButton from '../../components/BackButton';
+import Button from '../../components/Button';
+import Checkbox from '../../components/Checkbox';
+import Headline from '../../components/Headline';
+import MainLayout from '../../layouts/MainLayout';
+import { DRIVING_LICENSES } from '../../shared/consts/profile';
 
 import LoaderIcon from '../../assets/loader.svg';
+import { useMutation, useQuery } from 'react-query';
+import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 
-const UserAboutPage = (): JSX.Element => {
+const DrivingLicensesPage = (): JSX.Element => {
 	const router = useRouter();
 
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (data) => {
 			formik.setValues({
-				about: data.payload.about,
+				licenses: data.payload.driving_license.split(' ').filter((i) => i !== ''),
 			});
 		},
 	});
@@ -24,15 +25,15 @@ const UserAboutPage = (): JSX.Element => {
 	const { mutate, isLoading } = useMutation(putProfileUser, {
 		onSuccess: () => router.push('/profile'),
 	});
-
+	
 	const formik = useFormik({
 		initialValues: {
-			about: '',
+			licenses: [],
 		},
 		onSubmit: (values) => {
 			mutate({
 				user: {
-					about: values.about,
+					driving_license: values.licenses.sort().join(' '),
 				},
 			});
 		},
@@ -42,15 +43,18 @@ const UserAboutPage = (): JSX.Element => {
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
 			<BackButton href='/profile' className='mb-10' />
 			<Headline variant='5' tag='h1' className='font-bold mb-10'>
-				О себе
+				Категория водительских прав
 			</Headline>
-			<form onSubmit={formik.handleSubmit}>
-				<Textarea
-					name='about'
-					value={formik.values.about}
-					onChange={formik.handleChange}
-					className='w-full max-w-[647px] h-[320px]'
-					placeholder='Расскажите немного о себе' />
+			<form className='grid gap-3' onSubmit={formik.handleSubmit}>
+				{DRIVING_LICENSES.map((i, num) => (
+					<Checkbox
+						name='licenses'
+						onChange={formik.handleChange}
+						key={num}
+						checked={formik.values.licenses.includes(i)}
+						label={i}
+						value={i} />
+				))}
 				<div className='grid grid-flow-col w-fit gap-2 mt-8'>
 					{isLoading ? (
 						<LoaderIcon className='h-12 w-[209px]' />
@@ -73,4 +77,4 @@ const UserAboutPage = (): JSX.Element => {
 	);
 };
 
-export default UserAboutPage;
+export default DrivingLicensesPage;

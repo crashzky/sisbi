@@ -39,10 +39,13 @@ const TO_EDUCATION = {
 	'Доктор наук': 'doctor',
 };
 
+const DRIVING_LICENSES = ['A', 'B', 'C', 'D', 'E', 'BE', 'CE', 'DE', 'TM', 'TB'];
+
 export {
 	GENDERS,
 	EXPERIENCE,
 	EDUCATION,
 	TO_EXPERIENCE,
 	TO_EDUCATION,
+	DRIVING_LICENSES,
 };
