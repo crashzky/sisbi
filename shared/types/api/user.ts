@@ -1,4 +1,5 @@
-import { EducationType, ExperienceType, GendersType, UserStatesType } from './common';
+import { ICity } from './cities';
+import { CompanyStatesType, EducationType, ExperienceType, GendersType, UserStatesType } from './common';
 import { ISchedule } from './schedules';
 import { ITypeEmployment } from './type_employments';
 
@@ -12,7 +13,7 @@ interface IUser {
     gender: GendersType;
     experience: ExperienceType;
     type_employments: ITypeEmployment[];
-    city: string;
+    city: ICity | null;
     state: UserStatesType;
     skills: string;
     phone: number;
@@ -45,6 +46,10 @@ interface IEmployer {
 	about: string;
 	email: string;
 	avatar: string;
+	created_at: string;
+	updated_at: string;
+	phone: string;
+	state: CompanyStatesType;
 }
 
 interface IEmployerResponse {
@@ -54,6 +59,7 @@ interface IEmployerResponse {
 
 interface IUserRequestFields {
 	job_category_id?: number;
+	city_id?: number;
 }
 
 interface IPutUserRequest {
@@ -61,13 +67,14 @@ interface IPutUserRequest {
 }
 
 interface IPutEmployerRequest {
-	employer: Partial<Omit<IEmployerResponse, 'id'>>;
+	employer: Partial<Omit<IEmployer, 'id'>>;
 }
 
 export type {
 	IUserResponse,
 	IPutUserRequest,
 
+	IEmployer,
 	IPutEmployerRequest,
 	IEmployerResponse,
 };

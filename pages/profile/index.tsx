@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+import ProfilePageEmployer from './_employer_profile';
 import ProfilePageUser from './_user_profile';
 
 const ProfilePage = (): JSX.Element => {
@@ -12,6 +13,8 @@ const ProfilePage = (): JSX.Element => {
 	switch(userType) {
 		case 'user':
 			return <ProfilePageUser />;
+		case 'employer':
+			return <ProfilePageEmployer />;
 		default:
 			return <div></div>;
 	}

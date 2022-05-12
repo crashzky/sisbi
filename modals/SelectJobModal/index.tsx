@@ -13,7 +13,14 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 	const router = useRouter();
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const formik = useFormik({
@@ -47,7 +54,7 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 					</button>
 				</div>
 				<div className='h-[240px] overflow-y-scroll flex flex-col gap-2'>
-					{jobCategoriesQuery.data.map((i) => (
+					{jobCategoriesQuery.data.payload.map((i) => (
 						<Checkbox
 							key={i.id}
 							name='job_categories'

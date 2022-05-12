@@ -10,12 +10,12 @@ const MainLayout: React.FC<Props> = ({ children, headerItems = HEADER_PRIMARY_IT
 	const [userType, setUserType] = useState(null);
 
 	const myProfileUser = useQuery('my_profile_user', getMyProfileUser, {
-		retryDelay: 4,
+		retryDelay: 2,
 		enabled: userType === 'user',
 	});
 
 	const myProfileEmployer = useQuery('my_profile_employer', getMyProfileEmployer, {
-		retryDelay: 4,
+		retryDelay: 2,
 		enabled: userType === 'employer',
 	});
 

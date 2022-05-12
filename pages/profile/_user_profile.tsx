@@ -19,7 +19,7 @@ import DownloadSolidIcon from '../../assets/general/download_solid.svg';
 const ProfilePageUser = (): JSX.Element => {
 	const router = useRouter();
 
-	const myProfileUserQuery = useQuery('my_profile', getMyProfileUser);
+	const myProfileUserQuery = useQuery('my_profile_user', getMyProfileUser);
 
 	const data = myProfileUserQuery.isSuccess ? myProfileUserQuery.data.payload : null;
 
@@ -81,7 +81,7 @@ const ProfilePageUser = (): JSX.Element => {
 						src='/assets/full_logo.svg'
 						alt='logo' />
 				</div>
-				<div
+				<section
 					className='flex justify-between items-start pb-12 border-b-[1px] border-gray-80 print:border-none print:pb-0'
 				>
 					<div>
@@ -101,7 +101,7 @@ const ProfilePageUser = (): JSX.Element => {
 								{data && data.birthday ? `${birthdayInterval.years} лет, ${birthday_date}` : 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
-								{data && data.city}
+								{data && data.city.name}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
 								{data && data.phone ? formatPhoneNumberIntl('+' + data.phone) : ''}
@@ -119,7 +119,7 @@ const ProfilePageUser = (): JSX.Element => {
 									: 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
-								{data ? `${data.city ? data.city + ', ' : ''} ${getReadyMove()}, ${getReadyMission()}` : ''}
+								{data ? `${data.city ? data.city.name + ', ' : ''} ${getReadyMove()}, ${getReadyMission()}` : ''}
 							</Paragraph>
 							<Paragraph variant='4' tag='p' className='font-bold mt-8 mb-2'>
 								Контакты
@@ -147,8 +147,8 @@ const ProfilePageUser = (): JSX.Element => {
 							src={data.avatar}
 							alt='avatar' />
 					) : ''}
-				</div>
-				<div className='pb-8 border-b-[1px] border-gray-80 print:border-none print:pb-0'>
+				</section>
+				<section className='pb-8 border-b-[1px] border-gray-80 print:border-none print:pb-0'>
 					<div className='flex items-center gap-4 mb-1'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							{data && data.previous_job}
@@ -211,8 +211,8 @@ const ProfilePageUser = (): JSX.Element => {
 							</div>
 						</>
 					) : ''}
-				</div>
-				<div className='pb-8 border-b-[1px] border-gray-80 print:border-none'>
+				</section>
+				<section className='pb-8 border-b-[1px] border-gray-80 print:border-none'>
 					<div className='flex items-center gap-4 mb-3 print:hidden'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							О себе
@@ -229,8 +229,8 @@ const ProfilePageUser = (): JSX.Element => {
 					<Paragraph variant='5' tag='p' className='max-w-[550px]'>
 						{data && data.about}
 					</Paragraph>
-				</div>
-				<div className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
+				</section>
+				<section className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
 						{data && data.education ? EDUCATION[data.education] : 'Нет информации'}
 					</Paragraph>
@@ -239,8 +239,8 @@ const ProfilePageUser = (): JSX.Element => {
 							Редактировать
 						</a>
 					</Link>
-				</div>
-				<div className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
+				</section>
+				<section className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
 						Категории водительских прав:
 						{' '}
@@ -251,7 +251,7 @@ const ProfilePageUser = (): JSX.Element => {
 							Редактировать
 						</a>
 					</Link>
-				</div>
+				</section>
 			</div>
 			<div className='grid gap-10 h-fit print:hidden'>
 				<div className='grid rounded-xl border-[1px] border-gray-100'>

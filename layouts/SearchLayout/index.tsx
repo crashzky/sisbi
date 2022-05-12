@@ -11,12 +11,12 @@ const SearchLayout: React.FC<Props> = ({ children, className = '', headerItems =
 	const [userType, setUserType] = useState(null);
 
 	const myProfileUser = useQuery('my_profile_user', getMyProfileUser, {
-		retryDelay: 4,
+		retryDelay: 2,
 		enabled: userType === 'user',
 	});
 
 	const myProfileEmployer = useQuery('my_profile_employer', getMyProfileEmployer, {
-		retryDelay: 4,
+		retryDelay: 2,
 		enabled: userType === 'employer',
 	});
 

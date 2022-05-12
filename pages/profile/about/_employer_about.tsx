@@ -1,19 +1,19 @@
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
-import BackButton from '../../components/BackButton';
-import Headline from '../../components/Headline';
-import Textarea from '../../components/Textarea';
-import MainLayout from '../../layouts/MainLayout';
-import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
-import Button from '../../components/Button';
+import BackButton from '../../../components/BackButton';
+import Headline from '../../../components/Headline';
+import Textarea from '../../../components/Textarea';
+import MainLayout from '../../../layouts/MainLayout';
+import { getMyProfileEmployer, putProfileEmployer } from '../../../shared/api/user';
+import Button from '../../../components/Button';
 import { useFormik } from 'formik';
 
-import LoaderIcon from '../../assets/loader.svg';
+import LoaderIcon from '../../../assets/loader.svg';
 
-const UserAboutPage = (): JSX.Element => {
+const EmployerAboutPage = (): JSX.Element => {
 	const router = useRouter();
 
-	useQuery('my_profile_user', getMyProfileUser, {
+	useQuery('my_profile_employer', getMyProfileEmployer, {
 		onSuccess: (data) => {
 			formik.setValues({
 				about: data.payload.about,
@@ -21,7 +21,7 @@ const UserAboutPage = (): JSX.Element => {
 		},
 	});
 
-	const { mutate, isLoading } = useMutation(putProfileUser, {
+	const { mutate, isLoading } = useMutation(putProfileEmployer, {
 		onSuccess: () => router.push('/profile'),
 	});
 
@@ -31,7 +31,7 @@ const UserAboutPage = (): JSX.Element => {
 		},
 		onSubmit: (values) => {
 			mutate({
-				user: {
+				employer: {
 					about: values.about,
 				},
 			});
@@ -42,7 +42,7 @@ const UserAboutPage = (): JSX.Element => {
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
 			<BackButton href='/profile' className='mb-10' />
 			<Headline variant='5' tag='h1' className='font-bold mb-10'>
-				О себе
+				О компании
 			</Headline>
 			<form onSubmit={formik.handleSubmit}>
 				<Textarea
@@ -50,7 +50,7 @@ const UserAboutPage = (): JSX.Element => {
 					value={formik.values.about}
 					onChange={formik.handleChange}
 					className='w-full max-w-[647px] h-[320px]'
-					placeholder='Расскажите немного о себе' />
+					placeholder='Расскажите немного о вашей компании' />
 				<div className='grid grid-flow-col w-fit gap-2 mt-8'>
 					{isLoading ? (
 						<LoaderIcon className='h-12 w-[209px]' />
@@ -73,4 +73,4 @@ const UserAboutPage = (): JSX.Element => {
 	);
 };
 
-export default UserAboutPage;
+export default EmployerAboutPage;

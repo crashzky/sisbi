@@ -22,7 +22,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 				src={avatar ? avatar : '/assets/default_avatar.svg'}
 				width={32}
 				height={32}
-				className='object-cover'
+				className='object-cover rounded-full'
 				alt='avatar' />
 			<Paragraph variant='5' tag='p' className='text-darkBlue'>
 				Личный кабинет

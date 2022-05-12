@@ -13,6 +13,20 @@ const putProfileUser = (data: IPutUserRequest): Promise<IUserResponse> => {
 		.then((res) => res.data);
 };
 
+const putProlfileFormDataUser = (data: IPutUserRequest): Promise<IUserResponse> => {
+	const formData = new FormData();
+	Object.keys(data.user).forEach((i) => {
+		formData.set(`user[${i}]`, data.user[i]);
+	});
+
+	return instance.put('/v1/user', formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	})
+		.then((res) => res.data); 
+};
+
 // Employer
 
 const getMyProfileEmployer = (): Promise<IEmployerResponse> => {
@@ -25,10 +39,26 @@ const putProfileEmployer = (data: IPutEmployerRequest): Promise<IEmployerRespons
 		.then((res) => res.data);
 };
 
+const putProlfileFormDataEmployer = (data: IPutEmployerRequest): Promise<IEmployerResponse> => {
+	const formData = new FormData();
+	Object.keys(data.employer).forEach((i) => {
+		formData.set(`employer[${i}]`, data.employer[i]);
+	});
+
+	return instance.put('/v1/employer/profile', formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	})
+		.then((res) => res.data); 
+};
+
 export {
 	getMyProfileUser,
 	putProfileUser,
+	putProlfileFormDataUser,
 
 	getMyProfileEmployer,
 	putProfileEmployer,
+	putProlfileFormDataEmployer,
 };

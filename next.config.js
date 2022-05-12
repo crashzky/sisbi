@@ -10,6 +10,9 @@ const nextConfig = {
 
 		return config;
 	},
+	images: {
+		domains: ['51.250.102.217'],
+	},
 };
 
 module.exports = nextConfig;

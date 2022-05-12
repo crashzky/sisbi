@@ -57,7 +57,7 @@ const Header: React.FC<Props> = ({ className = '', items = [], userData, ...prop
 					</button>
 				</div>
 			) : (
-				<ProfileTab avatar={userData.avatar} />
+				<ProfileTab avatar={userData.payload.avatar} />
 			)}
 		</header>
 	);

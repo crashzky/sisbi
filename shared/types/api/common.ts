@@ -1,5 +1,7 @@
 type GendersType = 'male' | 'female';
 type UserStatesType = 'active' | 'moderating' | 'created' | 'deactivated';
+type VacancyStatesType = 'active' | 'moderating' | 'deactivated';
+type CompanyStatesType = 'active' | 'moderating' | 'created' | 'deactivated';
 type EmploymentTypes = 'internship' | 'project_work' | 'part_time' | 'full';
 type EducationType = 'secondary' | 'secondary_special' | 'incomplete_higher' | 'higher' | 'bachelor' | 'master'
 	| 'candidate' | 'doctor';
@@ -27,4 +29,6 @@ export type {
 	ICommonResponseError,
 	EducationType,
 	ExperienceType,
+	VacancyStatesType,
+	CompanyStatesType,
 };

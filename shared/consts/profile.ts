@@ -3,6 +3,11 @@ const GENDERS = {
 	'female': 'Женский',
 };
 
+const TO_GENDERS = {
+	'Мужской': 'male',
+	'Женский': 'female',
+};
+
 const EXPERIENCE = {
 	'no': 'Нет опыта',
 	'y_1_3': '1 - 3 года',
@@ -43,6 +48,7 @@ const DRIVING_LICENSES = ['A', 'B', 'C', 'D', 'E', 'BE', 'CE', 'DE', 'TM', 'TB']
 
 export {
 	GENDERS,
+	TO_GENDERS,
 	EXPERIENCE,
 	EDUCATION,
 	TO_EXPERIENCE,

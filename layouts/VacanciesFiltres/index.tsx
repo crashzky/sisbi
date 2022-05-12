@@ -18,15 +18,36 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 	const [job_categories, setJobCategories] = useState([]);
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const schedulesQuery = useQuery('schedules', getSchedules, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const typeEmploymentsQuery = useQuery('type_employments', getTypeEmployments, {
-		initialData: [],
+		initialData: {
+			current_page: 1,
+			next_page: null,
+			payload: [],
+			result_code: 'ok',
+			total_entries: 0,
+			total_pages: 1,
+		},
 	});
 
 	const formik = useFormik({
@@ -90,8 +111,8 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 							<div className='grid gap-2'>
 								{job_categories.map((i, num) => (
 									<div key={num} className='py-3 px-4 bg-gray-40 rounded-lg'>
-										{jobCategoriesQuery.data.find((j) => j.id === +i)
-											? jobCategoriesQuery.data.find((j) => j.id === +i).name
+										{jobCategoriesQuery.data.payload.find((j) => j.id === +i)
+											? jobCategoriesQuery.data.payload.find((j) => j.id === +i).name
 											: ''}
 									</div>
 								))}
@@ -128,7 +149,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						График работы
 					</Paragraph>
 					<div className='grid gap-2'>
-						{schedulesQuery.data.map((i, num) => (
+						{schedulesQuery.data.payload.map((i, num) => (
 							<Checkbox
 								key={num}
 								name='schedules'
@@ -144,7 +165,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						Тип занятости
 					</Paragraph>
 					<div className='grid gap-2'>
-						{typeEmploymentsQuery.data.map((i, num) => (
+						{typeEmploymentsQuery.data.payload.map((i, num) => (
 							<Checkbox
 								key={num}
 								name='employment_types'

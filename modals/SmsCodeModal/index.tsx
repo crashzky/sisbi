@@ -26,7 +26,7 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 	const getProfileMutattionUser = useMutation(getMyProfileUser, {
 		onSuccess: (data) => {
 			if(!!data.payload.first_name)
-				router.push(router.pathname);
+				router.reload();
 			else
 				router.push(router.pathname + '/?modal=signup1');
 		},
@@ -35,7 +35,7 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 	const getProfileMutattionEmployer = useMutation(getMyProfileEmployer, {
 		onSuccess: (data) => {
 			if(!!data.payload.name)
-				router.push(router.pathname);
+				router.reload();
 			else
 				router.push(router.pathname + '/?modal=signup1employer');
 		},

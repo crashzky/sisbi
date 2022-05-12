@@ -31,6 +31,9 @@ const SELECT_PRIMARY_STYLES: StylesConfig = {
 	indicatorSeparator: () => ({
 		display: 'none',
 	}),
+	loadingIndicator: () => ({
+		display: 'none',
+	}),
 	menu: (provided) => ({
 		...provided,
 		borderRadius: '0 0 12px 12px',
@@ -82,6 +85,9 @@ const SELECT_WITH_GAP_STYLES: StylesConfig = {
 		color: '#74767A',
 	}),
 	indicatorsContainer: () => ({
+		display: 'none',
+	}),
+	loadingIndicator: () => ({
 		display: 'none',
 	}),
 	menu: (provided) => ({

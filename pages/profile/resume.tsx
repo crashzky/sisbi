@@ -33,7 +33,7 @@ const ResumePage = (): JSX.Element => {
 	const [jobCategory, setJobCategory] = useState(null);
 	const [showJobSelect, setShowJobSelect] = useState(false);
 
-	const { data } = useQuery('my_profile', getMyProfileUser, {
+	const { data } = useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (value) => {
 			formik.setValues({
 				vacancyName: value.payload.previous_job,

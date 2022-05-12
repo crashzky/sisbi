@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+import withCheckAuthLayout from '../../../layouts/CheckAuthLayout';
+import EmployerEditPage from './_employer_edit';
 import UserEditPage from './_user_edit';
 
 const EitPage = (): JSX.Element => {
@@ -12,6 +13,8 @@ const EitPage = (): JSX.Element => {
 	switch(userType) {
 		case 'user':
 			return <UserEditPage />;
+		case 'employer':
+			return <EmployerEditPage />;
 		default:
 			return <div></div>;
 	}

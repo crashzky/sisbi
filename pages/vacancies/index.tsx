@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router';
 import Headline from '../../components/Headline';
 import VacancyCard from '../../components/VacancyCard';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
-import { ICheckAuthConfig } from '../../layouts/CheckAuthLayout/CheckAuthLayout.props';
 import ModalLayout from '../../layouts/ModalLayout';
 import SearchLayout from '../../layouts/SearchLayout';
 import VacanciesFiltres from '../../layouts/VacanciesFiltres';
@@ -10,56 +8,20 @@ import useModal from '../../hooks/useModal';
 import { slide as Menu } from 'react-burger-menu';
 import { useState } from 'react';
 
-import LoginModal from '../../modals/LoginModal';
-import SignupModal from '../../modals/SignupModal';
-import SmsCodeModal from '../../modals/SmsCodeModal';
-import SingupStep1Modal from '../../modals/SignupStep1Modal';
-import SingupStep2Modal from '../../modals/SignupStep2Modal';
-import SingupStep3Modal from '../../modals/SignupStep3Modal';
-import SingupStep4Modal from '../../modals/SignupStep4Modal';
-import SingupStep5Modal from '../../modals/SignupStep5Modal';
-import SingupStep6Modal from '../../modals/SignupStep6Modal';
-import SingupStepFinalModal from '../../modals/SignupStepFinalModal';
 import SelectJobModal from '../../modals/SelectJobModal';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
-import SignupStep1EmployerModal from '../../modals/SignupStep1EmployerModal';
-import SignupStep2EmployerModal from '../../modals/SignupStep2EmployerModal';
+import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
 
 	const [respondedVacancyId, setRespondedVacancyId] = useState(null);
 
-	const { activeModal } = useModal(['login', 'signup', 'code', 'signup1', 'signup2', 'signup3', 'signup4', 'signup5',
-		'signup6', 'signupFinal', 'job_categories']);
+	const { activeModal } = useModal(['job_categories']);
 
-	const checkAuthConfig: ICheckAuthConfig = {
-		checkLoggined: false,
-		returnRendered: true,
-		onAccessDenited: () => router.push(router.pathname),
-	};
-
-	const checkAuthConfig2: ICheckAuthConfig = {
-		checkLoggined: true,
-		returnRendered: true,
-		onAccessDenited: () => router.push(router.pathname),
-	};
-	
 	return (
 		<ModalLayout modals={{
-			'login': withCheckAuthLayout(LoginModal, checkAuthConfig) as JSX.Element,
-			'code': withCheckAuthLayout(SmsCodeModal, checkAuthConfig) as JSX.Element,
-			'signup': withCheckAuthLayout(SignupModal, checkAuthConfig) as JSX.Element,
-			'signup1': withCheckAuthLayout(SingupStep1Modal, checkAuthConfig2) as JSX.Element,
-			'signup2': withCheckAuthLayout(SingupStep2Modal, checkAuthConfig2) as JSX.Element,
-			'signup3': withCheckAuthLayout(SingupStep3Modal, checkAuthConfig2) as JSX.Element,
-			'signup4': withCheckAuthLayout(SingupStep4Modal, checkAuthConfig2) as JSX.Element,
-			'signup5': withCheckAuthLayout(SingupStep5Modal, checkAuthConfig2) as JSX.Element,
-			'signup6': withCheckAuthLayout(SingupStep6Modal, checkAuthConfig2) as JSX.Element,
-			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2) as JSX.Element,
 			'job_categories': <SelectJobModal />,
-			'signup1employer': withCheckAuthLayout(SignupStep1EmployerModal, checkAuthConfig2) as JSX.Element,
-			'signup2employer': withCheckAuthLayout(SignupStep2EmployerModal, checkAuthConfig2) as JSX.Element,
 		}}
 		>
 			<Menu
@@ -91,6 +53,7 @@ const VacanciesPage = (): JSX.Element => {
 					}} />
 					<div className='grid'>
 						<VacancyCard
+							onClick={() => router.push('/vacancies/1')}
 							className='rounded-t-3xl'
 							imageSrc='/assets/DEV_ONLY.png'
 							companyName='Jungu Digital'
@@ -105,6 +68,7 @@ const VacanciesPage = (): JSX.Element => {
 							contactMail='mail@mail.ru'
 							onRespond={() => setRespondedVacancyId(1)} />
 						<VacancyCard
+							onClick={() => router.push('/vacancies/1')}
 							imageSrc='/assets/DEV_ONLY.png'
 							companyName='Jungu Digital'
 							label='UI/UX дизайнер'
@@ -118,6 +82,7 @@ const VacanciesPage = (): JSX.Element => {
 							contactMail='mail@mail.ru'
 							onRespond={() => setRespondedVacancyId(1)} />
 						<VacancyCard
+							onClick={() => router.push('/vacancies/1')}
 							imageSrc='/assets/DEV_ONLY.png'
 							companyName='Jungu Digital'
 							label='UI/UX дизайнер'
@@ -131,6 +96,7 @@ const VacanciesPage = (): JSX.Element => {
 							contactMail='mail@mail.ru'
 							onRespond={() => setRespondedVacancyId(1)} />
 						<VacancyCard
+							onClick={() => router.push('/vacancies/1')}
 							className='rounded-b-3xl'
 							imageSrc='/assets/DEV_ONLY.png'
 							companyName='Jungu Digital'
@@ -151,4 +117,6 @@ const VacanciesPage = (): JSX.Element => {
 	);
 };
 
-export default VacanciesPage;
+export default withCheckAuthLayout(VacanciesPage, {
+	checkLoggined: true,
+});

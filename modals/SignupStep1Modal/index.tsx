@@ -7,7 +7,7 @@ import { putProfileUser } from '../../shared/api/user';
 import { useState } from 'react';
 
 import Step1Image from '../../assets/signup_steps/1.svg';
-import { GENDERS } from '../../shared/consts/profile';
+import { GENDERS, TO_GENDERS } from '../../shared/consts/profile';
 
 const SingupStep1Modal: React.FC<Props> = () => {
 	const router = useRouter();
@@ -37,14 +37,7 @@ const SingupStep1Modal: React.FC<Props> = () => {
 				className='grid gap-3'
 				name='sex'
 				value={selectedValue && GENDERS[selectedValue]}
-				onChange={(e) => {
-					const GENDERS = {
-						'Мужской': 'male',
-						'Женский': 'female',
-					};
-
-					setSelectedValue(GENDERS[e.target.value]);
-				}}
+				onChange={(e) => setSelectedValue(TO_GENDERS[e.target.value])}
 				items={['Мужской', 'Женский']} />
 		</SignupStepLayout>
 	);
