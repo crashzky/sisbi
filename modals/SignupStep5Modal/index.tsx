@@ -42,7 +42,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 					const EXPERIENCE = {
 						'Нет опыта': 'no',
 						'1 - 3 года': 'y_1_3',
-						'2 - 6 лет': 'y_2_6',
+						'3 - 6 лет': 'y_2_6',
 						'более 6 лет': 'more_6',
 					};
 
@@ -72,7 +72,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 				name='experience'
 				value={selectedValue}
 				onChange={(e) => setSelectedValue(e.target.value)}
-				items={['Нет опыта', '1 - 3 года', '2 - 6 лет', 'более 6 лет']} />
+				items={['Нет опыта', '1 - 3 года', '3 - 6 лет', 'более 6 лет']} />
 		</SignupStepLayout>
 	);
 };

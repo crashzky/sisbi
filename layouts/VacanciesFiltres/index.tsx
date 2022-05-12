@@ -11,11 +11,12 @@ import Props from './VacanciesFiltres.props';
 import { useFormik } from 'formik';
 import { getSchedules } from '../../shared/api/schedules';
 import { getTypeEmployments } from '../../shared/api/type_employments';
+import { EXPERIENCE, TO_EXPERIENCE } from '../../shared/consts/profile';
 
 const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 	const router = useRouter();
 
-	const [job_categories, setJobCategories] = useState([]);
+	const [job_category_id, setJobCategories] = useState([]);
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
 		initialData: {
@@ -52,30 +53,41 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 
 	const formik = useFormik({
 		initialValues: {
-			minPrice: null,
+			salary: null,
 			schedules: [],
 			employment_types: [],
 			experience: null,
 		},
 		onSubmit: (values) => {
-			const { minPrice, schedules, employment_types, experience } = values;
-			router.push(`/vacancies?minPrice=${minPrice}&schedules=${JSON.stringify(schedules)}
-				&employment_types=${JSON.stringify(employment_types)}&experience=${JSON.stringify(experience)}
-				&job_categories=${JSON.stringify(job_categories)}`);
+			const { salary, schedules, employment_types, experience } = values;
+
+			let params = [];
+			if(salary)
+				params.push(`salary=${salary}`);
+			if(schedules)
+				params.push(`schedules=${schedules}`);
+			if(employment_types)
+				params.push(`employment_types=${employment_types}`);
+			if(experience)
+				params.push(`experience=${TO_EXPERIENCE[experience]}`);
+			if(job_category_id)
+				params.push(`job_category_id=${JSON.stringify(job_category_id)}`);
+
+			router.push(`/vacancies?${params.join('&')}`);
 		},
 	});
 
 	useEffect(() => {
-		const { job_categories, minPrice, schedules, employment_types, experience } = router.query;
+		const { job_category_id, salary, schedules, employment_types, experience } = router.query;
 
-		if(job_categories)
-			setJobCategories(JSON.parse(job_categories.toString()));
+		if(job_category_id)
+			setJobCategories(JSON.parse(job_category_id.toString()));
 
 		formik.setValues({
-			minPrice: minPrice ? +minPrice : null,
-			schedules: schedules ? JSON.parse(schedules.toString()) : [],
-			employment_types: employment_types ? JSON.parse(employment_types.toString()) : [],
-			experience: experience ? JSON.parse(experience.toString()) : '',
+			salary: salary ? +salary : null,
+			schedules: schedules ? schedules.toString().split(',') : [],
+			employment_types: employment_types ? employment_types.toString().split(',') : [],
+			experience: experience ? EXPERIENCE[experience.toString()] : '',
 		});
 	}, [router]);
 
@@ -87,29 +99,36 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						<Paragraph variant='5' tag='h3' className='font-semibold'>
 							Сфера деятельности
 						</Paragraph>
-						{!!job_categories.length && (
+						{!!job_category_id.length && (
 							<button
 								type='button'
 								className='text-xs font-semibold text-darkBlue'
 								onClick={() => {
-									const { minPrice, schedules, employment_types, experience } = router.query;
+									const { salary, schedules, employment_types, experience } = router.query;
 
-									router.push(`/vacancies?minPrice=${minPrice}
-										&schedules=${schedules}
-										&employment_types=${employment_types}
-										&experience=${experience}
-										&job_categories=${JSON.stringify(job_categories)}
-										&modal=job_categories`);
+									let params = [];
+									if(salary)
+										params.push(`salary=${salary}`);
+									if(schedules)
+										params.push(`schedules=${schedules}`);
+									if(employment_types)
+										params.push(`employment_types=${employment_types}`);
+									if(experience)
+										params.push(`experience=${experience}`);
+									if(job_category_id)
+										params.push(`job_category_id=${JSON.stringify(job_category_id)}`);
+
+									router.push(`/vacancies?${params.join('&')}&modal=job_categories`);
 								}}
 							>
 								Изменить
 							</button>
 						)}
 					</div>
-					{job_categories.length && jobCategoriesQuery.data
+					{job_category_id.length && jobCategoriesQuery.data
 						? (
 							<div className='grid gap-2'>
-								{job_categories.map((i, num) => (
+								{job_category_id.map((i, num) => (
 									<div key={num} className='py-3 px-4 bg-gray-40 rounded-lg'>
 										{jobCategoriesQuery.data.payload.find((j) => j.id === +i)
 											? jobCategoriesQuery.data.payload.find((j) => j.id === +i).name
@@ -124,8 +143,8 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 								className='w-[88px] font-normal h-9'
 								onClick={() => {
 									router.push('/vacancies?modal=job_categories'
-										+ (router.query.job_categories
-											? `&job_categories=${router.query.job_categories}`
+										+ (router.query.job_category_id
+											? `&job_category_id=${router.query.job_category_id}`
 											: ''));
 								}}
 							>
@@ -138,10 +157,11 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						Минимальная зарплата
 					</Paragraph>
 					<Input
-						name='minPrice'
-						value={formik.values.minPrice}
+						name='salary'
+						value={formik.values.salary}
 						onChange={formik.handleChange}
 						placeholder='от 25 000 ₽'
+						min={0}
 						type='number' />
 				</div>
 				<div>
@@ -185,11 +205,11 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						name='experience'
 						onChange={formik.handleChange}
 						value={formik.values.experience}
-						items={['не имеет значение', 'без опыта', '1 - 3 года', '3 - 6 лет', 'более 6 лет']} />
+						items={['Нет опыта', '1 - 3 года', '3 - 6 лет', 'более 6 лет']} />
 				</div>
 				<div>
 					<Button className='w-full h-12 mb-2'>
-						Поменять фильтры
+						Поменить фильтры
 					</Button>
 					<Button
 						variant='secondary'
@@ -197,7 +217,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						type='button'
 						onClick={() => {
 							formik.setValues({
-								minPrice: null,
+								salary: null,
 								schedules: [],
 								employment_types: [],
 								experience: null,

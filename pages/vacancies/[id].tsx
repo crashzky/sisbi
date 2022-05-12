@@ -16,12 +16,22 @@ import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 import CloseIcon from '../../assets/general/close.svg';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
+import { useQuery } from 'react-query';
+import { getVacancyById } from '../../shared/api/vacancies';
+import { EXPERIENCE } from '../../shared/consts/profile';
 
 const VacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
 	const [showContacts, setShowContacts] = useState(false);
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
+
+	const { data, isSuccess } = useQuery([{ id: router.query.id }], getVacancyById, {
+		enabled: !!(router && router.query),
+	});
+
+	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
+		schedules, employer, created_at, avatar, id } = data ? data.payload[0] : {} as any;
 
 	return (
 		<>
@@ -32,17 +42,19 @@ const VacancyPage = (): JSX.Element => {
 				onClose={() => setShowRespondMenu(false)}
 				width={457}
 			>
-				<RespondVacancyMenu
-					className='rounded-t-3xl'
-					companyName='Jungu Digital'
-					vacancyName='UI/UX дизайнер'
-					vacancyId={1}
-					minPrice={125000}
-					contactName='Мария Соколова'
-					contactPhone={9139822927}
-					contactMail='mail@mail.ru'
-					onContinue={() => setShowRespondMenu(false)}
-					onBack={() => setShowRespondMenu(false)} />
+				{isSuccess && (
+					<RespondVacancyMenu
+						className='rounded-t-3xl'
+						companyName={employer.name}
+						vacancyName={title}
+						vacancyId={id}
+						minPrice={salary}
+						contactName={full_name}
+						contactPhone={+phone}
+						contactMail={email}
+						onContinue={() => setShowRespondMenu(false)}
+						onBack={() => setShowRespondMenu(false)} />
+				)}
 			</Menu>
 			<SearchLayout className='px-40 py-10'>
 				<BreadCrumbs
@@ -56,7 +68,7 @@ const VacancyPage = (): JSX.Element => {
 							},
 						},
 						{
-							label: 'UI/UX дизайнер',
+							label: isSuccess ? title : '',
 							href: {
 								pathname: router.pathname,
 								query: router.query,
@@ -66,29 +78,36 @@ const VacancyPage = (): JSX.Element => {
 				<div className='flex justify-between'>
 					<div className='max-w-[552px]'>
 						<div className='flex flex-wrap gap-2 mb-4'>
-							{['Опыт от 3 лет', 'Полный день', 'Удалённая работа', 'Любой город'].map((i, num) => (
-								<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
-									{i}
-								</span>
-							))}
+							{isSuccess && [
+								job_category.name, EXPERIENCE[experience], ...type_employments.map((i) => i.name),
+								...schedules.map((i) => i.name)]
+								.map((i, num) => (
+									<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
+										{i}
+									</span>
+								))}
 						</div>
 						<div className='grid grid-flow-col gap-3 w-fit mb-5'>
 							<CompanyIcon />
 							<Paragraph variant='4' tag='p' className='text-text'>
-								Jingu Digital
+								{employer && employer.name}
 							</Paragraph>
 						</div>
 						<Headline variant='3' tag='h1' className='mb-2 font-bold'>
-							UI/UX дизайнер
+							{isSuccess ? title : 'Загрузка...'}
 						</Headline>
 						<Headline variant='5' tag='p' className='mb-6 font-bold text-text'>
-							от 125 000 ₽
+							от
+							{' '}
+							{new Intl.NumberFormat().format(salary)}
+							{' '}
+							₽
 						</Headline>
 						<Paragraph variant='5' tag='p' className='mb-1'>
-							Jingu Digital
+							{isSuccess && employer.name}
 						</Paragraph>
 						<Paragraph variant='5' tag='p' className='mb-6 text-text-secondary'>
-							Искусство, развлечения, масс-медиа
+							{isSuccess && job_category.name}
 						</Paragraph>
 						<div className='grid grid-flow-col gap-2 w-fit mb-8'>
 							<Button className='h-12 px-8' onClick={() => setShowRespondMenu(true)}>
@@ -113,7 +132,7 @@ const VacancyPage = (): JSX.Element => {
 									>
 										<div className='flex justify-between items-center mb-4'>
 											<Paragraph variant='4' tag='p' className='font-semibold'>
-												Мария Соколова
+												{full_name}
 											</Paragraph>
 											<button onClick={() => setShowContacts(false)}>
 												<CloseIcon className='fill-icon-secondary' />
@@ -122,11 +141,11 @@ const VacancyPage = (): JSX.Element => {
 										<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
 											<PhoneSolidIcon className='fill-darkBlue' />
 											<Paragraph variant='5' tag='p' className='text-text'>
-												{formatPhoneNumberIntl('+79221734745')}
+												{formatPhoneNumberIntl('+' + phone)}
 											</Paragraph>
 											<MailSolidIcon className='fill-darkBlue' />
 											<Paragraph variant='5' tag='p' className='text-text'>
-												mail@mail.ru
+												{email}
 											</Paragraph>
 										</div>
 									</div>
@@ -134,62 +153,43 @@ const VacancyPage = (): JSX.Element => {
 							</div>
 						</div>
 						<Paragraph variant='5' tag='p' className='mb-8'>
-							«Делать то, что любишь – это свобода! Любить то, что делаешь – это счастье!»
-							Нам интересна наша работа, мы любим, то что создаем!
-							У нас высокие требования, высокий темп и высокие стандарты качества!!!
-							Если у вас есть желание вместе с нами создавать новое и полезное для людей,
-							тогда приходите и побеждайте в конкурсе и станьте частью команды «Бахетле»!
-							<br />
-							<br />
-							Нам нужен Фотограф - Дизайнер, который вдохновлен нашей идеей и готов вместе
-							с нами продвигать идеи, развивать и усиливать Бахетле!
-							<br />
-							<br />
-							Если Вам повезет, и Вы будете работать с нами, Вашей основной задачей будет - создание
-							таких рекламных материалов (макетов, буклетов, иллюстраций, каталогов , бренд-буков и тд) ,
-							которые будут олицетворять и продвигать идеи Супермаркета Домашней Еды «Бахетле» и Чудо-магазина
-							русской кухни Добрянка, чтобы каждый гость пришел к нам и купил свежую и вкусную продукцию
-							собственного производства
-							<br />
-							<br />
-							Нам нужен фотограф - дизайнер, который является профессионалом в сфере фуд-съемки, у
-							которого есть чувство стиля и вкуса,
-							Нам нужен фотограф - дизайнер, у которого на одно задание есть несколько решений,
-							каждое из которых лучше другого
+							{description}
 						</Paragraph>
 						<div className='w-full border-t-[1px] border-gray-100 mb-8'></div>
 						<Paragraph variant='3' tag='h2' className='font-semibold mb-4'>
 							Контактная информация
 						</Paragraph>
 						<Paragraph variant='5' tag='p' className='mb-2'>
-							Мария Соколова
+							{full_name}
 						</Paragraph>
 						<div className='grid grid-flow-col w-fit gap-3 items-center'>
 							<PhoneSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
-								{formatPhoneNumberIntl('+79221734745')}
+								{formatPhoneNumberIntl('+7' + phone)}
 							</Paragraph>
 							<MailSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='text-darkBlue'>
-								mail@mail.ru
+								{email}
 							</Paragraph>
 						</div>
 						<Paragraph variant='5' tag='p' className='mt-10 text-text-secondary'>
 							Вакансия опубликована
 							{' '}
-							{format(new Date(Date.now()), 'dd MMMM в HH:mm', {
+							{isSuccess && format(new Date(created_at), 'dd MMMM в HH:mm', {
 								locale: ru,
 							})}
 						</Paragraph>
 					</div>
-					<div>
-						<Image
-							className='object-cover rounded-xl'
-							src='/assets/DEV_ONLY.png'
-							width={269}
-							height={269}
-							alt='vacancy' />
-					</div>
+					{avatar && (
+						<div>
+							<Image
+								className='object-cover rounded-xl'
+								src={avatar}
+								width={269}
+								height={269}
+								alt='vacancy' />
+						</div>
+					)}
 				</div>
 			</SearchLayout>
 		</>

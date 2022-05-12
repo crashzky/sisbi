@@ -28,9 +28,13 @@ interface IVacancy {
 }
 
 interface IVacanciesRequest {
-	title?: string;
+	query?: string;
 	salary?: number;
 	experience?: ExperienceType;
+	job_category_id?: string[];
+	schedules?: string[];
+	employment_types?: string[];
+	city_id?: number;
 	page?: number;
 }
 
@@ -43,8 +47,40 @@ interface IVacanciesResponse {
 	total_entries: number;
 }
 
+interface ICreateVacancyRequest {
+	avatar?: File;
+	title: string;
+	job_category_id: number;
+	salary: number;
+	experience: ExperienceType;
+	description: string;
+	full_name: string;
+	phone: string;
+	email: string;
+	city_id: number;
+}
+
+interface ICreateVacancyResponse {
+	result_code: 'ok';
+	payload: IVacancy;	
+}
+
+interface IUpdateSchedulesRequest {
+	id: number;
+	schedules: number[];
+}
+
+interface IUpdateTypeEmployementsRequest {
+	id: number;
+	type_employments: number[];
+}
+
 export type {
 	IVacancy,
 	IVacanciesRequest,
 	IVacanciesResponse,
+	ICreateVacancyRequest,
+	ICreateVacancyResponse,
+	IUpdateSchedulesRequest,
+	IUpdateTypeEmployementsRequest,
 };

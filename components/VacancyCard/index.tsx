@@ -11,26 +11,38 @@ import MailIcon from '../../assets/communication/mail_solid.svg';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 
 const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, label, minPrice, description, tags,
-	contactName, contactPhone, contactMail, onRespond, ...props }) => {
+	contactName, contactPhone, contactMail, companyAvatar, onRespond, ...props }) => {
 	const [showContacts, setShowContacts] = useState(false);
 
 	return (
 		<article
 			className={className
-				+ ' border-[1px] cursor-pointer border-gray-100 p-4 grid grid-cols-[156px_1fr] gap-8'}
+				+ ' border-[1px] cursor-pointer border-gray-100 p-4 grid gap-8 '
+				+ (imageSrc ? 'grid-cols-[156px_1fr]' : '')}
 			{...props}
 		>
-			<div>
-				<Image
-					src={imageSrc}
-					className='object-cover'
-					width={156}
-					height={156}
-					alt='vacancy' />
-			</div>
+			{imageSrc && (
+				<div>
+					<Image
+						src={imageSrc}
+						className='object-cover'
+						width={156}
+						height={156}
+						alt='vacancy' />
+				</div>
+			)}
 			<div>
 				<div className='flex gap-2 mb-3'>
-					<CompanyIcon />
+					{companyAvatar ? (
+						<Image
+							width={20}
+							height={20}
+							alt='Company'
+							className='object-cover rounded-full'
+							src={companyAvatar} />
+					) : (
+						<CompanyIcon />
+					)}
 					<Paragraph variant='6' tag='p' className='text-text'>
 						{companyName}
 					</Paragraph>
@@ -47,7 +59,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 				<Paragraph variant='6' tag='p' className='mb-3'>
 					{description}
 				</Paragraph>
-				<div className='flex gap-2 mb-6'>
+				<div className='flex flex-wrap gap-2 mb-6'>
 					{tags.map((i, num) => (
 						<span key={num} className='s bg-softGold py-0.5 px-1 rounded-[4px]'>
 							{i}
@@ -92,7 +104,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 								<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
 									<PhoneIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-text'>
-										{formatPhoneNumberIntl(`+7${contactPhone}`)}
+										{formatPhoneNumberIntl(`+${contactPhone}`)}
 									</Paragraph>
 									<MailIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-text'>

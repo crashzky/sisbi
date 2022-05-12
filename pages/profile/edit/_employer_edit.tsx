@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import BackButton from '../../../components/BackButton';
 import Button from '../../../components/Button';
 import Headline from '../../../components/Headline';
@@ -9,7 +9,6 @@ import InputImage from '../../../components/InputImage';
 import Paragraph from '../../../components/Paragraph';
 import MainLayout from '../../../layouts/MainLayout';
 import { useMutation, useQuery } from 'react-query';
-import { getCities } from '../../../shared/api/cities';
 import { getMyProfileEmployer, putProlfileFormDataEmployer } from '../../../shared/api/user';
 
 import LoaderIcon from '../../../assets/loader.svg';
@@ -33,8 +32,6 @@ const EmployerEditPage = (): JSX.Element => {
 				setPrevAvatar(avatar);
 		},
 	});
-
-	const citiesMutation = useMutation(getCities);
 
 	const putProfileMutation = useMutation(putProlfileFormDataEmployer, {
 		onSuccess: () => {
@@ -65,8 +62,6 @@ const EmployerEditPage = (): JSX.Element => {
 			});
 		},
 	});
-
-	useEffect(() => citiesMutation.mutate({ name: '' }), []);
 
 	return (
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>

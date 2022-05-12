@@ -5,11 +5,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import CaretLeftIcon from '../../assets/arrows/caret_left.svg';
+import useProfileTab from '../../hooks/useProfileTab';
 
 const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 	const [showMenu, setShowMenu] = useState(false);
 
 	const router = useRouter();
+
+	const menuItems = useProfileTab();
 
 	return (
 		<button
@@ -37,28 +40,23 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 							0px 0px 0px rgba(35, 47, 59, 0.05)`,
 					}}
 				>
-					<button
-						className='p-4 w-full text-left border-b-[1px] border-button-secondary'
-						onClick={() => router.push('/profile')}
-					>
-						<Paragraph variant='5' tag='span'>
-							Мое резюме
-						</Paragraph>
-					</button>
-					<button className='p-4 w-full text-left border-b-[1px] border-button-secondary'>
-						<Paragraph variant='5' tag='span'>
-							Мессенджер
-						</Paragraph>
-					</button>
-					<button className='p-4 w-full text-left border-b-[1px] border-button-secondary'>
-						<Paragraph variant='5' tag='span'>
-							Настройки
-						</Paragraph>
-					</button>
+					{menuItems.map((i, num) => (
+						<button
+							key={num}
+							className='p-4 w-full text-left border-b-[1px] border-button-secondary'
+							onClick={i.onClick}
+						>
+							<Paragraph variant='5' tag='span'>
+								{i.title}
+							</Paragraph>
+						</button>
+					))}
 					<button
 						className='p-4 w-full text-left'
 						onClick={() => {
 							localStorage.removeItem('access_token');
+							localStorage.removeItem('user_type');
+
 							router.reload();
 						}}
 					>

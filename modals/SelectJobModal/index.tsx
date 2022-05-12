@@ -25,11 +25,11 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 
 	const formik = useFormik({
 		initialValues: {
-			job_categories: router.query.job_categories ? JSON.parse(router.query.job_categories.toString()) : [],
+			job_category_id: router.query.job_category_id ? JSON.parse(router.query.job_category_id.toString()) : [],
 		},
 		onSubmit: (values) => {
 			delete router.query.modal;
-			router.query.job_categories = JSON.stringify(values.job_categories);
+			router.query.job_category_id = JSON.stringify(values.job_category_id);
 
 			router.push({
 				pathname: router.pathname,
@@ -57,9 +57,9 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 					{jobCategoriesQuery.data.payload.map((i) => (
 						<Checkbox
 							key={i.id}
-							name='job_categories'
+							name='job_category_id'
 							onChange={formik.handleChange}
-							checked={formik.values.job_categories.includes(i.id.toString())}
+							checked={formik.values.job_category_id.includes(i.id.toString())}
 							value={i.id}
 							label={i.name} />
 					))}
@@ -89,7 +89,7 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 					type='button'
 					variant='outline_secondary'
 					className='h-9 px-4'
-					onClick={() => formik.setValues({ job_categories: [] })}
+					onClick={() => formik.setValues({ job_category_id: [] })}
 				>
 					Очистить все
 				</Button>

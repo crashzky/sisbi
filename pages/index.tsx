@@ -60,9 +60,7 @@ const MainPage = (): JSX.Element => {
 					className='px-40 pt-14 pb-[267px]' 
 					data-aos='fade-up'
 					data-aos-duration='1000' />
-				<SearchPanel
-					data-aos='fade-up'
-					data-aos-duration='1000' />
+				<SearchPanel />
 				<LatestVacanciesSection
 					className='pt-10 px-40'
 					data-aos='fade-up'

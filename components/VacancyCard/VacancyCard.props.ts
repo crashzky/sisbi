@@ -1,8 +1,9 @@
 import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 
 interface Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
-	imageSrc: string;
+	imageSrc: string | null;
 	companyName: string;
+	companyAvatar: string | null;
 	label: string;
 	minPrice: number;
 	description: string;

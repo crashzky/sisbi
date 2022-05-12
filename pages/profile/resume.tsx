@@ -160,16 +160,18 @@ const ResumePage = (): JSX.Element => {
 			<ModalLayout
 				openedModal={showJobSelect && 'job_category'}
 				modals={{
-					'job_category': <ProfileSelectJobModal
-						selected={jobCategoriesQuery.isSuccess
-							&& jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory)
-							? jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory).name
-							: null}
-						onCloseModal={() => setShowJobSelect(false)}
-						onContinue={(id) => {
-							setJobCategory(id);
-							setShowJobSelect(false);
-						}} />,
+					'job_category': (
+						<ProfileSelectJobModal
+							selected={jobCategoriesQuery.isSuccess
+								&& jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory)
+								? jobCategoriesQuery.data.payload.find((i) => i.id === jobCategory).name
+								: null}
+							onCloseModal={() => setShowJobSelect(false)}
+							onContinue={(id) => {
+								setJobCategory(id);
+								setShowJobSelect(false);
+							}} />
+					),
 				}}
 			>
 				<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>

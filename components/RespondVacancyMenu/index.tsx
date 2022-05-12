@@ -11,6 +11,7 @@ import CloseIcon from '../../assets/general/close.svg';
 import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
+import { formatPhoneNumber } from 'react-phone-number-input';
 
 const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vacancyName, minPrice, vacancyId,
 	contactName, contactPhone, contactMail, onContinue, onBack, ...props }) => {
@@ -75,7 +76,7 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 					<div className='grid grid-cols-[20px_auto_20px_auto] gap-3 items-center'>
 						<PhoneSolidIcon className='fill-icon' />
 						<Paragraph variant='5' tag='p' className='text-text'>
-							{contactPhone}
+							{formatPhoneNumber('+' + contactPhone)}
 						</Paragraph>
 						<MailSolidIcon className='fill-icon' />
 						<Paragraph variant='5' tag='p' className='text-text'>

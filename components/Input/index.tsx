@@ -4,7 +4,7 @@ import { getBorder, getTextColor } from './Input.styles';
 
 import CloseIcon from '../../assets/general/close.svg';
 
-const Input: React.FC<Props> = ({ className = '', inputClassname = '', onFocus, onBlur, isDanger, ...props }) => {
+const Input: React.FC<Props> = ({ className = '', inputClassname = '', onFocus, onBlur, isDanger, outline = true, ...props }) => {
 	const [isFocused, setIsFocused] = useState(false);
 
 	const inputRef = useRef(null);
@@ -13,7 +13,7 @@ const Input: React.FC<Props> = ({ className = '', inputClassname = '', onFocus, 
 		<div
 			className={className + ' grid grid-cols-[1fr_24px] bg-gray-40 rounded-xl py-4.5 px-4'}
 			style={{
-				boxShadow: getBorder(isFocused, isDanger),
+				boxShadow: getBorder(outline ? isFocused : false, isDanger),
 			}}
 		>
 			<input
