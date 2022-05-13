@@ -1,26 +1,26 @@
 import { useRouter } from 'next/router';
-import BreadCrumbs from '../../components/BreadCrumbs';
-import SearchLayout from '../../layouts/SearchLayout';
-import Paragraph from '../../components/Paragraph';
-import Headline from '../../components/Headline';
+import BreadCrumbs from '../../../components/BreadCrumbs';
+import SearchLayout from '../../../layouts/SearchLayout';
+import Paragraph from '../../../components/Paragraph';
+import Headline from '../../../components/Headline';
 import Image from 'next/image';
-import Button from '../../components/Button';
+import Button from '../../../components/Button';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
-
-import CompanyIcon from '../../assets/company.svg';
-import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
-import MailSolidIcon from '../../assets/communication/mail_solid.svg';
-import CloseIcon from '../../assets/general/close.svg';
-import RespondVacancyMenu from '../../components/RespondVacancyMenu';
+import RespondVacancyMenu from '../../../components/RespondVacancyMenu';
 import { useQuery } from 'react-query';
-import { getVacancyById } from '../../shared/api/vacancies';
-import { EXPERIENCE } from '../../shared/consts/profile';
+import { getVacancyById } from '../../../shared/api/vacancies';
+import { EXPERIENCE } from '../../../shared/consts/profile';
 
-const VacancyPage = (): JSX.Element => {
+import CompanyIcon from '../../../assets/company.svg';
+import PhoneSolidIcon from '../../../assets/communication/phone_solid.svg';
+import MailSolidIcon from '../../../assets/communication/mail_solid.svg';
+import CloseIcon from '../../../assets/general/close.svg';
+
+const MyVacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
 	const [showContacts, setShowContacts] = useState(false);
@@ -61,9 +61,9 @@ const VacancyPage = (): JSX.Element => {
 					className='mb-10'
 					items={[
 						{
-							label: 'Вакансии',
+							label: 'Мои вакансии',
 							href: {
-								pathname: '/vacancies',
+								pathname: '/my_vacancies',
 								query: router.query,
 							},
 						},
@@ -196,4 +196,4 @@ const VacancyPage = (): JSX.Element => {
 	);
 };
 
-export default VacancyPage;
+export default MyVacancyPage;

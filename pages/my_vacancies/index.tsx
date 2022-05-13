@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import Headline from '../../components/Headline';
+import MyVacancyCard from '../../components/MyVacancyCard';
 import PageSlider from '../../components/PageSlider';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import MainLayout from '../../layouts/MainLayout';
 import { getMyVacancies } from '../../shared/api/vacancies';
+import { EXPERIENCE } from '../../shared/consts/profile';
 
 const MyVacanciesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -14,7 +16,20 @@ const MyVacanciesPage = (): JSX.Element => {
 		enabled: !!(router && router.query),
 	});
 
-	console.log(data); // <- my vacancies
+	function getRoundedStyles(current) {
+		let className = [];
+
+		if(current === 0)
+			className.push('rounded-t-3xl');
+		if(current === data.payload.length - 1)
+			className.push('rounded-b-3xl');
+		if(current % 2 !== 0 && current !== data.payload.length - 1)
+			className.push('border-y-0');
+		else if(current === data.payload.length - 1 && current % 2 !== 0)
+			className.push('border-t-0');
+
+		return className.join(' ');
+	}
 	
 	return (
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
@@ -29,7 +44,23 @@ const MyVacanciesPage = (): JSX.Element => {
 				</Link>
 			</div>
 			<div className='grid mb-10'>
-
+				{isSuccess && data.payload.map((i, num) => (
+					<MyVacancyCard
+						className={getRoundedStyles(num)}
+						vacancyId={i.id}
+						key={num}
+						imageSrc={i.avatar}
+						label={i.title}
+						minPrice={i.salary}
+						description={i.description}
+						tags={[
+							i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
+							...i.schedules.map((i) => i.name)]}
+						last_update={i.updated_at}
+						views={i.views}
+						shows={i.shows}
+						state={i.state} />
+				))}
 			</div>
 			<PageSlider
 				currentPage={router && router.query.page ? +router.query.page : 1}

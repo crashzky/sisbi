@@ -48,7 +48,7 @@ const VacanciesPage = (): JSX.Element => {
 			className.push('rounded-b-3xl');
 		if(current % 2 !== 0 && current !== data.payload.length - 1)
 			className.push('border-y-0');
-		else if(current === data.payload.length - 1)
+		else if(current === data.payload.length - 1 && current % 2 !== 0)
 			className.push('border-t-0');
 
 		return className.join(' ');
@@ -76,7 +76,7 @@ const VacanciesPage = (): JSX.Element => {
 						vacancyId={respondedVacancyId}
 						minPrice={respondedVacancy.salary}
 						contactName={respondedVacancy.full_name}
-						contactPhone={+respondedVacancy.phone}
+						contactPhone={respondedVacancy.phone}
 						contactMail={respondedVacancy.email}
 						onContinue={() => setRespondedVacancyId(null)}
 						onBack={() => setRespondedVacancyId(null)} />
@@ -112,7 +112,7 @@ const VacanciesPage = (): JSX.Element => {
 										i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
 										...i.schedules.map((i) => i.name)]}
 									contactName={i.full_name}
-									contactPhone={+i.phone}
+									contactPhone={i.phone}
 									contactMail={i.email}
 									onRespond={() => setRespondedVacancyId(1)} />
 							))}

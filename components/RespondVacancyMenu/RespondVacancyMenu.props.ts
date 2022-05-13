@@ -6,7 +6,7 @@ interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDi
 	vacancyId: number;
 	minPrice: number;
 	contactName: string;
-	contactPhone: number;
+	contactPhone: string;
 	contactMail: string;
 	onContinue: (message: string, allowSendContacts: boolean) => void;
 	onBack: () => void;

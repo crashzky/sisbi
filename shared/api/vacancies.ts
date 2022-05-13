@@ -9,7 +9,7 @@ const getVacancies = (data: IVacanciesRequest): Promise<IVacanciesResponse> => {
 	const EXPRERIENCE_ITEMS = Object.keys(EXPERIENCE);
 
 	if(data.query)
-		params.push(`q[title_matches]=%25${data.query}%25`);
+		params.push(`q[description_or_title_cont]=${data.query}`);
 	if(data.city_id)
 		params.push(`q[city_id_eq]=${data.city_id}`);
 	if(data.salary)
@@ -80,12 +80,12 @@ const removeSchedulesVacancy = (data: IUpdateSchedulesRequest): Promise<ICreateV
 };
 
 const addTypeEmployementsVacancy = (data: IUpdateTypeEmployementsRequest): Promise<ICreateVacancyResponse> => {
-	return instance.put(`/v1/employer/vacancies/${data.id}/add_type_employments`, { schedules: data.type_employments })
+	return instance.put(`/v1/employer/vacancies/${data.id}/add_type_employments`, { type_employments: data.type_employments })
 		.then((res) => res.data);
 };
 
 const removeTypeEmployementsVacancy = (data: IUpdateTypeEmployementsRequest): Promise<ICreateVacancyResponse> => {
-	return instance.put(`/v1/employer/vacancies/${data.id}/remove_type_employments`, { schedules: data.type_employments })
+	return instance.put(`/v1/employer/vacancies/${data.id}/remove_type_employments`, { type_employments: data.type_employments })
 		.then((res) => res.data);
 };
 

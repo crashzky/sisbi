@@ -11,7 +11,7 @@ interface Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement
 	onRespond: () => void;
 
 	contactName: string;
-	contactPhone: number;
+	contactPhone: string;
 	contactMail: string;
 }
 

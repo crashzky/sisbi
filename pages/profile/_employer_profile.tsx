@@ -11,11 +11,14 @@ import { getMyProfileEmployer } from '../../shared/api/user';
 
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
 import ShortVacancyCard from '../../components/ShortVacancyCard';
+import { getMyVacancies } from '../../shared/api/vacancies';
+import { EXPERIENCE } from '../../shared/consts/profile';
 
 const ProfilePageEmployer = (): JSX.Element => {
 	const router = useRouter();
 
 	const myProfileUserQuery = useQuery('my_profile_employer', getMyProfileEmployer);
+	const myVacanciesQuery = useQuery([{ page: 1 }], getMyVacancies);
 
 	const data = myProfileUserQuery.isSuccess ? myProfileUserQuery.data.payload : null;
 
@@ -84,42 +87,20 @@ const ProfilePageEmployer = (): JSX.Element => {
 						</Link>
 					</div>
 					<div className='flex flex-wrap gap-4'>
-						<ShortVacancyCard
-							className='w-[268px]'
-							lastUpdate={new Date(Date.now())}
-							label='Junior UI/UX дизайнер'
-							minPrice={125000}
-							description={`Плотно взаимодействовать с командой, и корректировать UI в соответствии с
-								возможностями современных технологий. Контролировать реализацию UI/UX, быть ответственным за
-								сдачу проекта в срок.`}
-							tags={['Опыт от 3 лет', 'Полный день', 'Удаленная работа', 'Любой город']} />
-						<ShortVacancyCard
-							className='w-[268px]'
-							lastUpdate={new Date(Date.now())}
-							label='Junior UI/UX дизайнер'
-							minPrice={125000}
-							description={`Плотно взаимодействовать с командой, и корректировать UI в соответствии с
-								возможностями современных технологий. Контролировать реализацию UI/UX, быть ответственным за
-								сдачу проекта в срок.`}
-							tags={['Опыт от 3 лет', 'Полный день', 'Удаленная работа', 'Любой город']} />
-						<ShortVacancyCard
-							className='w-[268px]'
-							lastUpdate={new Date(Date.now())}
-							label='Junior UI/UX дизайнер'
-							minPrice={125000}
-							description={`Плотно взаимодействовать с командой, и корректировать UI в соответствии с
-								возможностями современных технологий. Контролировать реализацию UI/UX, быть ответственным за
-								сдачу проекта в срок.`}
-							tags={['Опыт от 3 лет', 'Полный день', 'Удаленная работа', 'Любой город']} />
-						<ShortVacancyCard
-							className='w-[268px]'
-							lastUpdate={new Date(Date.now())}
-							label='Junior UI/UX дизайнер'
-							minPrice={125000}
-							description={`Плотно взаимодействовать с командой, и корректировать UI в соответствии с
-								возможностями современных технологий. Контролировать реализацию UI/UX, быть ответственным за
-								сдачу проекта в срок.`}
-							tags={['Опыт от 3 лет', 'Полный день', 'Удаленная работа', 'Любой город']} />
+						{myVacanciesQuery.isSuccess &&
+						myVacanciesQuery.data.payload.sort((a, b) => a.shows > b.shows ? 1 : -1).slice(0, 4)
+							.map((i, num) => (
+								<ShortVacancyCard
+									key={num}
+									className='w-[268px]'
+									lastUpdate={new Date(i.updated_at)}
+									label={i.title}
+									minPrice={i.salary}
+									description={i.description}
+									tags={[
+										i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
+										...i.schedules.map((i) => i.name)]} />
+							))}
 					</div>
 				</section>
 			</div>
