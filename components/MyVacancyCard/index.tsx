@@ -7,6 +7,10 @@ import Button from '../Button';
 import Paragraph from '../Paragraph';
 import Props from './MyVacancyCard.props';
 
+import ShareIcon from '../../assets/communication/share_solid.svg';
+import DeleteIcon from '../../assets/navigation/trash_solid.svg';
+import VisibleIcon from '../../assets/general/visible_solid.svg';
+
 const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPrice, description, tags,
 	last_update, vacancyId, shows, views, state, ...props }) => {
 	const router = useRouter();
@@ -86,7 +90,7 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 						</span>
 					))}
 				</div>
-				<div className='grid grid-cols-[121px_155px_1fr] gap-2'>
+				<div className='grid grid-cols-[121px_155px_1fr_repeat(3,36px)] gap-2'>
 					<Button
 						onClick={() => router.push(`/my_vacancies/${vacancyId}`)}
 						variant='outline_secondary'
@@ -102,6 +106,29 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 						className='w-[155px] h-9'
 					>
 						Редактировать
+					</Button>
+					<div></div>
+					<Button
+						variant='outline_secondary'
+						className='w-9 h-9 rounded-full'
+						onClick={() => router.push(`/vacancies/${vacancyId}`)}
+					>
+						<ShareIcon
+							className='mx-auto fill-icon-secondary'
+							width={20}
+							height={20} />
+					</Button>
+					<Button variant='outline_secondary' className='w-9 h-9 rounded-full'>
+						<DeleteIcon
+							className='mx-auto fill-icon-secondary'
+							width={20}
+							height={20} />
+					</Button>
+					<Button variant='outline_secondary' className='w-9 h-9 rounded-full'>
+						<VisibleIcon
+							className='mx-auto fill-icon-secondary'
+							width={20}
+							height={20} />
 					</Button>
 				</div>
 			</div>

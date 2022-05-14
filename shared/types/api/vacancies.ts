@@ -60,6 +60,10 @@ interface ICreateVacancyRequest {
 	city_id: number;
 }
 
+interface IPutVacncyRequest extends Partial<ICreateVacancyRequest> {
+	id: number;
+}
+
 interface ICreateVacancyResponse {
 	result_code: 'ok';
 	payload: IVacancy;	
@@ -83,4 +87,5 @@ export type {
 	ICreateVacancyResponse,
 	IUpdateSchedulesRequest,
 	IUpdateTypeEmployementsRequest,
+	IPutVacncyRequest,
 };

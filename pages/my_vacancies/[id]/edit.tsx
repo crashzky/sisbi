@@ -1,35 +1,39 @@
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import BackButton from '../../components/BackButton';
-import Button from '../../components/Button';
-import Checkbox from '../../components/Checkbox';
-import Headline from '../../components/Headline';
-import Input from '../../components/Input';
-import InputImage from '../../components/InputImage';
-import InputPhone from '../../components/InputPhone';
-import Paragraph from '../../components/Paragraph';
-import Radio from '../../components/Radio';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
-import MainLayout from '../../layouts/MainLayout';
-import ModalLayout from '../../layouts/ModalLayout';
-import ProfileSelectJobModal from '../../modals/ProfileSelectJobModal';
-import { getJobCategories } from '../../shared/api/job_categories';
-import { getSchedules } from '../../shared/api/schedules';
-import { getTypeEmployments } from '../../shared/api/type_employments';
-import { TO_EXPERIENCE } from '../../shared/consts/profile';
+import BackButton from '../../../components/BackButton';
+import Button from '../../../components/Button';
+import Checkbox from '../../../components/Checkbox';
+import Headline from '../../../components/Headline';
+import Input from '../../../components/Input';
+import InputImage from '../../../components/InputImage';
+import InputPhone from '../../../components/InputPhone';
+import Paragraph from '../../../components/Paragraph';
+import Radio from '../../../components/Radio';
+import withCheckAuthLayout from '../../../layouts/CheckAuthLayout';
+import MainLayout from '../../../layouts/MainLayout';
+import ModalLayout from '../../../layouts/ModalLayout';
+import ProfileSelectJobModal from '../../../modals/ProfileSelectJobModal';
+import { getJobCategories } from '../../../shared/api/job_categories';
+import { getSchedules } from '../../../shared/api/schedules';
+import { getTypeEmployments } from '../../../shared/api/type_employments';
+import { EXPERIENCE, TO_EXPERIENCE } from '../../../shared/consts/profile';
 import { useRouter } from 'next/router';
-import EditDescriptionPage from './_description';
-import { getCities } from '../../shared/api/cities';
-import Select from '../../components/Select';
-import { ISelectOption } from '../../components/Select/Select.props';
-import { addSchedulesVacancy, addTypeEmployementsVacancy, createVacancy } from '../../shared/api/vacancies';
+import EditDescriptionPage from './../_description';
+import { getCities } from '../../../shared/api/cities';
+import Select from '../../../components/Select';
+import { ISelectOption } from '../../../components/Select/Select.props';
+import { addSchedulesVacancy, addTypeEmployementsVacancy,
+	getVacancyById,
+	putVacancy,
+	removeSchedulesVacancy, removeTypeEmployementsVacancy } from '../../../shared/api/vacancies';
 
-import LoaderIcon from '../../assets/loader.svg';
+import LoaderIcon from '../../../assets/loader.svg';
 
 const NewVacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
+	const [prevAvatar, setPrevAvatar] = useState<string>();
 	const [avatar, setAvatar] = useState<File>();
 
 	const [description, setDescription] = useState('');
@@ -39,6 +43,31 @@ const NewVacancyPage = (): JSX.Element => {
 	const [showJobSelect, setShowJobSelect] = useState(false);
 
 	const [city, setCity] = useState<ISelectOption>();
+
+	const getVacancyQuery = useQuery([{ id: router.query.id }], getVacancyById, {
+		enabled: !!(router && router.query),
+		onSuccess: (res) => {
+			const { title, salary, experience, type_employments, schedules, full_name, phone, email,
+				description, job_category, avatar, city } = res.payload[0];
+
+			formik.setValues({
+				title,
+				salary,
+				experience: EXPERIENCE[experience],
+				employement_types: type_employments.map((i) => i.id.toString()),
+				schedules: schedules.map((i) => i.id.toString()),
+				
+				contactFullName: full_name,
+				contactPhone: phone,
+				contactEmail: email,
+			});
+
+			setDescription(description);
+			setJobCategory(job_category.id);
+			setPrevAvatar(avatar);
+			setCity({ value: city.id.toString(), label: city.name });
+		},
+	});
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
 		initialData: {
@@ -75,7 +104,14 @@ const NewVacancyPage = (): JSX.Element => {
 
 	const citiesMutation = useMutation(getCities);
 
-	const createVacancyMutation = useMutation(createVacancy, {
+	const putVacancyMutation = useMutation(putVacancy, {
+		onSuccess: (res) => removeSchedulesMutation.mutate({
+			id: res.payload.id,
+			schedules: getVacancyQuery.data.payload[0].schedules.map((i) => i.id),
+		}),
+	});
+
+	const removeSchedulesMutation = useMutation(removeSchedulesVacancy, {
 		onSuccess: (res) => addSchedulesMutation.mutate({
 			id: res.payload.id,
 			schedules: formik.values.schedules.map((i) => +i),
@@ -83,9 +119,16 @@ const NewVacancyPage = (): JSX.Element => {
 	});
 
 	const addSchedulesMutation = useMutation(addSchedulesVacancy, {
+		onSuccess: (res) => removeTypeEmployementsMutation.mutate({
+			id: res.payload.id,
+			type_employments: getVacancyQuery.data.payload[0].type_employments.map((i) => i.id),
+		}),
+	});
+
+	const removeTypeEmployementsMutation = useMutation(removeTypeEmployementsVacancy, {
 		onSuccess: (res) => addTypeEmployementsMutation.mutate({
 			id: res.payload.id,
-			type_employments: formik.values.employement_types.map((i) => +i),
+			type_employments: formik.values.schedules.map((i) => +i),
 		}),
 	});
 
@@ -106,8 +149,12 @@ const NewVacancyPage = (): JSX.Element => {
 			contactEmail: '',
 		},
 		onSubmit: (values) => {
-			createVacancyMutation.mutate({
+			const withAvatar = avatar ? {
 				avatar,
+			} : {};
+
+			putVacancyMutation.mutate({
+				id: +router.query.id,
 				title: values.title,
 				salary: values.salary,
 				experience: TO_EXPERIENCE[values.experience],
@@ -117,6 +164,7 @@ const NewVacancyPage = (): JSX.Element => {
 				description,
 				job_category_id: jobCategory,
 				city_id: +city.value,
+				...withAvatar,
 			});
 		},
 	});
@@ -163,7 +211,9 @@ const NewVacancyPage = (): JSX.Element => {
 							<Paragraph variant='5' tag='p'>
 								Превью для вакансии
 							</Paragraph>
-							<InputImage onChange={(e) => setAvatar(e.target.files[0])} />
+							<InputImage
+								noSelectedImage={prevAvatar}
+								onChange={(e) => setAvatar(e.target.files[0])} />
 							<Paragraph variant='5' tag='p'>
 								Название вакансии
 							</Paragraph>
@@ -295,13 +345,14 @@ const NewVacancyPage = (): JSX.Element => {
 							</Button>
 						</div>
 						<div className='grid grid-flow-col w-fit gap-2 mt-8'>
-							{createVacancyMutation.isLoading || addSchedulesMutation.isLoading
-							|| addTypeEmployementsMutation.isLoading
+							{putVacancyMutation.isLoading || addSchedulesMutation.isLoading
+							|| addTypeEmployementsMutation.isLoading || removeSchedulesMutation.isLoading
+							|| removeTypeEmployementsMutation.isLoading
 								? (
 									<LoaderIcon className='h-12 w-[209px]' />
 								) : (
 									<Button className='h-12 w-[229px]'>
-										Сохранить и опубликовать
+										Сохранить
 									</Button>
 								)}
 							<Button

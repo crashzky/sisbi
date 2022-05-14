@@ -1,5 +1,5 @@
 import { EXPERIENCE } from '../consts/profile';
-import { ICreateVacancyRequest, ICreateVacancyResponse, IUpdateSchedulesRequest,
+import { ICreateVacancyRequest, ICreateVacancyResponse, IPutVacncyRequest, IUpdateSchedulesRequest,
 	IUpdateTypeEmployementsRequest, IVacanciesRequest, IVacanciesResponse } from '../types/api/vacancies';
 import instance from './axios';
 
@@ -69,6 +69,20 @@ const createVacancy = (data: ICreateVacancyRequest): Promise<ICreateVacancyRespo
 		.then((res) => res.data); 
 };
 
+const putVacancy = (data: IPutVacncyRequest): Promise<ICreateVacancyResponse> => {
+	const formData = new FormData();
+	Object.keys(data).forEach((i) => {
+		formData.set(`vacancy[${i}]`, data[i]);
+	});
+
+	return instance.put(`/v1/employer/vacancies/${data.id}`, formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	})
+		.then((res) => res.data); 
+};
+
 const addSchedulesVacancy = (data: IUpdateSchedulesRequest): Promise<ICreateVacancyResponse> => {
 	return instance.put(`/v1/employer/vacancies/${data.id}/add_schedules`, { schedules: data.schedules })
 		.then((res) => res.data);
@@ -95,6 +109,7 @@ export {
 	getRecentVacancies,
 	createVacancy,
 	getMyVacancies,
+	putVacancy,
 
 	addSchedulesVacancy,
 	removeSchedulesVacancy,
