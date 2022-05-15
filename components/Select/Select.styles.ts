@@ -1,5 +1,5 @@
 import { StylesConfig } from 'react-select';
-import { SelectVariants } from './Select.props';
+import { ISelectOption, SelectVariants } from './Select.props';
 
 const SELECT_PRIMARY_STYLES: StylesConfig = {
 	control: (provided, state) => ({
@@ -45,13 +45,17 @@ const SELECT_PRIMARY_STYLES: StylesConfig = {
 		...provided,
 		borderRadius: '12px',
 	}),
-	option: (provided, state) => ({
-		...provided,
-		cursor: 'pointer',
-		boxShadow: '0px 1px 0px #ECEDF0',
-		backgroundColor: state.isFocused ? 'rgba(87, 95, 204, 0.1)' : 'transparent',
-		color: 'black',
-	}),
+	option: (provided, state) => {
+		const currentOption = state.options.find((i) => (i as ISelectOption).label === state.label);
+
+		return {
+			...provided,
+			cursor: 'pointer',
+			boxShadow: state.options.indexOf(currentOption) !== state.options.length - 1 ? '0px 1px 0px #ECEDF0' : '',
+			backgroundColor: state.isFocused ? 'rgba(87, 95, 204, 0.1)' : 'transparent',
+			color: 'black',
+		};
+	},
 	singleValue: (provided) => ({
 		...provided,
 		padding: '0 16px',
@@ -98,16 +102,90 @@ const SELECT_WITH_GAP_STYLES: StylesConfig = {
 		...provided,
 		borderRadius: '12px',
 	}),
-	option: (provided, state) => ({
-		...provided,
-		cursor: 'pointer',
-		boxShadow: '0px 1px 0px #ECEDF0',
-		backgroundColor: state.isFocused ? 'rgba(87, 95, 204, 0.1)' : 'transparent',
-		color: 'black',
-	}),
+	option: (provided, state) => {
+		const currentOption = state.options.find((i) => (i as ISelectOption).label === state.label);
+
+		return {
+			...provided,
+			cursor: 'pointer',
+			boxShadow: state.options.indexOf(currentOption) !== state.options.length - 1 ? '0px 1px 0px #ECEDF0' : '',
+			backgroundColor: state.isFocused ? 'rgba(87, 95, 204, 0.1)' : 'transparent',
+			color: 'black',
+		};
+	},
 	singleValue: (provided) => ({
 		...provided,
 		padding: '0 16px',
+	}),
+};
+
+const SELECT_TRANSPARENT_STYLES: StylesConfig = {
+	control: (provided) => ({
+		...provided,
+		cursor: 'pointer',
+		borderRadius: '12px',
+		border: 'none',
+		borderColor: 'transparent',
+		boxShadow: 'none',
+	}),
+	valueContainer: (provided) => ({
+		...provided,
+		padding: 0,
+		borderRadius: '12px',
+	}),
+	input: (provided) => ({
+		...provided,
+		fontSize: '12px',
+		padding: '13.5px 16px',
+		margin: '0',
+	}),
+	placeholder: (provided) => ({
+		...provided,
+		padding: '0 16px',
+		fontSize: '12px',
+		color: '#575FCC',
+	}),
+	dropdownIndicator: (provided) => ({
+		...provided,
+		svg: {
+			fill: '#575FCC',
+		},
+	}),
+	indicatorSeparator: () => ({
+		display: 'none',
+	}),
+	loadingIndicator: () => ({
+		display: 'none',
+	}),
+	menu: (provided) => ({
+		...provided,
+		borderRadius: '12px',
+		border: 'none',
+		boxShadow: `0px 184px 74px rgba(35, 47, 59, 0.01),
+			0px 104px 62px rgba(35, 47, 59, 0.03), 0px 46px 46px rgba(35, 47, 59, 0.04),
+			0px 12px 25px rgba(35, 47, 59, 0.05), 0px 0px 0px rgba(35, 47, 59, 0.05)`,
+	}),
+	menuList: (provided) => ({
+		...provided,
+		borderRadius: '12px',
+		fontSize: '12px',
+	}),
+	option: (provided, state) => {
+		const currentOption = state.options.find((i) => (i as ISelectOption).label === state.label);
+
+		return {
+			...provided,
+			cursor: 'pointer',
+			boxShadow: state.options.indexOf(currentOption) !== state.options.length - 1 ? '0px 1px 0px #ECEDF0' : '',
+			backgroundColor: state.isFocused ? 'rgba(87, 95, 204, 0.1)' : 'transparent',
+			color: 'black',
+		};
+	},
+	singleValue: (provided) => ({
+		...provided,
+		padding: '0 16px',
+		fontSize: '12px',
+		color: '#575FCC',
 	}),
 };
 
@@ -117,6 +195,8 @@ function getStyles(variant: SelectVariants): StylesConfig {
 			return SELECT_PRIMARY_STYLES;
 		case 'with_gap':
 			return SELECT_WITH_GAP_STYLES;
+		case 'transparent':
+			return SELECT_TRANSPARENT_STYLES;
 	}
 }
 

@@ -30,7 +30,7 @@ interface Props {
 	value?: ISelectOption;
 }
 
-type SelectVariants = 'primary' | 'with_gap';
+type SelectVariants = 'primary' | 'with_gap' | 'transparent';
 
 interface ISelectOption {
 	value: string;

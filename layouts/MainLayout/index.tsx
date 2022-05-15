@@ -6,7 +6,8 @@ import Footer from '../Footer';
 import Header from '../Header';
 import Props from './MainLayout.props';
 
-const MainLayout: React.FC<Props> = ({ children, headerItems = HEADER_PRIMARY_ITEMS, ...props }) => {
+const MainLayout: React.FC<Props> = ({ children, headerItems = HEADER_PRIMARY_ITEMS, withFooter = true,
+	withHeader = true, headerClassname, ...props }) => {
 	const [userType, setUserType] = useState(null);
 
 	const myProfileUser = useQuery('my_profile_user', getMyProfileUser, {
@@ -25,14 +26,16 @@ const MainLayout: React.FC<Props> = ({ children, headerItems = HEADER_PRIMARY_IT
 
 	return (
 		<>
-			<Header
-				items={headerItems}
-				userData={myProfileUser.isSuccess ? myProfileUser.data : myProfileEmployer.data}
-				className='py-4 px-40 print:hidden' />
+			{withHeader && (
+				<Header
+					items={headerItems}
+					userData={myProfileUser.isSuccess ? myProfileUser.data : myProfileEmployer.data}
+					className={'py-4 px-40 print:hidden ' + headerClassname} />
+			)}
 			<main {...props}>
 				{children}
 			</main>
-			<Footer className='pt-24 pb-9 px-40 bg-[#FAFBFC] print:hidden' />
+			{withFooter && <Footer className='pt-24 pb-9 px-40 bg-[#FAFBFC] print:hidden' />}
 		</>
 	);
 };
