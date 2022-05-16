@@ -80,7 +80,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							Размещенные вакансии
 						</Paragraph>
-						<Link href='/profile/about'>
+						<Link href='/my_vacancies'>
 							<a className='text-xs text-text font-semibold'>
 								Перейти к вакансиям
 							</a>

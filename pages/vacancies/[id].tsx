@@ -88,7 +88,16 @@ const VacancyPage = (): JSX.Element => {
 								))}
 						</div>
 						<div className='grid grid-flow-col gap-3 w-fit mb-5'>
-							<CompanyIcon />
+							{employer && employer.avatar ? (
+								<Image
+									width={20}
+									height={20}
+									alt='Company'
+									className='object-cover rounded-full'
+									src={employer.avatar} />
+							) : (
+								<CompanyIcon />
+							)}
 							<Paragraph variant='4' tag='p' className='text-text'>
 								{employer && employer.name}
 							</Paragraph>
@@ -141,7 +150,7 @@ const VacancyPage = (): JSX.Element => {
 										<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
 											<PhoneSolidIcon className='fill-darkBlue' />
 											<Paragraph variant='5' tag='p' className='text-text'>
-												{formatPhoneNumberIntl('+7' + phone)}
+												{formatPhoneNumberIntl(phone)}
 											</Paragraph>
 											<MailSolidIcon className='fill-darkBlue' />
 											<Paragraph variant='5' tag='p' className='text-text'>
@@ -165,7 +174,7 @@ const VacancyPage = (): JSX.Element => {
 						<div className='grid grid-flow-col w-fit gap-3 items-center'>
 							<PhoneSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
-								{formatPhoneNumberIntl('+7' + phone)}
+								{formatPhoneNumberIntl(phone)}
 							</Paragraph>
 							<MailSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='text-darkBlue'>

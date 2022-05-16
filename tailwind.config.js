@@ -30,6 +30,7 @@ module.exports = {
 
 				'gray-20': '#F9F9FA',
 				'gray-40': '#F3F3F5',
+				'gray-60': '#ECEDF0',
 				'gray-80': '#E6E7EB',
 				'gray-100': '#E0E1E6',
 			},

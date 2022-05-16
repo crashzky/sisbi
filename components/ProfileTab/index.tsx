@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 
 import CaretLeftIcon from '../../assets/arrows/caret_left.svg';
 import useProfileTab from '../../hooks/useProfileTab';
+import { MAIN_SHADOW } from '../../shared/consts/shadows';
 
 const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 	const [showMenu, setShowMenu] = useState(false);
@@ -35,9 +36,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 				<div
 					className='absolute z-20 top-12 w-full grid bg-white rounded-b-2xl'
 					style={{
-						boxShadow: `0px 184px 74px rgba(35, 47, 59, 0.01), 0px 104px 62px rgba(35, 47, 59, 0.03),
-							0px 46px 46px rgba(35, 47, 59, 0.04), 0px 12px 25px rgba(35, 47, 59, 0.05),
-							0px 0px 0px rgba(35, 47, 59, 0.05)`,
+						boxShadow: MAIN_SHADOW,
 					}}
 				>
 					{menuItems.map((i, num) => (

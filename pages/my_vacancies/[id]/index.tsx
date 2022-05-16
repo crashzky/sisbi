@@ -141,7 +141,7 @@ const MyVacancyPage = (): JSX.Element => {
 										<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
 											<PhoneSolidIcon className='fill-darkBlue' />
 											<Paragraph variant='5' tag='p' className='text-text'>
-												{formatPhoneNumberIntl('+7' + phone)}
+												{formatPhoneNumberIntl(phone)}
 											</Paragraph>
 											<MailSolidIcon className='fill-darkBlue' />
 											<Paragraph variant='5' tag='p' className='text-text'>
@@ -165,7 +165,7 @@ const MyVacancyPage = (): JSX.Element => {
 						<div className='grid grid-flow-col w-fit gap-3 items-center'>
 							<PhoneSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
-								{formatPhoneNumberIntl('+7' + phone)}
+								{formatPhoneNumberIntl(phone)}
 							</Paragraph>
 							<MailSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='text-darkBlue'>

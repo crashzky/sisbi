@@ -5,6 +5,7 @@ interface Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement
 };
 
 interface IChatParams {
+	chatId: number;
 	companionAvatar: string | null;
 	companionName: string;
 	vacancyName: string;

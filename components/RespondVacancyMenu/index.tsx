@@ -76,7 +76,7 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 					<div className='grid grid-cols-[20px_auto_20px_auto] gap-3 items-center'>
 						<PhoneSolidIcon className='fill-icon' />
 						<Paragraph variant='5' tag='p' className='text-text'>
-							{formatPhoneNumberIntl('+7' + contactPhone)}
+							{formatPhoneNumberIntl(contactPhone)}
 						</Paragraph>
 						<MailSolidIcon className='fill-icon' />
 						<Paragraph variant='5' tag='p' className='text-text'>

@@ -1,4 +1,5 @@
 import { StylesConfig } from 'react-select';
+import { MAIN_SHADOW } from '../../shared/consts/shadows';
 import { ISelectOption, SelectVariants } from './Select.props';
 
 const SELECT_PRIMARY_STYLES: StylesConfig = {
@@ -161,9 +162,7 @@ const SELECT_TRANSPARENT_STYLES: StylesConfig = {
 		...provided,
 		borderRadius: '12px',
 		border: 'none',
-		boxShadow: `0px 184px 74px rgba(35, 47, 59, 0.01),
-			0px 104px 62px rgba(35, 47, 59, 0.03), 0px 46px 46px rgba(35, 47, 59, 0.04),
-			0px 12px 25px rgba(35, 47, 59, 0.05), 0px 0px 0px rgba(35, 47, 59, 0.05)`,
+		boxShadow: MAIN_SHADOW,
 	}),
 	menuList: (provided) => ({
 		...provided,

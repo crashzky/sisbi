@@ -5,7 +5,7 @@ interface Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement
 	size?: ButtonSizes;
 }
 
-type ButtonVariants = 'primary' | 'secondary' | 'outline' | 'outline_secondary';
+type ButtonVariants = 'primary' | 'secondary' | 'outline' | 'outline_secondary' | 'danger';
 type ButtonSizes = 'L' | 'S';
 
 export default Props;

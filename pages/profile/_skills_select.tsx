@@ -20,7 +20,7 @@ const SkillsSelectPage = ({ onClickBack, skills, onContinue }: Props): JSX.Eleme
 			if(localSkills.length < 5 && values.name.length) {
 				setLocalSkills((prev) => {
 					let _prev = [...prev];
-					_prev.push(values.name);
+					_prev.push(values.name.replaceAll(' ', '_'));
 	
 					return _prev;
 				});

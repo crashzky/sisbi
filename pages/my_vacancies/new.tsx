@@ -113,7 +113,7 @@ const NewVacancyPage = (): JSX.Element => {
 				experience: TO_EXPERIENCE[values.experience],
 				full_name: values.contactFullName,
 				email: values.contactEmail,
-				phone: values.contactPhone,
+				phone: '+7' + values.contactPhone,
 				description,
 				job_category_id: jobCategory,
 				city_id: +city.value,
