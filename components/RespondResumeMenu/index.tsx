@@ -1,25 +1,54 @@
 import { useFormik } from 'formik';
-import Props from './RespondVacancyMenu.props';
+import Props from './RespondResumeMenu.props';
 import Paragraph from '../Paragraph';
 import Link from 'next/link';
 import Textarea from '../Textarea';
 import Checkbox from '../Checkbox';
 import Button from '../Button';
 import { useRouter } from 'next/router';
-import { formatPhoneNumberIntl } from 'react-phone-number-input';
+import Radio from '../Radio';
+import { useMutation } from 'react-query';
+import { getMyVacancies } from '../../shared/api/vacancies';
+import { useEffect, useState } from 'react';
+import { IVacancy } from '../../shared/types/api/vacancies';
 
 import CloseIcon from '../../assets/general/close.svg';
-import CompanyIcon from '../../assets/company.svg';
-import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
-import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 
-const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vacancyName, minPrice, vacancyId,
-	contactName, contactPhone, contactMail, onContinue, onBack, ...props }) => {
+const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vacancyName, minPrice, resumeId,
+	onContinue, onBack, ...props }) => {
 	const router = useRouter();
+
+	const [vacancies, setVacancies] = useState<IVacancy[]>([]);
+
+	const getVacanciesMutation = useMutation(getMyVacancies, {
+		onSuccess: (res) => {
+			setVacancies((prev) => {
+				let vacancies = [...prev];
+				
+				res.payload.forEach((i) => {
+					if(!vacancies.find((j) => j.id === i.id))
+						vacancies.push(i);
+				});
+
+				return vacancies;
+			});
+
+			if(res.total_pages - res.current_page > 0) {
+				getVacanciesMutation.mutate({
+					queryKey: [
+						{
+							page: res.current_page + 1,
+						},
+					],
+				});
+			}
+		},
+	});
 
 	const formik = useFormik({
 		initialValues: {
 			message: '',
+			selectedVacancy: null,
 			allowSendContacts: [],
 		},
 		onSubmit: (values) => {
@@ -27,11 +56,21 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 		},
 	});
 
+	useEffect(() => {
+		getVacanciesMutation.mutate({
+			queryKey: [
+				{
+					page: 1,
+				},
+			],
+		});
+	}, []);
+
 	return (
 		<aside className={className} {...props}>
 			<div className='px-6 py-4 flex justify-between items-center border-b-[1px] border-button-secondary'>
 				<Paragraph variant='1' tag='h2' className='font-semibold'>
-					Отклик на вакансию
+					Приглашение на вакансию
 				</Paragraph>
 				<button onClick={onBack}>
 					<CloseIcon className='fill-icon-secondary' />
@@ -40,12 +79,9 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 			<form onSubmit={formik.handleSubmit}>
 				<div className='px-6 py-4 flex justify-between border-b-[1px] border-button-secondary'>
 					<div className='grid gap-1'>
-						<div className='grid grid-cols-[20px_auto] gap-2 items-center'>
-							<CompanyIcon />
-							<Paragraph variant='6' tag='p'>
-								{companyName}
-							</Paragraph>
-						</div>
+						<Paragraph variant='6' tag='p'>
+							{`${name} ${surname}`}
+						</Paragraph>
 						<Paragraph variant='4' tag='p' className='font-semibold'>
 							{vacancyName}
 						</Paragraph>
@@ -57,46 +93,30 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 						</Paragraph>
 					</div>
 					<Link href={{
-						pathname: `/vacancies/${vacancyId}`,
+						pathname: `/resumes/${resumeId}`,
 						query: router.query,
 					}}
 					>
 						<a target='_blank' className='text-xs text-text'>
-							Открыть вакансию в новой вкладке
+							Открыть резюме в новой вкладке
 						</a>
 					</Link>
 				</div>
-				<div className='px-6 py-4 border-b-[1px] border-button-secondary'>
-					<Paragraph variant='5' tag='h3' className='font-semibold mb-3'>
-						Контактное лицо
+				<div className='px-6 py-4 border-b-[1px] border-button-secondary grid grid-cols-2'>
+					<Paragraph variant='5' tag='p'>
+						Вакансия
 					</Paragraph>
-					<Paragraph variant='5' tag='p' className='mb-2'>
-						{contactName}
-					</Paragraph>
-					<div className='grid grid-cols-[20px_auto_20px_auto] gap-3 items-center'>
-						<PhoneSolidIcon className='fill-icon' />
-						<Paragraph variant='5' tag='p' className='text-text'>
-							{formatPhoneNumberIntl(contactPhone)}
-						</Paragraph>
-						<MailSolidIcon className='fill-icon' />
-						<Paragraph variant='5' tag='p' className='text-text'>
-							{contactMail}
-						</Paragraph>
-					</div>
+					<Radio
+						className='grid gap-3'
+						name='selectedVacancy'
+						value={formik.values.selectedVacancy}
+						onChange={formik.handleChange}
+						items={vacancies.map((i) => i.title)} />
 				</div>
 				<div className='p-6 border-b-[1px] border-button-secondary'>
-					<Paragraph variant='4' tag='p' className='mb-3'>
-						Вы откликаетесь, как
-						{` ${vacancyName} `}
-						,
-						<br />
-						зарплата от
-						{` ${new Intl.NumberFormat('ru-RU').format(minPrice)} `}
-						₽
-					</Paragraph>
 					<Textarea
 						className='w-full h-[200px] mb-3'
-						placeholder='Сообщение работодателю'
+						placeholder='Сообщение соискателю'
 						name='message'
 						value={formik.values.message}
 						onChange={formik.handleChange}
@@ -107,11 +127,11 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 						name='allowSendContacts'
 						onChange={formik.handleChange}
 						checked={!!formik.values.allowSendContacts.length}
-						label='Предоставить контакты работодателю' />
+						label='Предоставить контакты соискателю' />
 				</div>
 				<div className='px-6 py-4 grid grid-cols-[auto_auto_1fr] gap-[10px]'>
 					<Button className='h-9 px-4'>
-						Отправить отклик
+						Отправить приглашение
 					</Button>
 					<Button variant='secondary' type='button' className='h-9 px-4' onClick={onBack}>
 						Отменить
@@ -122,4 +142,4 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 	);
 };
 
-export default RespondVacancyMenu;
+export default RespondResumeMenu;

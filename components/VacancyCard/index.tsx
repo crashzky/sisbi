@@ -3,12 +3,12 @@ import Props from './VacancyCard.props';
 import Paragraph from '../Paragraph';
 import Button from '../Button';
 import { useState } from 'react';
+import { formatPhoneNumberIntl } from 'react-phone-number-input';
 
 import CompanyIcon from '../../assets/company.svg';
 import CloseIcon from '../../assets/general/close.svg';
 import PhoneIcon from '../../assets/communication/phone_solid.svg';
 import MailIcon from '../../assets/communication/mail_solid.svg';
-import { formatPhoneNumberIntl } from 'react-phone-number-input';
 
 const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, label, minPrice, description, tags,
 	contactName, contactPhone, contactMail, companyAvatar, onRespond, ...props }) => {
@@ -67,14 +67,16 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 					))}
 				</div>
 				<div className='grid grid-cols-[121px_155px_1fr] gap-2'>
-					<Button
-						variant='outline_secondary'
-						size='S'
-						className='w-[121px] h-9'
-						onClick={onRespond}
-					>
-						Откликнуться
-					</Button>
+					{localStorage.getItem('user_type') === 'employee' && (
+						<Button
+							variant='outline_secondary'
+							size='S'
+							className='w-[121px] h-9'
+							onClick={onRespond}
+						>
+							Откликнуться
+						</Button>
+					)}
 					<div className='relative'>
 						<Button
 							variant={showContacts ? 'secondary' : 'outline_secondary'}

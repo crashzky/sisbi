@@ -10,15 +10,15 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
+import RespondVacancyMenu from '../../components/RespondVacancyMenu';
+import { useQuery } from 'react-query';
+import { getVacancyById } from '../../shared/api/vacancies';
+import { EXPERIENCE } from '../../shared/consts/profile';
 
 import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 import CloseIcon from '../../assets/general/close.svg';
-import RespondVacancyMenu from '../../components/RespondVacancyMenu';
-import { useQuery } from 'react-query';
-import { getVacancyById } from '../../shared/api/vacancies';
-import { EXPERIENCE } from '../../shared/consts/profile';
 
 const VacancyPage = (): JSX.Element => {
 	const router = useRouter();

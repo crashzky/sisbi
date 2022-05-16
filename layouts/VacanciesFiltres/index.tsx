@@ -11,9 +11,9 @@ import Props from './VacanciesFiltres.props';
 import { useFormik } from 'formik';
 import { getSchedules } from '../../shared/api/schedules';
 import { getTypeEmployments } from '../../shared/api/type_employments';
-import { EXPERIENCE, TO_EXPERIENCE } from '../../shared/consts/profile';
+import { EXPERIENCE, GENDERS, TO_EXPERIENCE, TO_GENDERS } from '../../shared/consts/profile';
 
-const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
+const VacanciesFiltres: React.FC<Props> = ({ variant, ...props }) => {
 	const router = useRouter();
 
 	const [job_category_id, setJobCategories] = useState([]);
@@ -55,11 +55,12 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 		initialValues: {
 			salary: null,
 			schedules: [],
+			gender: null,
 			employment_types: [],
 			experience: null,
 		},
 		onSubmit: (values) => {
-			const { salary, schedules, employment_types, experience } = values;
+			const { salary, schedules, employment_types, experience, gender } = values;
 
 			let params = [];
 			if(salary)
@@ -72,13 +73,15 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 				params.push(`experience=${TO_EXPERIENCE[experience]}`);
 			if(job_category_id)
 				params.push(`job_category_id=${JSON.stringify(job_category_id)}`);
+			if(gender)
+				params.push(`gender=${TO_GENDERS[gender]}`);
 
-			router.push(`/vacancies?${params.join('&')}`);
+			router.push(`/${variant}?${params.join('&')}`);
 		},
 	});
 
 	useEffect(() => {
-		const { job_category_id, salary, schedules, employment_types, experience } = router.query;
+		const { job_category_id, salary, schedules, employment_types, experience, gender } = router.query;
 
 		if(job_category_id)
 			setJobCategories(JSON.parse(job_category_id.toString()));
@@ -88,6 +91,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 			schedules: schedules ? schedules.toString().split(',') : [],
 			employment_types: employment_types ? employment_types.toString().split(',') : [],
 			experience: experience ? EXPERIENCE[experience.toString()] : '',
+			gender: gender ? GENDERS[gender.toString()] : null,
 		});
 	}, [router]);
 
@@ -104,7 +108,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 								type='button'
 								className='text-xs font-semibold text-darkBlue'
 								onClick={() => {
-									const { salary, schedules, employment_types, experience } = router.query;
+									const { salary, schedules, employment_types, experience, gender } = router.query;
 
 									let params = [];
 									if(salary)
@@ -117,8 +121,10 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 										params.push(`experience=${experience}`);
 									if(job_category_id)
 										params.push(`job_category_id=${JSON.stringify(job_category_id)}`);
+									if(gender)
+										params.push(`gender=${TO_GENDERS[gender.toString()]}`);
 
-									router.push(`/vacancies?${params.join('&')}&modal=job_categories`);
+									router.push(`/${variant}?${params.join('&')}&modal=job_categories`);
 								}}
 							>
 								Изменить
@@ -142,7 +148,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 								variant='secondary'
 								className='w-[88px] font-normal h-9'
 								onClick={() => {
-									router.push('/vacancies?modal=job_categories'
+									router.push(`/${variant}?modal=job_categories`
 										+ (router.query.job_category_id
 											? `&job_category_id=${router.query.job_category_id}`
 											: ''));
@@ -157,6 +163,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						Минимальная зарплата
 					</Paragraph>
 					<Input
+						variant='outline'
 						name='salary'
 						value={formik.values.salary}
 						onChange={formik.handleChange}
@@ -164,6 +171,19 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 						min={0}
 						type='number' />
 				</div>
+				{variant === 'resumes' && (
+					<div>
+						<Paragraph variant='5' tag='h3' className='font-semibold mb-3'>
+							Пол
+						</Paragraph>
+						<Radio
+							className='grid gap-2'
+							name='gender'
+							onChange={formik.handleChange}
+							value={formik.values.gender}
+							items={['Мужской', 'Женский']} />
+					</div>
+				)}
 				<div>
 					<Paragraph variant='5' tag='h3' className='font-semibold mb-3'>
 						График работы
@@ -221,6 +241,7 @@ const VacanciesFiltres: React.FC<Props> = ({ ...props }) => {
 								schedules: [],
 								employment_types: [],
 								experience: null,
+								gender: null,
 							});
 							setJobCategories([]);
 						}}

@@ -1,17 +1,18 @@
 import { useState, useRef } from 'react';
 import Props from './Input.props';
-import { getBorder, getTextColor } from './Input.styles';
+import { getBorder, getContainerStyles, getTextColor } from './Input.styles';
 
 import CloseIcon from '../../assets/general/close.svg';
 
-const Input: React.FC<Props> = ({ className = '', inputClassname = '', onFocus, onBlur, isDanger, outline = true, ...props }) => {
+const Input: React.FC<Props> = ({ className = '', inputClassname = '', onFocus, onBlur, isDanger, outline = true,
+	variant = 'classic', ...props }) => {
 	const [isFocused, setIsFocused] = useState(false);
 
 	const inputRef = useRef(null);
 
 	return (
 		<div
-			className={className + ' grid grid-cols-[1fr_24px] bg-gray-40 rounded-xl py-4.5 px-4'}
+			className={className + ' grid grid-cols-[1fr_24px] rounded-xl ' + getContainerStyles(variant)}
 			style={{
 				boxShadow: getBorder(outline ? isFocused : false, isDanger),
 			}}

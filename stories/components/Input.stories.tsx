@@ -11,10 +11,17 @@ const Template: ComponentStory<typeof Input> = (args) => <Input {...args} />;
 
 export const Primary = Template.bind({});
 
+export const Outline = Template.bind({});
+
 export const Danger = Template.bind({});
 
 Primary.args = {
 	placeholder: 'Имя',
+};
+
+Outline.args = {
+	placeholder: 'Имя',
+	variant: 'outline',
 };
 
 Danger.args = {

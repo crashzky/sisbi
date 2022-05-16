@@ -4,6 +4,13 @@ interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>,
 	isDanger?: boolean;
 	inputClassname?: string;
 	outline?: boolean;
+	variant?: InputVariants;
 }
 
+type InputVariants = 'classic' | 'outline';
+
 export default Props;
+
+export type {
+	InputVariants,
+};

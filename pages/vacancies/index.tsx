@@ -89,9 +89,11 @@ const VacanciesPage = (): JSX.Element => {
 					вакансий
 				</Headline>
 				<div className='grid grid-cols-[216px_1fr] gap-[68px]'>
-					<VacanciesFiltres style={{
-						gap: activeModal && '0px',
-					}} />
+					<VacanciesFiltres
+						variant='vacancies'
+						style={{
+							gap: activeModal && '0px',
+						}} />
 					<div >
 						<div className='grid'>
 							{isSuccess && data.payload.map((i, num) => (
