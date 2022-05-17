@@ -3,6 +3,7 @@ import { ISelectOption } from '../Select/Select.props';
 
 interface Props extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'onChange'> {
 	options: ISelectOption[];
+	subLabels?: ISelectOption[];
 	value?: ISelectOption;
 	onChange?: (newValue: ISelectOption) => void;
 };

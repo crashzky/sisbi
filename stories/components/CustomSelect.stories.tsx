@@ -11,6 +11,8 @@ const Template: ComponentStory<typeof CustomSelect> = (args) => <CustomSelect {.
 
 export const Primary = Template.bind({});
 
+export const Company = Template.bind({});
+
 Primary.args = {
 	options: [
 		{ value: 'Все отклики', label: 'Все отклики' },
@@ -19,4 +21,20 @@ Primary.args = {
 		{ value: 'Отказ', label: 'Отказ' },
 	],
 	value: { value: 'Все отклики', label: 'Все отклики' },
+};
+
+Company.args = {
+	options: [
+		{ value: 'Junior UI/UX дизайнер', label: 'Junior UI/UX дизайнер' },
+		{ value: 'Junior UI/UX дизайнер', label: 'Junior UI/UX дизайнер' },
+		{ value: 'Junior UI/UX дизайнер', label: 'Junior UI/UX дизайнер' },
+		{ value: 'Junior UI/UX дизайнер', label: 'Junior UI/UX дизайнер' },
+	],
+	subLabels: [
+		{ value: 'Junior UI/UX дизайнер', label: 'У вас 25+ откликов на этой вакансии' },
+		{ value: 'Junior UI/UX дизайнер', label: 'У вас 25+ откликов на этой вакансии' },
+		{ value: 'Junior UI/UX дизайнер', label: 'У вас 25+ откликов на этой вакансии' },
+		{ value: 'Junior UI/UX дизайнер', label: 'У вас 25+ откликов на этой вакансии' },
+	],
+	value: { value: 'Junior UI/UX дизайнер', label: 'Junior UI/UX дизайнер' },
 };

@@ -6,7 +6,7 @@ import DropdownArrowIcon from '../../assets/arrows/dropdown_arrow.svg';
 import CheckIcon from '../../assets/general/check.svg';
 import { MAIN_SHADOW } from '../../shared/consts/shadows';
 
-const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChange, ...props }) => {
+const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChange, subLabels, ...props }) => {
 	const [isOpened, setIsOpened] = useState(false);
 
 	return (
@@ -25,9 +25,10 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 			</div>
 			{isOpened && (
 				<div
-					className='absolute z-20 top-10 right-0 w-[186px] grid bg-white rounded-b-2xl'
+					className='absolute z-20 top-10 right-0 grid bg-white rounded-b-2xl'
 					style={{
 						boxShadow: MAIN_SHADOW,
+						width: subLabels ? '272px' : '186px',
 					}}
 				>
 					{options.map((i, num) => (
@@ -42,6 +43,12 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 						>
 							<Paragraph variant='5' tag='span'>
 								{i.label}
+								<br />
+								{subLabels && (
+									<span className='text-red text-xs font-normal'>
+										{subLabels.find((j) => j.value === i.value).label}
+									</span>
+								)}
 							</Paragraph>
 							{value.value === i.value && (
 								<CheckIcon className='scale-[0.83] fill-lightBlue' />
