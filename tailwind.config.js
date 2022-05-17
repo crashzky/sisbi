@@ -9,6 +9,9 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				'rouble': 'Rouble',
+			},
 			colors: {
 				'lightBlue': '#739EF1',
 				'gold': '#FABF48',

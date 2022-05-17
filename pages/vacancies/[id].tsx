@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
 import { useQuery } from 'react-query';
@@ -23,6 +23,8 @@ import CloseIcon from '../../assets/general/close.svg';
 const VacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
+	const [userType, setUserType] = useState(null);
+
 	const [showContacts, setShowContacts] = useState(false);
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
 
@@ -32,6 +34,8 @@ const VacancyPage = (): JSX.Element => {
 
 	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
 		schedules, employer, created_at, avatar, id } = data ? data.payload[0] : {} as any;
+
+	useEffect(() => setUserType(localStorage.getItem('user_type')), []);
 
 	return (
 		<>
@@ -110,7 +114,9 @@ const VacancyPage = (): JSX.Element => {
 							{' '}
 							{new Intl.NumberFormat().format(salary)}
 							{' '}
-							₽
+							<span className='font-rouble text-3xl text-text'>
+								{'c'}
+							</span>
 						</Headline>
 						<Paragraph variant='5' tag='p' className='mb-1'>
 							{isSuccess && employer.name}
@@ -119,9 +125,11 @@ const VacancyPage = (): JSX.Element => {
 							{isSuccess && job_category.name}
 						</Paragraph>
 						<div className='grid grid-flow-col gap-2 w-fit mb-8'>
-							<Button className='h-12 px-8' onClick={() => setShowRespondMenu(true)}>
-								Откликнуться
-							</Button>
+							{(userType && userType=== 'user') ? (
+								<Button className='h-12 px-8' onClick={() => setShowRespondMenu(true)}>
+									Откликнуться
+								</Button>
+							) : <></>}
 							<div className='relative'>
 								<Button
 									variant='secondary'

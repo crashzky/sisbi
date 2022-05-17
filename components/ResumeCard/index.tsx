@@ -39,7 +39,9 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 					от
 					{' '}
 					{new Intl.NumberFormat('ru-RU').format(minSalary)}
-					{' ₽'}
+					<span className='font-rouble text-xl text-text'>
+						{'c'}
+					</span>
 				</Paragraph>
 				<Paragraph variant='6' tag='p' className='mb-3'>
 					Навыки:

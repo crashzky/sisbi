@@ -7,13 +7,15 @@ import Image from 'next/image';
 import Button from '../../components/Button';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 
 import RespondResumeMenu from '../../components/RespondResumeMenu';
 
 const ResumeIdPage = (): JSX.Element => {
 	const router = useRouter();
+	
+	const [userType, setUserType] = useState(null);
 
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
 
@@ -23,6 +25,8 @@ const ResumeIdPage = (): JSX.Element => {
 
 	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
 		schedules, employer, created_at, avatar, id } = data ? data.payload[0] : {} as any;*/
+
+	useEffect(() => setUserType(localStorage.getItem('user_type')), []);
 
 	return (
 		<>
@@ -90,16 +94,20 @@ const ResumeIdPage = (): JSX.Element => {
 							{' '}
 							{new Intl.NumberFormat().format(125000)}
 							{' '}
-							₽
+							<span className='font-rouble text-3xl text-text'>
+								{'c'}
+							</span>
 						</Headline>
 						<Paragraph variant='5' tag='p' className='mb-6 text-text-secondary'>
 							Навыки:
 							{' '}
 							{['Figma', 'Photoshop', 'Web-дизайн', 'iOS'].join(', ')}
 						</Paragraph>
-						<Button className='h-12 px-8 mb-8' onClick={() => setShowRespondMenu(true)}>
-							Отправить приглашение
-						</Button>
+						{(userType && userType === 'employer') && (
+							<Button className='h-12 px-8 mb-8' onClick={() => setShowRespondMenu(true)}>
+								Отправить приглашение
+							</Button>
+						)}
 						<Paragraph variant='5' tag='p' className='mb-8'>
 							«Делать то, что любишь – это свобода! Любить то, что делаешь – это счастье!»
 							Нам интересна наша работа, мы любим, то что создаем!

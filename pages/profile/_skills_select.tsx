@@ -9,7 +9,7 @@ import Button from '../../components/Button';
 import { useFormik } from 'formik';
 import Paragraph from '../../components/Paragraph';
 
-const SkillsSelectPage = ({ onClickBack, skills, onContinue }: Props): JSX.Element => {
+const SkillsSelectPage = ({ onClickBack, skills = [], onContinue }: Props): JSX.Element => {
 	const [localSkills, setLocalSkills] = useState<string[]>(skills);
 
 	const formik = useFormik({

@@ -48,7 +48,9 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 							от
 							{' '}
 							{new Intl.NumberFormat('ru-RU').format(minPrice)}
-							{' ₽'}
+							<span className='font-rouble text-xl text-text'>
+								{'c'}
+							</span>
 						</Paragraph>
 					</div>
 					<div className='grid grid-flow-col gap-5'>

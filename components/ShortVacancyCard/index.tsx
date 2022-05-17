@@ -19,7 +19,9 @@ const ShortVacancyCard: React.FC<Props> = ({ className = '', lastUpdate, label, 
 				от
 				{' '}
 				{minPrice.toLocaleString()}
-				{' ₽'}
+				<span className='font-rouble text-sm text-text'>
+					{'a'}
+				</span>
 			</p>
 			<Paragraph variant='6' tag='p' className='mb-[52px]'>
 				{description.length > 145 ? description.slice(0, 142) + '...' : description}

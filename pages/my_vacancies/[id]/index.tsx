@@ -101,7 +101,9 @@ const MyVacancyPage = (): JSX.Element => {
 							{' '}
 							{new Intl.NumberFormat().format(salary)}
 							{' '}
-							₽
+							<span className='font-rouble text-3xl text-text'>
+								{'c'}
+							</span>
 						</Headline>
 						<Paragraph variant='5' tag='p' className='mb-1'>
 							{isSuccess && employer.name}

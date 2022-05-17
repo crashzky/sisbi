@@ -7,4 +7,9 @@ export default {
 	component: ProfileSelectJobModal,
 } as ComponentMeta<typeof ProfileSelectJobModal>;
 
-export const Primary: ComponentStory<typeof ProfileSelectJobModal> = () => <ProfileSelectJobModal />;
+export const Primary: ComponentStory<typeof ProfileSelectJobModal> = (args) => <ProfileSelectJobModal {...args} />;
+
+Primary.args = {
+	onCloseModal: null,
+	onContinue: null,
+};

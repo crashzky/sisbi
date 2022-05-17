@@ -54,7 +54,9 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 					от
 					{' '}
 					{new Intl.NumberFormat('ru-RU').format(minPrice)}
-					{' ₽'}
+					<span className='font-rouble text-xl text-text'>
+						{'c'}
+					</span>
 				</Paragraph>
 				<Paragraph variant='6' tag='p' className='mb-3'>
 					{description}
@@ -67,7 +69,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 					))}
 				</div>
 				<div className='grid grid-cols-[121px_155px_1fr] gap-2'>
-					{localStorage.getItem('user_type') === 'employee' && (
+					{localStorage.getItem('user_type') === 'user' && (
 						<Button
 							variant='outline_secondary'
 							size='S'

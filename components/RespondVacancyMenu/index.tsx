@@ -53,7 +53,9 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 							от
 							{' '}
 							{new Intl.NumberFormat('ru-RU').format(minPrice)}
-							{' ₽'}
+							<span className='font-rouble text-sm'>
+								{'a'}
+							</span>
 						</Paragraph>
 					</div>
 					<Link href={{
@@ -92,7 +94,9 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 						<br />
 						зарплата от
 						{` ${new Intl.NumberFormat('ru-RU').format(minPrice)} `}
-						₽
+						<span className='font-rouble text-sm'>
+							{'a'}
+						</span>
 					</Paragraph>
 					<Textarea
 						className='w-full h-[200px] mb-3'

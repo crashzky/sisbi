@@ -89,7 +89,9 @@ const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vac
 							от
 							{' '}
 							{new Intl.NumberFormat('ru-RU').format(minPrice)}
-							{' ₽'}
+							<span className='font-rouble text-sm'>
+								{'a'}
+							</span>
 						</Paragraph>
 					</div>
 					<Link href={{
