@@ -69,7 +69,7 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 					placeholder='Название должности'
 					options={[]} />*/}
 				<Input
-					className='py-2 bg-white'
+					className='py-0 bg-white'
 					name='query'
 					value={formik.values.query}
 					onChange={formik.handleChange}
