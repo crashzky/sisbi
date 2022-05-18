@@ -18,7 +18,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 	return (
 		<button
 			onFocus={() => setShowMenu(true)}
-			onBlur={() => setTimeout(() => setShowMenu(false), 20)}
+			onBlur={() => setTimeout(() => setShowMenu(false), 100)}
 			className={className + ' relative bg-gray-20 rounded-2xl p-2 grid gap-2 grid-flow-col items-center cursor-pointer'}
 			{...props}
 		>
