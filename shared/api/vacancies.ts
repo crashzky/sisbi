@@ -10,8 +10,8 @@ const getVacancies = (data: IVacanciesRequest): Promise<IVacanciesResponse> => {
 
 	if(data.query)
 		params.push(`q[description_or_title_cont]=${data.query}`);
-	if(data.city_id)
-		params.push(`q[city_id_eq]=${data.city_id}`);
+	if(data.city)
+		params.push(`q[city_id_eq]=${data.city}`);
 	if(data.salary)
 		params.push(`q[salary_gteq]=${data.salary}`);
 	if(data.experience)

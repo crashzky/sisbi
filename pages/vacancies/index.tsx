@@ -112,7 +112,7 @@ const VacanciesPage = (): JSX.Element => {
 									companyAvatar={i.employer.avatar}
 									tags={[
 										i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
-										...i.schedules.map((i) => i.name)]}
+										...i.schedules.map((i) => i.name), i.city.name]}
 									contactName={i.full_name}
 									contactPhone={i.phone}
 									contactMail={i.email}

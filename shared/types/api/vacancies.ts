@@ -34,7 +34,7 @@ interface IVacanciesRequest {
 	job_category_id?: string[];
 	schedules?: string[];
 	employment_types?: string[];
-	city_id?: number;
+	city?: number;
 	page?: number;
 }
 

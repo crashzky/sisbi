@@ -24,6 +24,7 @@ import { getCities } from '../../shared/api/cities';
 import Select from '../../components/Select';
 import { ISelectOption } from '../../components/Select/Select.props';
 import { addSchedulesVacancy, addTypeEmployementsVacancy, createVacancy } from '../../shared/api/vacancies';
+import * as Yup from 'yup';
 
 import LoaderIcon from '../../assets/loader.svg';
 
@@ -93,6 +94,15 @@ const NewVacancyPage = (): JSX.Element => {
 		onSuccess: (res) => router.push(`/my_vacancies/${res.payload.id}`),
 	});
 
+	const validatiionSchema = Yup.object().shape({
+		title: Yup.string().required('required'),
+		salary: Yup.number().required('required'),
+		experience: Yup.string().required('required'),
+		contactFullName: Yup.string().required('required'),
+		contactPhone: Yup.string().required('required'),
+		contactEmail: Yup.string().email().required('required'),
+	});
+
 	const formik = useFormik({
 		initialValues: {
 			title: '',
@@ -105,6 +115,7 @@ const NewVacancyPage = (): JSX.Element => {
 			contactPhone: null,
 			contactEmail: '',
 		},
+		validationSchema: validatiionSchema,
 		onSubmit: (values) => {
 			createVacancyMutation.mutate({
 				avatar,
@@ -170,6 +181,7 @@ const NewVacancyPage = (): JSX.Element => {
 							<Input
 								value={formik.values.title}
 								name='title'
+								isDanger={!!formik.errors.title}
 								onChange={formik.handleChange}
 								placeholder='Например, Junior UI/UX дизайнер' />
 							<Paragraph variant='5' tag='p'>
@@ -207,6 +219,7 @@ const NewVacancyPage = (): JSX.Element => {
 								value={formik.values.salary}
 								name='salary'
 								type='number'
+								isDanger={!!formik.errors.salary}
 								min={0}
 								onChange={formik.handleChange}
 								placeholder='Зарплата от 150 000 ₽' />
@@ -269,16 +282,19 @@ const NewVacancyPage = (): JSX.Element => {
 								<Input
 									value={formik.values.contactFullName}
 									name='contactFullName'
+									isDanger={!!formik.errors.contactFullName}
 									onChange={formik.handleChange}
 									placeholder='ФИО' />
 								<InputPhone
 									value={formik.values.contactPhone}
 									name='contactPhone'
+									isDanger={!!formik.errors.contactPhone}
 									onChange={formik.handleChange} />
 								<Input
 									value={formik.values.contactEmail}
 									name='contactEmail'
 									type='email'
+									isDanger={!!formik.errors.contactEmail}
 									onChange={formik.handleChange}
 									placeholder='Email-адрес' />
 							</div>

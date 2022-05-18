@@ -33,7 +33,7 @@ const VacancyPage = (): JSX.Element => {
 	});
 
 	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
-		schedules, employer, created_at, avatar, id } = data ? data.payload[0] : {} as any;
+		schedules, employer, created_at, avatar, city, id } = data ? data.payload[0] : {} as any;
 
 	useEffect(() => setUserType(localStorage.getItem('user_type')), []);
 
@@ -84,7 +84,7 @@ const VacancyPage = (): JSX.Element => {
 						<div className='flex flex-wrap gap-2 mb-4'>
 							{isSuccess && [
 								job_category.name, EXPERIENCE[experience], ...type_employments.map((i) => i.name),
-								...schedules.map((i) => i.name)]
+								...schedules.map((i) => i.name), city.name]
 								.map((i, num) => (
 									<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
 										{i}
