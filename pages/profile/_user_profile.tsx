@@ -1,4 +1,4 @@
-import { intervalToDuration, format } from 'date-fns';
+import { intervalToDuration, format, parse } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,13 +24,13 @@ const ProfilePageUser = (): JSX.Element => {
 	const data = myProfileUserQuery.isSuccess ? myProfileUserQuery.data.payload : null;
 
 	const birthdayInterval = intervalToDuration({
-		start: data && data.birthday ? new Date(data.birthday) : new Date(Date.now()),
+		start: data && data.birthday ? parse(data.birthday, 'dd.MM.yyyy', new Date()) : new Date(Date.now()),
 		end: new Date(Date.now()),
 	});
 
-	const birthday_date = format(new Date(2005, 0, 18), 'dd MMMM yyyy', {
+	const birthday_date = data && data.birthday ? format(parse(data.birthday, 'dd.MM.yyyy', new Date()), 'dd MMMM yyyy', {
 		locale: ru,
-	});
+	}) : null;
 
 	useEffect(() => {
 		if(!localStorage.getItem('access_token'))
