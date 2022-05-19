@@ -188,10 +188,16 @@ const SELECT_TRANSPARENT_STYLES: StylesConfig = {
 	}),
 };
 
-function getStyles(variant: SelectVariants): StylesConfig {
+function getStyles(variant: SelectVariants, isDanger: boolean): StylesConfig {
 	switch(variant) {
 		case 'primary':
-			return SELECT_PRIMARY_STYLES;
+			return {
+				...SELECT_PRIMARY_STYLES,
+				control: (provided, state) => ({
+					...SELECT_PRIMARY_STYLES.control(provided, state),
+					boxShadow: isDanger ? 'inset 0 0 0 1.5px #ff6d3b' : '',
+				}),
+			};
 		case 'with_gap':
 			return SELECT_WITH_GAP_STYLES;
 		case 'transparent':

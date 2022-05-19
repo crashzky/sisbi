@@ -9,6 +9,7 @@ import { getSmsCodeEmployer, getSmsCodeUser } from '../../shared/api/auth';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import Radio from '../../components/Radio';
 import USER_TYPES from '../../shared/consts/userTypes';
+import { AxiosError } from 'axios';
 
 import CrossIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
@@ -63,6 +64,25 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 		},
 	});
 
+	function getErrorMessage() {
+		if(smsCodeMutationUser.isError) {
+			switch((smsCodeMutationUser.error as AxiosError).response.status) {
+				case 422:
+					return 'Такого пользователя не существует';
+				default:
+					return 'Что-то пошло не так, попробуйте ещё раз позже';
+			}
+		}
+		else if(smsCodeMutationEmployer.isError) {
+			switch((smsCodeMutationEmployer.error as AxiosError).response.status) {
+				case 422:
+					return 'Такого пользователя не существует';
+				default:
+					return 'Что-то пошло не так, попробуйте ещё раз позже';
+			}
+		}
+	}
+
 	return (
 		<form 
 			className={className + ' bg-white rounded-2xl p-6 w-[362px]'}
@@ -95,9 +115,9 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 					'Ищу работу',
 					'Ищу сотрудников',
 				]} />
-			{smsCodeMutationUser.isError || smsCodeMutationEmployer.isError && (
+			{(smsCodeMutationUser.isError || smsCodeMutationEmployer.isError) && (
 				<Paragraph variant='5' tag='p' className='text-center text-red'>
-					Такого аккаунта не существует
+					{getErrorMessage()}
 				</Paragraph>
 			)}
 			{smsCodeMutationUser.isLoading || smsCodeMutationEmployer.isLoading ? (

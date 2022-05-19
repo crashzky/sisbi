@@ -16,6 +16,8 @@ import { useMutation, useQuery } from 'react-query';
 import { getCities } from '../../../shared/api/cities';
 import { getMyProfileUser, putProlfileFormDataUser } from '../../../shared/api/user';
 import { GENDERS, TO_GENDERS } from '../../../shared/consts/profile';
+import * as Yup from 'yup';
+import removeItemFromArray from '../../../utils/removeItemFromArray';
 
 import LoaderIcon from '../../../assets/loader.svg';
 
@@ -30,6 +32,8 @@ const UserEditPage = (): JSX.Element => {
 
 	const [prevAvatar, setPrevAvatar] = useState<string>();
 	const [avatar, setAvatar] = useState<File>();
+
+	const [errorsList, setErrorsList] = useState<string[]>([]);
 
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (values) => {
@@ -66,6 +70,13 @@ const UserEditPage = (): JSX.Element => {
 		},
 	});
 
+	const validatiionSchema = Yup.object().shape({
+		surname: Yup.string().required('required'),
+		name: Yup.string().required('required'),
+		gender: Yup.string().required('required'),
+		email: Yup.string().email().required('required'),
+	});
+
 	const formik = useFormik({
 		initialValues: {
 			surname: '',
@@ -73,6 +84,7 @@ const UserEditPage = (): JSX.Element => {
 			gender: '',
 			email: '',
 		},
+		validationSchema: validatiionSchema,
 		onSubmit: (values) => {
 			let withAvatar = avatar ? {
 				avatar: avatar as any,
@@ -81,18 +93,32 @@ const UserEditPage = (): JSX.Element => {
 				avatar: null,
 			} : withAvatar;
 
-			putProfileMutation.mutate({
-				user: {
-					first_name: values.name,
-					surname: values.surname,
-					email: values.email,
-					gender: TO_GENDERS[values.gender],
-					city_id: +city.value,
-					birthday: `${day.value}.${month.value}.${year.value}`,
+			let _errors_list = [];
+			if(!city)
+				_errors_list.push('city');
+			if(!day)
+				_errors_list.push('day');
+			if(!month)
+				_errors_list.push('month');
+			if(!year)
+				_errors_list.push('year');
 
-					...withAvatar,
-				},
-			});
+			setErrorsList(_errors_list);
+
+			if(!_errors_list.length) {
+				putProfileMutation.mutate({
+					user: {
+						first_name: values.name,
+						surname: values.surname,
+						email: values.email,
+						gender: TO_GENDERS[values.gender],
+						city_id: +city.value,
+						birthday: `${day.value}.${month.value}.${year.value}`,
+	
+						...withAvatar,
+					},
+				});
+			}
 		},
 	});
 
@@ -113,21 +139,23 @@ const UserEditPage = (): JSX.Element => {
 						noSelectedImage={prevAvatar}
 						onChange={(e) => setAvatar(e.target.files[0])} />
 					<Paragraph variant='5' tag='p'>
-						Фамилия
-					</Paragraph>
-					<Input
-						value={formik.values.surname}
-						name='surname'
-						onChange={formik.handleChange}
-						placeholder='Иванов' />
-					<Paragraph variant='5' tag='p'>
 						Имя
 					</Paragraph>
 					<Input
 						value={formik.values.name}
 						name='name'
+						isDanger={!!formik.errors.name}
 						onChange={formik.handleChange}
 						placeholder='Иван' />
+					<Paragraph variant='5' tag='p'>
+						Фамилия
+					</Paragraph>
+					<Input
+						value={formik.values.surname}
+						name='surname'
+						isDanger={!!formik.errors.surname}
+						onChange={formik.handleChange}
+						placeholder='Иванов' />
 					<Paragraph variant='5' tag='p'>
 						Пол
 					</Paragraph>
@@ -145,19 +173,31 @@ const UserEditPage = (): JSX.Element => {
 							isSearchable={false}
 							placeholder='День'
 							value={day}
-							onChange={setDay}
+							isDanger={errorsList.includes('day')}
+							onChange={(newValue) => {
+								setDay(newValue);
+								setErrorsList(removeItemFromArray(errorsList, 'day'));
+							}}
 							options={DAYS.map((i) => ({ value: i, label: i }))} />
 						<Select
 							isSearchable={false}
 							placeholder='Месяц'
 							value={month}
-							onChange={setMonth}
+							isDanger={errorsList.includes('month')}
+							onChange={(newValue) => {
+								setMonth(newValue);
+								setErrorsList(removeItemFromArray(errorsList, 'month'));
+							}}
 							options={MONTHS.map((i, num) => ({ value: (num + 1).toString(), label: i }))} />
 						<Select
 							isSearchable={false}
 							placeholder='Год'
 							value={year}
-							onChange={setYear}
+							isDanger={errorsList.includes('year')}
+							onChange={(newValue) => {
+								setYear(newValue);
+								setErrorsList(removeItemFromArray(errorsList, 'year'));
+							}}
 							options={YEARS.map((i) => ({ value: i, label: i }))} />
 					</div>
 					<Paragraph variant='5' tag='p'>
@@ -165,8 +205,12 @@ const UserEditPage = (): JSX.Element => {
 					</Paragraph>
 					<Select
 						placeholder='Город'
+						isDanger={errorsList.includes('city')}
 						value={city}
-						onChange={setCity}
+						onChange={(newValue) => {
+							setCity(newValue);
+							setErrorsList(removeItemFromArray(errorsList, 'city'));
+						}}
 						isLazyLoad
 						onInputChange={(newValue) => citiesMutation.mutate({ name: newValue })}
 						noOptionsMessage={() => 'Ничего не найдено'}
@@ -182,6 +226,7 @@ const UserEditPage = (): JSX.Element => {
 						value={formik.values.email}
 						name='email'
 						type='email'
+						isDanger={!!formik.errors.email}
 						onChange={formik.handleChange}
 						placeholder='example@mail.ru' />
 				</div>

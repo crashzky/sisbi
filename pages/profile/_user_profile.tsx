@@ -101,7 +101,7 @@ const ProfilePageUser = (): JSX.Element => {
 								{data && data.birthday ? `${birthdayInterval.years} лет, ${birthday_date}` : 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
-								{data && data.city.name}
+								{(data && data.city) && data.city.name}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
 								{data && data.phone ? formatPhoneNumberIntl('+' + data.phone) : ''}
@@ -161,7 +161,10 @@ const ProfilePageUser = (): JSX.Element => {
 					</div>
 					{data && (data.min_salary || data.min_salary === 0) ? (
 						<Paragraph variant='3' tag='p' className='font-semibold mb-3'>
-							{`Зарплата от ${data.min_salary} ₽`}
+							{`Зарплата от ${data.min_salary}`}
+							<span className='font-rouble ml-0.5'>
+								a
+							</span>
 						</Paragraph>
 					) : ''}
 					<Paragraph variant='5' tag='p' className='text-text-secondary mb-4 print:hidden'>

@@ -10,6 +10,7 @@ import Paragraph from '../../../components/Paragraph';
 import MainLayout from '../../../layouts/MainLayout';
 import { useMutation, useQuery } from 'react-query';
 import { getMyProfileEmployer, putProlfileFormDataEmployer } from '../../../shared/api/user';
+import * as Yup from 'yup';
 
 import LoaderIcon from '../../../assets/loader.svg';
 
@@ -39,11 +40,17 @@ const EmployerEditPage = (): JSX.Element => {
 		},
 	});
 
+	const validatiionSchema = Yup.object().shape({
+		name: Yup.string().required('required'),
+		email: Yup.string().email().required('required'),
+	});
+
 	const formik = useFormik({
 		initialValues: {
 			name: '',
 			email: '',
 		},
+		validationSchema: validatiionSchema,
 		onSubmit: (values) => {
 			let withAvatar = avatar ? {
 				avatar: avatar as any,
@@ -83,6 +90,7 @@ const EmployerEditPage = (): JSX.Element => {
 					<Input
 						value={formik.values.name}
 						name='name'
+						isDanger={!!formik.errors.name}
 						onChange={formik.handleChange}
 						placeholder='Иван' />
 					<Paragraph variant='5' tag='p'>
@@ -92,6 +100,7 @@ const EmployerEditPage = (): JSX.Element => {
 						value={formik.values.email}
 						name='email'
 						type='email'
+						isDanger={!!formik.errors.email}
 						onChange={formik.handleChange}
 						placeholder='example@mail.ru' />
 				</div>

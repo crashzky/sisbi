@@ -58,11 +58,7 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 							</span>
 						</Paragraph>
 					</div>
-					<Link href={{
-						pathname: `/vacancies/${vacancyId}`,
-						query: router.query,
-					}}
-					>
+					<Link href={{ pathname: `/vacancies/${vacancyId}` }}>
 						<a target='_blank' className='text-xs text-text'>
 							Открыть вакансию в новой вкладке
 						</a>

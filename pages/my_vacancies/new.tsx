@@ -25,6 +25,7 @@ import Select from '../../components/Select';
 import { ISelectOption } from '../../components/Select/Select.props';
 import { addSchedulesVacancy, addTypeEmployementsVacancy, createVacancy } from '../../shared/api/vacancies';
 import * as Yup from 'yup';
+import removeItemFromArray from '../../utils/removeItemFromArray';
 
 import LoaderIcon from '../../assets/loader.svg';
 
@@ -40,6 +41,8 @@ const NewVacancyPage = (): JSX.Element => {
 	const [showJobSelect, setShowJobSelect] = useState(false);
 
 	const [city, setCity] = useState<ISelectOption>();
+
+	const [errorsList, setErrorsList] = useState<string[]>([]);
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
 		initialData: {
@@ -117,18 +120,27 @@ const NewVacancyPage = (): JSX.Element => {
 		},
 		validationSchema: validatiionSchema,
 		onSubmit: (values) => {
-			createVacancyMutation.mutate({
-				avatar,
-				title: values.title,
-				salary: values.salary,
-				experience: TO_EXPERIENCE[values.experience],
-				full_name: values.contactFullName,
-				email: values.contactEmail,
-				phone: '+7' + values.contactPhone,
-				description,
-				job_category_id: jobCategory,
-				city_id: +city.value,
-			});
+			let _errorsList = [];
+
+			if(!city)
+				_errorsList.push('city');
+
+			setErrorsList(_errorsList);
+
+			if(!_errorsList.length) {
+				createVacancyMutation.mutate({
+					avatar,
+					title: values.title,
+					salary: values.salary,
+					experience: TO_EXPERIENCE[values.experience],
+					full_name: values.contactFullName,
+					email: values.contactEmail,
+					phone: '+7' + values.contactPhone,
+					description,
+					job_category_id: jobCategory,
+					city_id: +city.value,
+				});
+			}
 		},
 	});
 	
@@ -229,7 +241,11 @@ const NewVacancyPage = (): JSX.Element => {
 							<Select
 								placeholder='Город'
 								value={city}
-								onChange={setCity}
+								onChange={(newValue) => {
+									setCity(newValue);
+									setErrorsList(removeItemFromArray(errorsList, 'city'));
+								}}
+								isDanger={errorsList.includes('city')}
 								isLazyLoad
 								onInputChange={(newValue) => citiesMutation.mutate({ name: newValue })}
 								noOptionsMessage={() => 'Ничего не найдено'}

@@ -8,6 +8,7 @@ import { useMutation } from 'react-query';
 import { getSmsCodeEmployer, getSmsCodeUser, loginEmployer, loginUser } from '../../shared/api/auth';
 import { useState } from 'react';
 import { getMyProfileEmployer, getMyProfileUser } from '../../shared/api/user';
+import { AxiosError } from 'axios';
 
 import CrossIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
@@ -17,7 +18,7 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 
 	const [smsCode, setSmsCode] = useState('');
 
-	const { minutes, seconds, restart } = useTimer({ expiryTimestamp: new Date(Date.now() + 120000) });
+	const { minutes, seconds, restart, isRunning } = useTimer({ expiryTimestamp: new Date(Date.now() + 120000) });
 
 	function addZero(input: string) {
 		return input.length === 2 ? input : '0' + input;
@@ -68,6 +69,27 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 			getProfileMutattionEmployer.mutate();
 		},
 	});
+	
+	function getErrorMessage() {
+		if(loginMutattionUser.isError) {
+			switch((loginMutattionUser.error as AxiosError).response.status) {
+				case 404:
+					return 'Код не подходит';
+				default:
+					return 'Что-то пошло не так, попробуйте ещё раз позже';
+			}
+		}
+		else if(loginMutattionEmployer.isError) {
+			switch((loginMutattionEmployer.error as AxiosError).response.status) {
+				case 404:
+					return 'Код не подходит';
+				default:
+					return 'Что-то пошло не так, попробуйте ещё раз позже';
+			}
+		}
+		else if(getProfileMutattionUser.isError || getProfileMutattionEmployer.isError)
+			router.push('/?modal=login');
+	}
 
 	return (
 		<aside 
@@ -88,14 +110,14 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 				onCodeChanged={(code) => setSmsCode(code)} />
 			{(loginMutattionUser.isError || loginMutattionEmployer.isError) && (
 				<Paragraph variant='5' tag='p' className='text-center text-red'>
-					Код не подходит
+					{getErrorMessage()}
 				</Paragraph>
 			)}
 			<button
 				type='button'
 				className='mt-3 mb-6 mx-auto block font-semibold text-xs text-darkBlue'
 				onClick={() => {
-					if(minutes === 0 && seconds === 0) {
+					if(!isRunning) {
 						switch(localStorage.getItem('user_type')) {
 							case 'user':
 								getNewCodeMutattionUser.mutate({
@@ -112,7 +134,7 @@ const SmsCodeModal: React.FC<Props> = ({ className = '', ...props }) => {
 				}}
 			>
 				Выслать код повторно
-				{(minutes !== 0 && seconds !== 0) && (
+				{isRunning && (
 					` через ${addZero(minutes.toString())}:${addZero(seconds.toString())}`
 				)}
 			</button>

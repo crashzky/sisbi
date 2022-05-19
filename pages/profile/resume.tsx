@@ -20,6 +20,7 @@ import ModalLayout from '../../layouts/ModalLayout';
 import ProfileSelectJobModal from '../../modals/ProfileSelectJobModal';
 import { getJobCategories } from '../../shared/api/job_categories';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+import * as Yup from 'yup';
 
 import CloseIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
@@ -119,6 +120,11 @@ const ResumePage = (): JSX.Element => {
 		},
 	});
 
+	const validatiionSchema = Yup.object().shape({
+		vacancyName: Yup.string().required('required'),
+		minPrice: Yup.number().required('required'),
+	});
+
 	const formik = useFormik({
 		initialValues: {
 			vacancyName: '',
@@ -129,6 +135,7 @@ const ResumePage = (): JSX.Element => {
 			ready_move: [],
 			ready_mission: [],
 		},
+		validationSchema: validatiionSchema,
 		onSubmit: (values) => {
 			updateProfileMutation.mutate({
 				user: {
@@ -187,6 +194,7 @@ const ResumePage = (): JSX.Element => {
 							<Input
 								value={formik.values.vacancyName}
 								name='vacancyName'
+								isDanger={!!formik.errors.vacancyName}
 								onChange={formik.handleChange}
 								placeholder='UX/UI дизайнер' />
 							<Paragraph variant='5' tag='p'>
@@ -224,6 +232,7 @@ const ResumePage = (): JSX.Element => {
 								type='number'
 								value={formik.values.minPrice}
 								name='minPrice'
+								isDanger={!!formik.errors.minPrice}
 								onChange={formik.handleChange}
 								placeholder='150 000 ₽' />
 							<Paragraph variant='5' tag='p'>

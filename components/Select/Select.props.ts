@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 interface Props {
 	variant?: SelectVariants;
+	isDanger?: boolean;
 	defaultInputValue?: string;
 	defaultMenuIsOpen?: boolean;
 	defaultValue?: ISelectOption;

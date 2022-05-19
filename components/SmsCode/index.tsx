@@ -38,7 +38,10 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...
 							setFocusedItem(null);
 						}}
 						onChange={(e) => {
-							setCode((prev) => prev + e.target.value);
+							if(num === 0)
+								setCode(e.target.value);
+							else 
+								setCode((prev) => prev + e.target.value);
 
 							if(num + 1 < BLOCKS_REFS.length)
 								BLOCKS_REFS[num + 1].current.focus();

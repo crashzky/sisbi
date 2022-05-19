@@ -28,6 +28,7 @@ import { addSchedulesVacancy, addTypeEmployementsVacancy,
 	putVacancy,
 	removeSchedulesVacancy, removeTypeEmployementsVacancy } from '../../../shared/api/vacancies';
 import * as Yup from 'yup';
+import removeItemFromArray from '../../../utils/removeItemFromArray';
 
 import LoaderIcon from '../../../assets/loader.svg';
 
@@ -44,6 +45,8 @@ const NewVacancyPage = (): JSX.Element => {
 	const [showJobSelect, setShowJobSelect] = useState(false);
 
 	const [city, setCity] = useState<ISelectOption>();
+
+	const [errorsList, setErrorsList] = useState<string[]>([]);
 
 	const getVacancyQuery = useQuery([{ id: router.query.id }], getVacancyById, {
 		enabled: !!(router && router.query),
@@ -160,6 +163,13 @@ const NewVacancyPage = (): JSX.Element => {
 		},
 		validationSchema: validatiionSchema,
 		onSubmit: (values) => {
+			let _errorsList = [];
+
+			if(!city)
+				_errorsList.push('city');
+
+			setErrorsList(_errorsList);
+
 			const withAvatar = avatar ? {
 				avatar,
 			} : {};
@@ -279,7 +289,11 @@ const NewVacancyPage = (): JSX.Element => {
 							<Select
 								placeholder='Город'
 								value={city}
-								onChange={setCity}
+								isDanger={errorsList.includes('city')}
+								onChange={(newValue) => {
+									setCity(newValue);
+									setErrorsList(removeItemFromArray(errorsList, 'city'));
+								}}
 								isLazyLoad
 								onInputChange={(newValue) => citiesMutation.mutate({ name: newValue })}
 								noOptionsMessage={() => 'Ничего не найдено'}

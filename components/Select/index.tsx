@@ -7,6 +7,7 @@ const Select: React.FC<Props> = ({
 	variant = 'primary',
 	isLazyLoad,
 	onInputChange,
+	isDanger,
 	loadingMessage = () => 'Загрузка...',
 	noOptionsMessage = () => 'Ничего не найдено :(',
 	...props
@@ -28,7 +29,7 @@ const Select: React.FC<Props> = ({
 				else if(onInputChange)
 					onInputChange(newValue);
 			}}
-			styles={getStyles(variant)} />
+			styles={getStyles(variant, isDanger)} />
 	);
 };
 
