@@ -3,7 +3,7 @@ import Props from './SmsCode.props';
 import { getBorder } from './SmsCode.styles';
 
 const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...props }) => {
-	const [code, setCode] = useState('');
+	const [code, setCode] = useState(['', '', '', '']);
 	const [focusedItem, setFocusedItem] = useState(null);
 
 	const ref1 = useRef(null);
@@ -14,7 +14,7 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...
 	const BLOCKS_REFS = [ref1, ref2, ref3, ref4];
 
 	useEffect(() => {
-		onCodeChanged(code);
+		onCodeChanged(code.join(''));
 	}, [code]);
 
 	return (
@@ -38,10 +38,12 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...
 							setFocusedItem(null);
 						}}
 						onChange={(e) => {
-							if(num === 0)
-								setCode(e.target.value);
-							else 
-								setCode((prev) => prev + e.target.value);
+							setCode((prev) => {
+								let _prev = [...prev];
+								_prev[num] = e.target.value;
+
+								return _prev;
+							});
 
 							if(num + 1 < BLOCKS_REFS.length)
 								BLOCKS_REFS[num + 1].current.focus();
