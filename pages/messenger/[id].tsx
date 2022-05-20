@@ -14,12 +14,18 @@ import DeleteModal from '../../modals/DeleteModal';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import { MAIN_SHADOW } from '../../shared/consts/shadows';
 import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
+import { getChatById, getChatByIdEmployer } from '../../shared/api/messenger';
+import Image from 'next/image';
+import useUserType from '../../hooks/useUserType';
 
 import CompanyLIcon from '../../assets/company-L.svg';
 import OtherIcon from '../../assets/navigation/other.svg';
 
 const ChatPage = (): JSX.Element => {
 	const router = useRouter();
+
+	const { userType } = useUserType();
 
 	const buttonsRef = useRef();
 	const inputRef = useRef();
@@ -32,11 +38,43 @@ const ChatPage = (): JSX.Element => {
 	const [openedModal, setOpenedModal] = useState('');
 	const [isOpenedMenu, setIsOpenedMenu] = useState(false);
 
+	const chatInfoQuery = useQuery([{ chat_id: +router.query.id }], userType === 'user' ? getChatById : getChatByIdEmployer, {
+		enabled: !!router.query && !!(router.query.id || +router.query.id === 0) && !!userType,
+	});
+
 	useEffect(() => {
 		setTimeout(() => {
 			endMessageRef.current.scrollIntoView();
 		}, 1);
 	}, []);
+
+	function getProperties() {
+		if(chatInfoQuery.isSuccess && userType === 'user') {
+			return {
+				title: chatInfoQuery.data.payload.vacancy.title,
+				name: chatInfoQuery.data.payload.employer.name,
+				avatar: chatInfoQuery.data.payload.employer.avatar,
+				contact: {
+					fullName: chatInfoQuery.data.payload.vacancy.full_name,
+					phone: chatInfoQuery.data.payload.vacancy.phone,
+					email: chatInfoQuery.data.payload.vacancy.email,
+				},
+			};
+		}
+		else if(chatInfoQuery.isSuccess && userType === 'employer') {
+			return {
+				title: chatInfoQuery.data.payload.vacancy.title,
+				name: `${chatInfoQuery.data.payload.user.first_name} ${chatInfoQuery.data.payload.user.surname}`,
+				avatar: chatInfoQuery.data.payload.user.avatar,
+				contact: {
+					fullName: `${chatInfoQuery.data.payload.user.surname} ${chatInfoQuery.data.payload.user.first_name}
+					${chatInfoQuery.data.payload.user.last_name}`,
+					phone: '+' + chatInfoQuery.data.payload.user.phone.toString(),
+					email: chatInfoQuery.data.payload.user.email,
+				},
+			};
+		}
+	}
 
 	return (
 		<ModalLayout
@@ -44,9 +82,9 @@ const ChatPage = (): JSX.Element => {
 			modals={{
 				'contacts': (
 					<ContactsModal
-						fullName='Мария Соколова'
-						phone='+79139822927'
-						mail='mail@mail.ru'
+						fullName={chatInfoQuery.isSuccess ? getProperties().contact.fullName : 'Загрузка...'}
+						phone={chatInfoQuery.isSuccess ? getProperties().contact.phone : 'Загрузка...'}
+						mail={chatInfoQuery.isSuccess ? getProperties().contact.email : 'Загрузка...'}
 						onClose={() => setOpenedModal('')} />
 				),
 				'delete': (
@@ -63,13 +101,22 @@ const ChatPage = (): JSX.Element => {
 				<div className={`w-full px-4 py-3 grid grid-cols-[40px_auto_1fr_20px] 
 					gap-4 items-center bg-white border-gray-60 border-b-[1px]`}
 				>
-					<CompanyLIcon />
+					{chatInfoQuery.isSuccess && getProperties().avatar ? (
+						<Image
+							src={getProperties().avatar}
+							alt='avatar'
+							className='rounded-full object-cover'
+							height={40}
+							width={40} />
+					) : (
+						<CompanyLIcon />
+					)}
 					<div>
 						<Paragraph variant='3' tag='h2' className='font-bold'>
-							UI/UX дизайнер
+							{chatInfoQuery.isSuccess ? getProperties().title : 'Загрузка...'}
 						</Paragraph>
 						<Paragraph variant='5' tag='p' className='text-text'>
-							Рич Фэмили
+							{chatInfoQuery.isSuccess ? getProperties().name : 'Загрузка...'}
 						</Paragraph>
 					</div>
 					<div></div>

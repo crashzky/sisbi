@@ -1,6 +1,7 @@
 import { EXPERIENCE } from '../consts/profile';
-import { ICreateVacancyRequest, ICreateVacancyResponse, IPutVacncyRequest, IUpdateSchedulesRequest,
-	IUpdateTypeEmployementsRequest, IVacanciesRequest, IVacanciesResponse } from '../types/api/vacancies';
+import { ICreateVacancyRequest, ICreateVacancyResponse, IPutVacncyRequest, IRespondVacancyRequest, IRespondVacancyResponse,
+	IUpdateSchedulesRequest, IUpdateTypeEmployementsRequest, IVacanciesRequest, IVacanciesResponse, IVacancyResponse,
+} from '../types/api/vacancies';
 import instance from './axios';
 
 const getVacancies = (data: IVacanciesRequest): Promise<IVacanciesResponse> => {
@@ -9,7 +10,7 @@ const getVacancies = (data: IVacanciesRequest): Promise<IVacanciesResponse> => {
 	const EXPRERIENCE_ITEMS = Object.keys(EXPERIENCE);
 
 	if(data.query)
-		params.push(`q[description_or_title_cont]=${data.query}`);
+		params.push(`q[description_or_title_i_cont]=${data.query}`);
 	if(data.city)
 		params.push(`q[city_id_eq]=${data.city}`);
 	if(data.salary)
@@ -17,7 +18,7 @@ const getVacancies = (data: IVacanciesRequest): Promise<IVacanciesResponse> => {
 	if(data.experience)
 		params.push(`q[experience_eq]=${EXPRERIENCE_ITEMS.indexOf(data.experience)}`);
 		
-	if(data.job_category_id && data.job_category_id[0] !== '[]') {
+	if(data.job_category_id) {
 		data.job_category_id.forEach((i) => {
 			params.push(`q[job_category_id_in][]=${i}`);
 		});
@@ -39,8 +40,8 @@ const getVacancies = (data: IVacanciesRequest): Promise<IVacanciesResponse> => {
 		.then((res) => res.data);
 };
 
-const getVacancyById = ({ queryKey }): Promise<IVacanciesResponse> => {
-	return instance.get(`/v1/vacancies?q[id_eq]=${queryKey[0].id}`)
+const getVacancyById = ({ queryKey }): Promise<IVacancyResponse> => {
+	return instance.get(`/v1/vacancies/${queryKey[0].id}`)
 		.then((res) => res.data);
 };
 
@@ -103,6 +104,11 @@ const removeTypeEmployementsVacancy = (data: IUpdateTypeEmployementsRequest): Pr
 		.then((res) => res.data);
 };
 
+const respondVacancy = (data: IRespondVacancyRequest): Promise<IRespondVacancyResponse> => {
+	return instance.post('/v1/responses', data)
+		.then((res) => res.data);
+};
+
 export {
 	getVacancies,
 	getVacancyById,
@@ -115,4 +121,5 @@ export {
 	removeSchedulesVacancy,
 	addTypeEmployementsVacancy,
 	removeTypeEmployementsVacancy,
+	respondVacancy,
 };

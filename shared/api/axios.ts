@@ -16,7 +16,8 @@ instance.interceptors.request.use((req) => {
 				: null,
 		};
 	}
-	else if(req.url.includes('user') && localStorage && localStorage.getItem('user_type') === 'user') {
+	else if((req.url.includes('user') && localStorage && localStorage.getItem('user_type') === 'user')
+		|| req.url.includes('responses') || req.url.includes('chats')) {
 		req.headers = {
 			...req.headers,
 			'Authorization': localStorage && localStorage.getItem('access_token')

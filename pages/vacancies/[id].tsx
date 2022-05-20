@@ -8,22 +8,23 @@ import Button from '../../components/Button';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
-import { useQuery } from 'react-query';
-import { getVacancyById } from '../../shared/api/vacancies';
+import { useMutation, useQuery } from 'react-query';
+import { getVacancyById, respondVacancy } from '../../shared/api/vacancies';
 import { EXPERIENCE } from '../../shared/consts/profile';
 
 import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 import CloseIcon from '../../assets/general/close.svg';
+import useUserType from '../../hooks/useUserType';
 
 const VacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
-	const [userType, setUserType] = useState(null);
+	const { userType } = useUserType();
 
 	const [showContacts, setShowContacts] = useState(false);
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
@@ -32,10 +33,14 @@ const VacancyPage = (): JSX.Element => {
 		enabled: !!(router && router.query),
 	});
 
-	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
-		schedules, employer, created_at, avatar, city, id } = data ? data.payload[0] : {} as any;
+	const respondVacancyMuttation = useMutation(respondVacancy, {
+		onSuccess: () => {
+			setShowRespondMenu(false);
+		},
+	});
 
-	useEffect(() => setUserType(localStorage.getItem('user_type')), []);
+	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
+		schedules, employer, created_at, avatar, city, id } = data ? data.payload : {} as any;
 
 	return (
 		<>
@@ -49,6 +54,7 @@ const VacancyPage = (): JSX.Element => {
 				{isSuccess && (
 					<RespondVacancyMenu
 						className='rounded-t-3xl'
+						isLoading={respondVacancyMuttation.isLoading}
 						companyName={employer.name}
 						vacancyName={title}
 						vacancyId={id}
@@ -56,7 +62,14 @@ const VacancyPage = (): JSX.Element => {
 						contactName={full_name}
 						contactPhone={phone}
 						contactMail={email}
-						onContinue={() => setShowRespondMenu(false)}
+						onContinue={(message) => {
+							respondVacancyMuttation.mutate({
+								response: {
+									message,
+									vacancy_id: id,
+								},
+							});
+						}}
 						onBack={() => setShowRespondMenu(false)} />
 				)}
 			</Menu>

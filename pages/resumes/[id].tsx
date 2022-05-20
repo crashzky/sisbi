@@ -7,15 +7,16 @@ import Image from 'next/image';
 import Button from '../../components/Button';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 
 import RespondResumeMenu from '../../components/RespondResumeMenu';
+import useUserType from '../../hooks/useUserType';
 
 const ResumeIdPage = (): JSX.Element => {
 	const router = useRouter();
 	
-	const [userType, setUserType] = useState(null);
+	const { userType } = useUserType();
 
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
 
@@ -25,8 +26,6 @@ const ResumeIdPage = (): JSX.Element => {
 
 	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
 		schedules, employer, created_at, avatar, id } = data ? data.payload[0] : {} as any;*/
-
-	useEffect(() => setUserType(localStorage.getItem('user_type')), []);
 
 	return (
 		<>

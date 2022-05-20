@@ -25,11 +25,11 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 
 	const formik = useFormik({
 		initialValues: {
-			job_category_id: router.query.job_category_id ? JSON.parse(router.query.job_category_id.toString()) : [],
+			job_category_id: router.query.job_category_id ? router.query.job_category_id.toString().split(',') : [],
 		},
 		onSubmit: (values) => {
 			delete router.query.modal;
-			router.query.job_category_id = JSON.stringify(values.job_category_id);
+			router.query.job_category_id = values.job_category_id;
 
 			router.push({
 				pathname: router.pathname,

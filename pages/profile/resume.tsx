@@ -303,7 +303,10 @@ const ResumePage = (): JSX.Element => {
 									{skills && skills.map((i, num) => (
 										<span key={num} className='bg-softGold py-1 px-2 grid grid-cols-[1fr_auto] gap-3 rounded'>
 											{i}
-											<button onClick={() => setSkills((prev) => prev.filter((j) => j !== i))}>
+											<button
+												type='button'
+												onClick={() => setSkills((prev) => prev.filter((j) => j !== i))}
+											>
 												<CloseIcon className='fill-icon-secondary' />
 											</button>
 										</span>

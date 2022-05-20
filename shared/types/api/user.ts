@@ -71,6 +71,7 @@ interface IPutEmployerRequest {
 }
 
 export type {
+	IUser,
 	IUserResponse,
 	IPutUserRequest,
 

@@ -1,9 +1,10 @@
 import { ICity } from './cities';
-import { ExperienceType, VacancyStatesType } from './common';
+import { ExperienceType, IRespondStateType, VacancyStatesType } from './common';
 import { IJobCategory } from './job_categories';
+import { IChat, IMessage } from './messenger';
 import { ISchedule } from './schedules';
 import { ITypeEmployment } from './type_employments';
-import { IEmployer } from './user';
+import { IEmployer, IUser } from './user';
 
 interface IVacancy {
 	id: number;
@@ -47,6 +48,11 @@ interface IVacanciesResponse {
 	total_entries: number;
 }
 
+interface IVacancyResponse {
+	result_code: 'ok';
+	payload: IVacancy;
+}
+
 interface ICreateVacancyRequest {
 	avatar?: File;
 	title: string;
@@ -79,13 +85,39 @@ interface IUpdateTypeEmployementsRequest {
 	type_employments: number[];
 }
 
+interface IRespondVacancyRequest {
+	response: {
+		message: string;
+		vacancy_id: number;
+	};
+}
+
+interface IRespondVacancyResponse {
+	result_code: 'ok';
+	payload: IVacancyRespond;
+}
+
+interface IVacancyRespond extends IChat {
+	state: IRespondStateType;
+	message: IMessage;
+	chat: {
+		id: number;
+		created_at: string;
+		updated_at: string;
+		last_message: IMessage;
+	}
+}
+
 export type {
 	IVacancy,
 	IVacanciesRequest,
+	IVacancyResponse,
 	IVacanciesResponse,
 	ICreateVacancyRequest,
 	ICreateVacancyResponse,
 	IUpdateSchedulesRequest,
 	IUpdateTypeEmployementsRequest,
 	IPutVacncyRequest,
+	IRespondVacancyRequest,
+	IRespondVacancyResponse,
 };

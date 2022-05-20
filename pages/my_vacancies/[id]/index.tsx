@@ -31,7 +31,7 @@ const MyVacancyPage = (): JSX.Element => {
 	});
 
 	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
-		schedules, employer, created_at, avatar, city, id } = data ? data.payload[0] : {} as any;
+		schedules, employer, created_at, avatar, city, id } = data ? data.payload : {} as any;
 
 	return (
 		<>

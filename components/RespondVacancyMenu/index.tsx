@@ -5,18 +5,16 @@ import Link from 'next/link';
 import Textarea from '../Textarea';
 import Checkbox from '../Checkbox';
 import Button from '../Button';
-import { useRouter } from 'next/router';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 
+import PreloaderIcon from '../../assets/loader.svg';
 import CloseIcon from '../../assets/general/close.svg';
 import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 
 const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vacancyName, minPrice, vacancyId,
-	contactName, contactPhone, contactMail, onContinue, onBack, ...props }) => {
-	const router = useRouter();
-
+	contactName, contactPhone, contactMail, onContinue, onBack, isLoading, ...props }) => {
 	const formik = useFormik({
 		initialValues: {
 			message: '',
@@ -110,9 +108,13 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 						label='Предоставить контакты работодателю' />
 				</div>
 				<div className='px-6 py-4 grid grid-cols-[auto_auto_1fr] gap-[10px]'>
-					<Button className='h-9 px-4'>
-						Отправить отклик
-					</Button>
+					{isLoading ? (
+						<PreloaderIcon className='h-9 w-9 mx-5' />
+					) : (
+						<Button className='h-9 px-4'>
+							Отправить отклик
+						</Button>
+					)}
 					<Button variant='secondary' type='button' className='h-9 px-4' onClick={onBack}>
 						Отменить
 					</Button>

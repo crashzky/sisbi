@@ -1,14 +1,10 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import useUserType from '../useUserType';
 
 const useProfileTab = () => {
 	const router = useRouter();
 
-	const [userType, setUserType] = useState(null);
-
-	useEffect(() => {
-		setUserType(localStorage.getItem('user_type'));
-	}, []);
+	const { userType } = useUserType();
 
 	switch(userType) {
 		case 'user':

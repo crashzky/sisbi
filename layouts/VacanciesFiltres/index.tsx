@@ -72,7 +72,7 @@ const VacanciesFiltres: React.FC<Props> = ({ variant, ...props }) => {
 			if(experience)
 				params.push(`experience=${TO_EXPERIENCE[experience]}`);
 			if(job_category_id)
-				params.push(`job_category_id=${JSON.stringify(job_category_id)}`);
+				params.push(`job_category_id=${job_category_id}`);
 			if(gender)
 				params.push(`gender=${TO_GENDERS[gender]}`);
 
@@ -84,7 +84,7 @@ const VacanciesFiltres: React.FC<Props> = ({ variant, ...props }) => {
 		const { job_category_id, salary, schedules, employment_types, experience, gender } = router.query;
 
 		if(job_category_id)
-			setJobCategories(JSON.parse(job_category_id.toString()));
+			setJobCategories(job_category_id.toString().split(','));
 
 		formik.setValues({
 			salary: salary ? +salary : null,
@@ -120,7 +120,7 @@ const VacanciesFiltres: React.FC<Props> = ({ variant, ...props }) => {
 									if(experience)
 										params.push(`experience=${experience}`);
 									if(job_category_id)
-										params.push(`job_category_id=${JSON.stringify(job_category_id)}`);
+										params.push(`job_category_id=${job_category_id}`);
 									if(gender)
 										params.push(`gender=${TO_GENDERS[gender.toString()]}`);
 

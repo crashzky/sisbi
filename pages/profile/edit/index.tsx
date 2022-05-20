@@ -1,14 +1,10 @@
-import { useEffect, useState } from 'react';
+import useUserType from '../../../hooks/useUserType';
 import withCheckAuthLayout from '../../../layouts/CheckAuthLayout';
 import EmployerEditPage from './_employer_edit';
 import UserEditPage from './_user_edit';
 
 const EitPage = (): JSX.Element => {
-	const [userType, setUserType] = useState(null);
-
-	useEffect(() => {
-		setUserType(localStorage.getItem('user_type'));
-	}, []);
+	const { userType } = useUserType();
 
 	switch(userType) {
 		case 'user':

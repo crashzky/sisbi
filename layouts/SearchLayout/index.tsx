@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useQuery } from 'react-query';
+import useUserType from '../../hooks/useUserType';
 import { getMyProfileEmployer, getMyProfileUser } from '../../shared/api/user';
 import { HEADER_PRIMARY_ITEMS } from '../../shared/consts/header';
 import Footer from '../Footer';
@@ -8,7 +9,7 @@ import SearchPanel from '../SearchPanel';
 import Props from './SearchLayout.props';
 
 const SearchLayout: React.FC<Props> = ({ children, className = '', headerItems = HEADER_PRIMARY_ITEMS, ...props }) => {
-	const [userType, setUserType] = useState(null);
+	const { userType } = useUserType();
 
 	const myProfileUser = useQuery('my_profile_user', getMyProfileUser, {
 		retryDelay: 2,
@@ -21,7 +22,7 @@ const SearchLayout: React.FC<Props> = ({ children, className = '', headerItems =
 	});
 
 	useEffect(() => {
-		setUserType(localStorage.getItem('user_type'));
+		document.body.style.overflowY = 'scroll';
 	}, []);
 
 	return (
