@@ -6,6 +6,7 @@ interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDi
 	sendedDate: Date;
 	sender: SenderType;
 	readed?: boolean;
+	showDate?: boolean;
 };
 
 type SenderType = 'me' | 'companion';

@@ -13,6 +13,7 @@ interface IMessage {
 	chat_id: number;
 	created_at: string;
 	updated_at: string;
+	sender: IUser | IEmployer;
 }
 
 interface IChat {
@@ -42,6 +43,28 @@ interface IChatByIdResponse {
 	payload: IChat;
 }
 
+interface IMessagesRequest {
+	chat_id: number;
+	page: number;
+}
+
+interface IMessagesResponse extends IPage {
+	payload: IMessage[];
+}
+
+interface ISendMessageRequest {
+	message: {
+		content: string | File;
+		chat_id: number;
+		type_message: 0 | 1 | 2 | 3; // response: 0, text: 1, picture: 2, voice: 3
+	}
+}
+
+interface ISendMessageResponse {
+	result_code: 'ok';
+	payload: IMessage;
+}
+
 export type {
 	IChat,
 	IMessage,
@@ -49,4 +72,8 @@ export type {
 	IChatsResponse,
 	IChatByIdRequest,
 	IChatByIdResponse,
+	IMessagesResponse,
+	IMessagesRequest,
+	ISendMessageRequest,
+	ISendMessageResponse,
 };

@@ -6,21 +6,24 @@ import Message from '../../components/Message';
 import { useEffect, useRef, useState } from 'react';
 import useRefDemantions from '../../hooks/useRefDemantions';
 import useWindowDemantions from '../../hooks/useWindowDementions';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import useWebSocket from 'react-use-websocket';
 import ModalLayout from '../../layouts/ModalLayout';
 import ContactsModal from '../../modals/ContactsModal';
 import DeleteModal from '../../modals/DeleteModal';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import { MAIN_SHADOW } from '../../shared/consts/shadows';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import { getChatById, getChatByIdEmployer } from '../../shared/api/messenger';
+import { useMutation, useQuery } from 'react-query';
+import { getChatById, getChatByIdEmployer, getMessages, getMessagesEmployer } from '../../shared/api/messenger';
 import Image from 'next/image';
 import useUserType from '../../hooks/useUserType';
+import { IMessage } from '../../shared/types/api/messenger';
+import WEBSOCKET_URL from '../../shared/consts/webscoket';
 
 import CompanyLIcon from '../../assets/company-L.svg';
 import OtherIcon from '../../assets/navigation/other.svg';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const ChatPage = (): JSX.Element => {
 	const router = useRouter();
@@ -38,15 +41,57 @@ const ChatPage = (): JSX.Element => {
 	const [openedModal, setOpenedModal] = useState('');
 	const [isOpenedMenu, setIsOpenedMenu] = useState(false);
 
+	const [messages, setMessages] = useState<IMessage[]>([]);
+	const [messagesPage, setMessagesPage] = useState(1);
+
 	const chatInfoQuery = useQuery([{ chat_id: +router.query.id }], userType === 'user' ? getChatById : getChatByIdEmployer, {
 		enabled: !!router.query && !!(router.query.id || +router.query.id === 0) && !!userType,
 	});
 
+	const messagesMutation = useMutation(userType === 'user' ? getMessages : getMessagesEmployer, {
+		onSuccess: (res) => {
+			setMessages((prev) => {
+				let _res = [...res.payload];
+				_res.reverse();
+
+				return prev.concat(_res);
+			});
+
+			setTimeout(() => {
+				endMessageRef.current.scrollIntoView();
+			}, 1);
+		},
+	});
+
+	const { lastMessage, sendMessage } = useWebSocket(`${WEBSOCKET_URL}?token=${localStorage.getItem('access_token')}`);
+
 	useEffect(() => {
-		setTimeout(() => {
-			endMessageRef.current.scrollIntoView();
-		}, 1);
-	}, []);
+		setMessages([]);
+		setMessagesPage(1);
+
+		if(router.query && userType) {
+			messagesMutation.mutate({
+				chat_id: +router.query.id,
+				page: messagesPage,
+			});
+		}
+
+		sendMessage(`{"command":"subscribe","identifier":"{\\"channel\\":\\"ChatChannel\\",\\"chat_id\\":${router.query.id}}"}`);
+	}, [router, userType]);
+
+	useEffect(() => {
+		if(lastMessage) {
+			const MESSAGE = JSON.parse(lastMessage.data);
+			
+			if(MESSAGE.identifier && MESSAGE.message) {
+				setMessages((prev) => prev.concat(MESSAGE.message));
+				
+				setTimeout(() => {
+					endMessageRef.current.scrollIntoView();
+				}, 1);
+			}
+		}
+	}, [lastMessage]);
 
 	function getProperties() {
 		if(chatInfoQuery.isSuccess && userType === 'user') {
@@ -165,60 +210,71 @@ const ChatPage = (): JSX.Element => {
 					</div>
 				</div>
 				<div
-					className='pl-[110px] pr-[95px] overflow-y-scroll h-fit w-full grid'
+					className='pl-[110px] pr-[95px] overflow-y-scroll h-fit w-full grid gap-1'
 					style={{
-						height: `${windowSizes.height - buttonsSizes.height - inputSizes.height - 215}px`,
+						maxHeight: `${windowSizes.height - buttonsSizes.height - inputSizes.height - 215}px`,
 					}}
 				>
-					<Message
-						label='Отклик на вакансию'
-						message={`Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов,
-							но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э.,
-							то есть более двух тысячелетий назад.`}
-						sendedDate={new Date(2022, 1, 18, 18, 30)}
-						sender='me'
-						readed={true} />
-					<Message
-						label='Отклик на вакансию'
-						message={`Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов,
-							но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э.,
-							то есть более двух тысячелетий назад.`}
-						sendedDate={new Date(2022, 1, 18, 18, 30)}
-						sender='companion'
-						readed={true} />
-					<Paragraph variant='6' tag='p' className='text-text-secondary text-center my-4'>
-						{format(new Date(2022, 1, 10), 'dd MMMM yyyy', {
-							locale: ru,
-						})}
-					</Paragraph>
-					<Message
-						label='Отклик на вакансию'
-						message={`Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов,
-							но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э.,
-							то есть более двух тысячелетий назад.`}
-						sendedDate={new Date(2022, 1, 18, 18, 30)}
-						sender='me'
-						readed={true} />
-					<Message
-						label='Отклик на вакансию'
-						message={`Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов,
-							но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э.,
-							то есть более двух тысячелетий назад.`}
-						sendedDate={new Date(2022, 1, 18, 18, 30)}
-						sender='companion'
-						readed={true} />
+					{messages.map((i, num) => {
+						const showDate = num <= 1 ||
+							new Date(messages[num - 1].created_at).getMinutes() - 
+							new Date(i.created_at).getMinutes() < 3;
+
+						if(num === 0 || new Date(messages[num - 1].created_at).getDate() !== new Date(i.created_at).getDate()) {
+							return (
+								<>
+									<Paragraph
+										key={num + '_date'}
+										variant='6'
+										tag='p'
+										className='text-text-secondary text-center my-4'
+									>
+										{format(new Date(i.created_at), 'dd MMMM yyyy', {
+											locale: ru,
+										})}
+									</Paragraph>
+									<Message
+										key={num + '_message'}
+										label={i.type_message === 'response' ? 'Отклик на вакансию' : null}
+										message={i.content as string}
+										sendedDate={new Date(i.created_at)}
+										sender={i.sender_type.toLowerCase() === userType ? 'me' : 'companion'}
+										showDate={showDate}
+										className={showDate && 'pb-3'}
+										readed={true} />
+								</>
+							);
+						}
+						else {
+							return (
+								<Message
+									key={num + '_message'}
+									label={i.type_message === 'response' ? 'Отклик на вакансию' : null}
+									message={i.content as string}
+									sendedDate={new Date(i.created_at)}
+									sender={i.sender_type.toLowerCase() === userType ? 'me' : 'companion'}
+									showDate={showDate}
+									className={showDate && 'pb-3'}
+									readed={true} />
+							);
+						}
+					})}
 					<div ref={endMessageRef}></div>
 				</div>
-				<div className='pl-[110px] pr-[95px] grid gap-2' ref={buttonsRef}>
-					<Button variant='secondary' className='py-2 w-full font-normal'>
-						Отправить контакты
-					</Button>
-					<Button variant='danger' className='py-2 w-full font-normal'>
-						Отказать
-					</Button>
-				</div>
+				{userType === 'employer' ? (
+					<div className='pl-[110px] pr-[95px] grid gap-2' ref={buttonsRef}>
+						<Button variant='secondary' className='py-2 w-full font-normal'>
+							Одобрить
+						</Button>
+						<Button variant='danger' className='py-2 w-full font-normal'>
+							Отказать
+						</Button>
+					</div>
+				) : (
+					<div></div>
+				)}
 				<div ref={inputRef}>
-					<InputMessenger className='pl-[110px] pr-[95px]' />
+					<InputMessenger chatId={+router.query.id} className='pl-[110px] pr-[95px]' />
 				</div>
 			</MessengerLayout>
 		</ModalLayout>
