@@ -52,7 +52,7 @@ const NewVacancyPage = (): JSX.Element => {
 		enabled: !!(router && router.query),
 		onSuccess: (res) => {
 			const { title, salary, experience, type_employments, schedules, full_name, phone, email,
-				description, job_category, avatar, city } = res.payload[0];
+				description, job_category, avatar, city } = res.payload;
 
 			formik.setValues({
 				title,

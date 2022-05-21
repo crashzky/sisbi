@@ -9,6 +9,7 @@ interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDi
 	tags: string[];
 	last_update: string;
 	vacancyId: number;
+	isVisible: boolean;
 	views: number;
 	shows: number;
 	state: VacancyStatesType;

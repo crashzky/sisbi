@@ -1,6 +1,7 @@
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+	errorMessage?: string;
 	isLoading?: boolean;
 	companyName: string;
 	vacancyName: string;

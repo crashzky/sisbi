@@ -6,14 +6,30 @@ import { VACANCY_STATES } from '../../shared/consts/stateTypes';
 import Button from '../Button';
 import Paragraph from '../Paragraph';
 import Props from './MyVacancyCard.props';
+import { useMutation } from 'react-query';
+import { deleteVacancy, putVacancy } from '../../shared/api/vacancies';
 
 import ShareIcon from '../../assets/communication/share_solid.svg';
 import DeleteIcon from '../../assets/navigation/trash_solid.svg';
 import VisibleIcon from '../../assets/general/visible_solid.svg';
+import InvisibleIcon from '../../assets/general/invisible_solid.svg';
+import Preloader from '../../assets/loader.svg';
 
 const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPrice, description, tags,
-	last_update, vacancyId, shows, views, state, ...props }) => {
+	last_update, vacancyId, shows, views, state, isVisible, ...props }) => {
 	const router = useRouter();
+
+	const deleteMutation = useMutation(deleteVacancy, {
+		onSuccess: () => {
+			router.reload();
+		},
+	});
+
+	const putVacancyMutation = useMutation(putVacancy, {
+		onSuccess: () => {
+			router.reload();
+		},
+	});
 
 	return (
 		<article
@@ -120,18 +136,46 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 							width={20}
 							height={20} />
 					</Button>
-					<Button variant='outline_secondary' className='w-9 h-9 rounded-full'>
-						<DeleteIcon
-							className='mx-auto fill-icon-secondary'
-							width={20}
-							height={20} />
-					</Button>
-					<Button variant='outline_secondary' className='w-9 h-9 rounded-full'>
-						<VisibleIcon
-							className='mx-auto fill-icon-secondary'
-							width={20}
-							height={20} />
-					</Button>
+					{deleteMutation.isLoading ? (
+						<Preloader className='w-9 h-9 stroke-icon-secondary' />
+					) : (
+						<Button
+							onClick={() => deleteMutation.mutate({ id: vacancyId })}
+							variant='outline_secondary'
+							className='w-9 h-9 rounded-full'
+						>
+							<DeleteIcon
+								className='mx-auto fill-icon-secondary'
+								width={20}
+								height={20} />
+						</Button>
+					)}
+					{putVacancyMutation.isLoading ? (
+						<Preloader className='w-9 h-9 stroke-icon-secondary' />
+					) : (
+						<Button
+							onClick={() => {
+								putVacancyMutation.mutate({
+									id: vacancyId,
+									visible: !isVisible,
+								});
+							}}
+							variant='outline_secondary'
+							className='w-9 h-9 rounded-full'
+						>
+							{isVisible ? (
+								<VisibleIcon
+									className='mx-auto fill-icon-secondary'
+									width={20}
+									height={20} />
+							) : (
+								<InvisibleIcon
+									className='mx-auto fill-icon-secondary'
+									width={22}
+									height={20} />
+							)}
+						</Button>
+					)}
 				</div>
 			</div>
 		</article>

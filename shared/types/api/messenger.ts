@@ -1,4 +1,4 @@
-import { UserType } from './common';
+import { IPage, UserType } from './common';
 import { IEmployer, IUser } from './user';
 import { IVacancy } from './vacancies';
 
@@ -29,13 +29,8 @@ interface IChatRequest {
 	page?: number;
 }
 
-interface IChatsResponse {
-	result_code: 'ok';
+interface IChatsResponse extends IPage {
 	payload: IChat[];
-	current_page: number;
-	next_page: number | null;
-	total_pages: number;
-	total_entries: number;
 }
 
 interface IChatByIdRequest {

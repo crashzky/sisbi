@@ -1,3 +1,5 @@
+import { IPage } from './common';
+
 interface ICity {
 	id: number;
 	name: string;
@@ -9,13 +11,8 @@ interface IGetCitiesRequest {
 	name: string;
 }
 
-interface IGetCitiesResponse {
-	result_code: 'ok';
+interface IGetCitiesResponse extends IPage {
 	payload: ICity[];
-	current_page: number;
-	next_page: number | null;
-	total_pages: number;
-	total_entries: number;
 }
 
 interface IGetCityByIdRequest {

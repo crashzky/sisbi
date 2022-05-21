@@ -1,10 +1,10 @@
 import { ICity } from './cities';
-import { ExperienceType, IRespondStateType, VacancyStatesType } from './common';
+import { ExperienceType, IPage, IRespondStateType, VacancyStatesType } from './common';
 import { IJobCategory } from './job_categories';
 import { IChat, IMessage } from './messenger';
 import { ISchedule } from './schedules';
 import { ITypeEmployment } from './type_employments';
-import { IEmployer, IUser } from './user';
+import { IEmployer } from './user';
 
 interface IVacancy {
 	id: number;
@@ -19,6 +19,7 @@ interface IVacancy {
 	salary: number;
 	views: number;
 	shows: number;
+	visible: boolean;
 	created_at: string;
 	updated_at: string;
 	job_category: IJobCategory;
@@ -39,13 +40,8 @@ interface IVacanciesRequest {
 	page?: number;
 }
 
-interface IVacanciesResponse {
-	result_code: 'ok';
+interface IVacanciesResponse extends IPage {
 	payload: IVacancy[];
-	current_page: number;
-	next_page: number | null;
-	total_pages: number;
-	total_entries: number;
 }
 
 interface IVacancyResponse {
@@ -62,11 +58,16 @@ interface ICreateVacancyRequest {
 	description: string;
 	full_name: string;
 	phone: string;
+	visible: boolean;
 	email: string;
 	city_id: number;
 }
 
 interface IPutVacncyRequest extends Partial<ICreateVacancyRequest> {
+	id: number;
+}
+
+interface IDeleteVacancyRequest {
 	id: number;
 }
 
@@ -120,4 +121,5 @@ export type {
 	IPutVacncyRequest,
 	IRespondVacancyRequest,
 	IRespondVacancyResponse,
+	IDeleteVacancyRequest,
 };

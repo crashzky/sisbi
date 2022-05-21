@@ -35,10 +35,12 @@ const MessengerLayout: React.FC<Props> = ({ className, children }) => {
 	useEffect(() => {
 		document.body.style.overflowY = 'hidden';
 
-		mutate({
-			page: 1,
-		});
-	}, []);
+		if(userType) {
+			mutate({
+				page: 1,
+			});
+		}
+	}, [userType]);
 
 	function getMessageSender(messageSender: UserType) {
 		if(userType === 'user' && messageSender === 'User')
@@ -104,7 +106,7 @@ const MessengerLayout: React.FC<Props> = ({ className, children }) => {
 							vacancyName={i.vacancy.title}
 							lastMessageReadedDate={new Date(i.last_message.created_at)}
 							lastMessageSender={getMessageSender(i.last_message.sender_type)}
-							lastMessageValue={i.last_message.content.toString()} />
+							lastMessageValue={i.last_message.content as string} />
 					))}
 				</div>
 			</div>

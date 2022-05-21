@@ -9,8 +9,8 @@ import MainLayout from '../../layouts/MainLayout';
 import Switch from '../../components/Switch';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import { getMyProfileUser } from '../../shared/api/user';
+import { useMutation, useQuery } from 'react-query';
+import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
 
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
@@ -20,6 +20,8 @@ const ProfilePageUser = (): JSX.Element => {
 	const router = useRouter();
 
 	const myProfileUserQuery = useQuery('my_profile_user', getMyProfileUser);
+
+	const putProfileUserMutation = useMutation(putProfileUser);
 
 	const data = myProfileUserQuery.isSuccess ? myProfileUserQuery.data.payload : null;
 
@@ -64,9 +66,12 @@ const ProfilePageUser = (): JSX.Element => {
 				case 'deactivated':
 					return 'Сейчас это резюме никому не видно';
 				case 'active':
-					return 'Сейчас это резюме видно всем';
+					if(data.visible)
+						return 'Сейчас это резюме видно всем';
+					else
+						return 'Сейчас это резюме никому не видно';
 				case 'moderating':
-					return 'Сейчас это на модерации, после оно будет видно всем';
+					return 'Сейчас это резюме на модерации';
 			}
 		}
 	}
@@ -282,7 +287,16 @@ const ProfilePageUser = (): JSX.Element => {
 							{getVisionStatus()}
 						</Paragraph>
 					</div>
-					<Switch id='switch' />
+					<Switch
+						defaultChecked={data && data.visible}
+						onClick={(e) => {
+							putProfileUserMutation.mutate({
+								user: {
+									visible: (e.target as any).checked,
+								},
+							});
+						}}
+						id='switch' />
 				</div>
 				<div className='flex justify-between p-4 rounded-xl border-[1px] border-gray-100'>
 					<div>

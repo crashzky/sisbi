@@ -23,6 +23,14 @@ interface ICommonResponseError {
 	}
 }
 
+interface IPage {
+	result_code: 'ok';
+	current_page: number;
+	next_page: number | null;
+	total_pages: number;
+	total_entries: number;
+}
+
 export type {
 	GendersType,
 	UserStatesType,
@@ -35,4 +43,5 @@ export type {
 	IRespondStateType,
 	CompanyStatesType,
 	UserType,
+	IPage,
 };

@@ -9,11 +9,14 @@ import { useEffect, useState } from 'react';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import PageSlider from '../../components/PageSlider';
 import { useMutation } from 'react-query';
-import { getVacancies } from '../../shared/api/vacancies';
 import withRouterParam from '../../utils/withRouterParam';
 import SelectJobModal from '../../modals/SelectJobModal';
 import ResumeCard from '../../components/ResumeCard';
 import RespondResumeMenu from '../../components/RespondResumeMenu';
+import { getResumes } from '../../shared/api/resumes';
+import { EXPERIENCE } from '../../shared/consts/profile';
+import ContentLoader from 'react-content-loader';
+import { parse } from 'date-fns';
 
 const ResumesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -22,13 +25,14 @@ const ResumesPage = (): JSX.Element => {
 
 	const { activeModal } = useModal(['job_categories']);
 
-	const { data, mutate, isSuccess } = useMutation(getVacancies);
+	const { data, mutate, isSuccess, isLoading } = useMutation(getResumes);
 
 	useEffect(() => {
 		mutate({
 			...withRouterParam(router, 'page', 'number'),
 			...withRouterParam(router, 'query'),
 			...withRouterParam(router, 'city', 'number'),
+			...withRouterParam(router, 'gender'),
 			...withRouterParam(router, 'salary', 'number'),
 			...withRouterParam(router, 'job_category_id', 'array'),
 			...withRouterParam(router, 'experience'),
@@ -42,16 +46,16 @@ const ResumesPage = (): JSX.Element => {
 
 		if(current === 0)
 			className.push('rounded-t-3xl');
-		if(current === (/*data.payload.length*/ 3) - 1)
+		if(current === data.payload.length - 1)
 			className.push('rounded-b-3xl');
-		if(current % 2 !== 0 && current !== (/*data.payload.length*/ 3) - 1)
+		if(current % 2 !== 0 && current !== data.payload.length - 1)
 			className.push('border-y-0');
-		else if(current === (/*data.payload.length*/ 3) - 1 && current % 2 !== 0)
+		else if(current === data.payload.length - 1 && current % 2 !== 0)
 			className.push('border-t-0');
 
 		return className.join(' ');
 	}
-
+	
 	const respondedResume = respondedResumeId ? data.payload.find((i) => i.id === respondedResumeId) : null;
 
 	return (
@@ -66,14 +70,14 @@ const ResumesPage = (): JSX.Element => {
 				onClose={() => setRespondedResumeId(null)}
 				width={457}
 			>
-				{(/*respondedResume*/ true) && (
+				{respondedResume && (
 					<RespondResumeMenu
 						className='rounded-t-3xl'
-						name='Кирилл'
-						surname='Шкотлыченко'
-						vacancyName='Junior UI/UX дизайнер'
-						minPrice={125000}
-						resumeId={1}
+						name={respondedResume.first_name}
+						surname={respondedResume.surname}
+						vacancyName={respondedResume.previous_job}
+						minPrice={respondedResume.min_salary}
+						resumeId={respondedResume.id}
 						onContinue={() => setRespondedResumeId(null)}
 						onBack={() => setRespondedResumeId(null)} />
 				)}
@@ -92,90 +96,52 @@ const ResumesPage = (): JSX.Element => {
 						}} />
 					<div >
 						<div className='grid'>
-							<ResumeCard
-								onClick={(e) => {
-									if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
-										router.push(`/resumes/${0}`);
-								}}
-								className={getRoundedStyles(0)}
-								avatar='/assets/DEV_ONLY.png'
-								name='Алексей'
-								surname='Шкотлыченко'
-								vacancyName='Junior UX/UI дизайнер'
-								minSalary={125000}
-								about={`
-									Плотно взаимодействовать с командой, и корректировать UI в соответствии с возможностями
-									современных технологий. Контролировать реализацию UI/UX в конечном продукте.
-									Что ты должен знать/уметь: Ты имеешь опыт работы в сфере мобильных IT продуктов в роли UI/UX.
-								`}
-								tags={['Опыт работы 3 -  6 лет', 'Полный день', 'Удаленная работа', 'Любой город']}
-								city='Екатеринбург'
-								birthday={new Date(2005, 0, 18)}
-								skills={['Figma', 'Photoshop', 'Web-дизайн', 'iOS']}
-								onRespond={() => setRespondedResumeId(1)} />
-							<ResumeCard
-								onClick={(e) => {
-									if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
-										router.push(`/resumes/${1}`);
-								}}
-								className={getRoundedStyles(1)}
-								avatar='/assets/DEV_ONLY.png'
-								name='Алексей'
-								surname='Шкотлыченко'
-								vacancyName='Junior UX/UI дизайнер'
-								minSalary={125000}
-								about={`
-									Плотно взаимодействовать с командой, и корректировать UI в соответствии с возможностями
-									современных технологий. Контролировать реализацию UI/UX в конечном продукте.
-									Что ты должен знать/уметь: Ты имеешь опыт работы в сфере мобильных IT продуктов в роли UI/UX.
-								`}
-								tags={['Опыт работы 3 -  6 лет', 'Полный день', 'Удаленная работа', 'Любой город']}
-								city='Екатеринбург'
-								birthday={new Date(2005, 0, 18)}
-								skills={['Figma', 'Photoshop', 'Web-дизайн', 'iOS']}
-								onRespond={() => setRespondedResumeId(2)} />
-							<ResumeCard
-								onClick={(e) => {
-									if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
-										router.push(`/resumes/${2}`);
-								}}
-								className={getRoundedStyles(2)}
-								avatar='/assets/DEV_ONLY.png'
-								name='Алексей'
-								surname='Шкотлыченко'
-								vacancyName='Junior UX/UI дизайнер'
-								minSalary={125000}
-								about={`
-									Плотно взаимодействовать с командой, и корректировать UI в соответствии с возможностями
-									современных технологий. Контролировать реализацию UI/UX в конечном продукте.
-									Что ты должен знать/уметь: Ты имеешь опыт работы в сфере мобильных IT продуктов в роли UI/UX.
-								`}
-								tags={['Опыт работы 3 -  6 лет', 'Полный день', 'Удаленная работа', 'Любой город']}
-								city='Екатеринбург'
-								birthday={new Date(2005, 0, 18)}
-								skills={['Figma', 'Photoshop', 'Web-дизайн', 'iOS']}
-								onRespond={() => setRespondedResumeId(3)} />
-							<ResumeCard
-								onClick={(e) => {
-									if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
-										router.push(`/resumes/${3}`);
-								}}
-								className={getRoundedStyles(3)}
-								avatar='/assets/DEV_ONLY.png'
-								name='Алексей'
-								surname='Шкотлыченко'
-								vacancyName='Junior UX/UI дизайнер'
-								minSalary={125000}
-								about={`
-									Плотно взаимодействовать с командой, и корректировать UI в соответствии с возможностями
-									современных технологий. Контролировать реализацию UI/UX в конечном продукте.
-									Что ты должен знать/уметь: Ты имеешь опыт работы в сфере мобильных IT продуктов в роли UI/UX.
-								`}
-								tags={['Опыт работы 3 -  6 лет', 'Полный день', 'Удаленная работа', 'Любой город']}
-								city='Екатеринбург'
-								birthday={new Date(2005, 0, 18)}
-								skills={['Figma', 'Photoshop', 'Web-дизайн', 'iOS']}
-								onRespond={() => setRespondedResumeId(4)} />
+							{isLoading || !data ? (
+								<ContentLoader
+									width='100%'
+									height={300}
+									viewBox='0 0 700 300'
+									backgroundColor='#f5f5f5'
+									foregroundColor='#dbdbdb'
+								>
+									<rect x='4' y='8' rx='3' ry='3' width='7' height='288' />
+									<rect x='6' y='289' rx='3' ry='3' width='669' height='8' />
+									<rect x='670' y='9' rx='3' ry='3' width='6' height='285' />
+									<rect x='55' y='42' rx='16' ry='16' width='274' height='216' />
+									<rect x='412' y='113' rx='3' ry='3' width='102' height='7' />
+									<rect x='402' y='91' rx='3' ry='3' width='178' height='6' />
+									<rect x='405' y='139' rx='3' ry='3' width='178' height='6' />
+									<rect x='416' y='162' rx='3' ry='3' width='102' height='7' />
+									<rect x='405' y='189' rx='3' ry='3' width='178' height='6' />
+									<rect x='5' y='8' rx='3' ry='3' width='669' height='7' />
+									<rect x='406' y='223' rx='14' ry='14' width='72' height='32' />
+									<rect x='505' y='224' rx='14' ry='14' width='72' height='32' />
+									<rect x='376' y='41' rx='3' ry='3' width='231' height='29' />
+								</ContentLoader>
+							) : data.payload.map((i, num) => (
+								<ResumeCard
+									key={num}
+									onClick={(e) => {
+										if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
+											router.push(`/resumes/${i.id}`);
+									}}
+									className={getRoundedStyles(num)}
+									avatar={i.avatar}
+									name={i.first_name}
+									surname={i.surname}
+									vacancyName={i.previous_job}
+									minSalary={i.min_salary}
+									about={i.about}
+									tags={[
+										(i.job_category && i.job_category.name), EXPERIENCE[i.experience],
+										...i.type_employments.map((j) => j.name), ...i.schedules.map((j) => j.name),
+										(i.city && i.city.name),
+									].filter((i) => !!i)}
+									city={i.city ? i.city.name : ''}
+									birthday={parse(i.birthday, 'dd.MM.yyyy', new Date())}
+									skills={i.skills.split(' ')}
+									onRespond={() => setRespondedResumeId(i.id)} />
+							))}
 						</div>
 						<PageSlider
 							className='mt-10'

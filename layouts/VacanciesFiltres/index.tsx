@@ -85,6 +85,8 @@ const VacanciesFiltres: React.FC<Props> = ({ variant, ...props }) => {
 
 		if(job_category_id)
 			setJobCategories(job_category_id.toString().split(','));
+		else
+			setJobCategories([]);
 
 		formik.setValues({
 			salary: salary ? +salary : null,

@@ -51,6 +51,7 @@ const MyVacanciesPage = (): JSX.Element => {
 						vacancyId={i.id}
 						key={num}
 						imageSrc={i.avatar}
+						isVisible={i.visible}
 						label={i.title}
 						minPrice={i.salary}
 						description={i.description}

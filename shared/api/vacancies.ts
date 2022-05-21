@@ -1,6 +1,7 @@
 import { EXPERIENCE } from '../consts/profile';
-import { ICreateVacancyRequest, ICreateVacancyResponse, IPutVacncyRequest, IRespondVacancyRequest, IRespondVacancyResponse,
-	IUpdateSchedulesRequest, IUpdateTypeEmployementsRequest, IVacanciesRequest, IVacanciesResponse, IVacancyResponse,
+import { ICreateVacancyRequest, ICreateVacancyResponse, IDeleteVacancyRequest, IPutVacncyRequest, IRespondVacancyRequest,
+	IRespondVacancyResponse, IUpdateSchedulesRequest, IUpdateTypeEmployementsRequest, IVacanciesRequest,
+	IVacanciesResponse, IVacancyResponse,
 } from '../types/api/vacancies';
 import instance from './axios';
 
@@ -84,6 +85,11 @@ const putVacancy = (data: IPutVacncyRequest): Promise<ICreateVacancyResponse> =>
 		.then((res) => res.data); 
 };
 
+const deleteVacancy = (data: IDeleteVacancyRequest): Promise<null> => {
+	return instance.delete(`/v1/employer/vacancies/${data.id}`)
+		.then((res) => res.data); 
+};
+
 const addSchedulesVacancy = (data: IUpdateSchedulesRequest): Promise<ICreateVacancyResponse> => {
 	return instance.put(`/v1/employer/vacancies/${data.id}/add_schedules`, { schedules: data.schedules })
 		.then((res) => res.data);
@@ -116,6 +122,7 @@ export {
 	createVacancy,
 	getMyVacancies,
 	putVacancy,
+	deleteVacancy,
 
 	addSchedulesVacancy,
 	removeSchedulesVacancy,

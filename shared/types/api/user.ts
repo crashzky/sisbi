@@ -16,6 +16,7 @@ interface IUser {
     city: ICity | null;
     state: UserStatesType;
     skills: string;
+	visible: boolean;
     phone: number;
     email: string | null;
     about: string | null;

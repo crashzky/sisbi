@@ -11,10 +11,11 @@ import RespondVacancyMenu from '../../components/RespondVacancyMenu';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import PageSlider from '../../components/PageSlider';
 import { useMutation } from 'react-query';
-import { getVacancies } from '../../shared/api/vacancies';
+import { getVacancies, respondVacancy } from '../../shared/api/vacancies';
 import withRouterParam from '../../utils/withRouterParam';
 import { EXPERIENCE } from '../../shared/consts/profile';
 import ContentLoader from 'react-content-loader';
+import { AxiosError } from 'axios';
 
 import SelectJobModal from '../../modals/SelectJobModal';
 
@@ -22,10 +23,20 @@ const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
 
 	const [respondedVacancyId, setRespondedVacancyId] = useState(null);
+	const [sendedVacancyId, setSendedVacancyId] = useState(null);
 
 	const { activeModal } = useModal(['job_categories']);
 
 	const { data, mutate, isSuccess } = useMutation(getVacancies);
+
+	const respondMutation = useMutation(respondVacancy, {
+		onMutate: () => {
+			setSendedVacancyId(respondedVacancyId);
+		},
+		onSuccess: () => {
+			setRespondedVacancyId(null);
+		},
+	});
 
 	useEffect(() => {
 		mutate({
@@ -57,6 +68,17 @@ const VacanciesPage = (): JSX.Element => {
 
 	const respondedVacancy = respondedVacancyId ? data.payload.find((i) => i.id === respondedVacancyId) : null;
 
+	function getErrorMessage() {
+		if(respondMutation.isError && sendedVacancyId === respondedVacancyId) {
+			switch((respondMutation.error as AxiosError).response.status) {
+				case 422:
+					return 'Вы уже откликались на эту вакансию';
+				default:
+					return 'Что-то пошло не так. Попробуйте ещё раз позже';
+			}
+		}
+	}
+
 	return (
 		<ModalLayout modals={{
 			'job_categories': <SelectJobModal />,
@@ -79,7 +101,15 @@ const VacanciesPage = (): JSX.Element => {
 						contactName={respondedVacancy.full_name}
 						contactPhone={respondedVacancy.phone}
 						contactMail={respondedVacancy.email}
-						onContinue={() => setRespondedVacancyId(null)}
+						errorMessage={getErrorMessage()}
+						onContinue={(message) => {
+							respondMutation.mutate({
+								response: {
+									vacancy_id: respondedVacancyId,
+									message,
+								},
+							});
+						}}
 						onBack={() => setRespondedVacancyId(null)} />
 				)}
 			</Menu>
@@ -117,7 +147,7 @@ const VacanciesPage = (): JSX.Element => {
 									contactName={i.full_name}
 									contactPhone={i.phone}
 									contactMail={i.email}
-									onRespond={() => setRespondedVacancyId(1)} />
+									onRespond={() => setRespondedVacancyId(i.id)} />
 							)) : (
 								<ContentLoader
 									width='100%'

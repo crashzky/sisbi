@@ -82,9 +82,9 @@ const ChatPage = (): JSX.Element => {
 			modals={{
 				'contacts': (
 					<ContactsModal
-						fullName={chatInfoQuery.isSuccess ? getProperties().contact.fullName : 'Загрузка...'}
-						phone={chatInfoQuery.isSuccess ? getProperties().contact.phone : 'Загрузка...'}
-						mail={chatInfoQuery.isSuccess ? getProperties().contact.email : 'Загрузка...'}
+						fullName={chatInfoQuery.isSuccess && getProperties() ? getProperties().contact.fullName : 'Загрузка...'}
+						phone={chatInfoQuery.isSuccess && getProperties() ? getProperties().contact.phone : 'Загрузка...'}
+						mail={chatInfoQuery.isSuccess && getProperties() ? getProperties().contact.email : 'Загрузка...'}
 						onClose={() => setOpenedModal('')} />
 				),
 				'delete': (
@@ -101,7 +101,7 @@ const ChatPage = (): JSX.Element => {
 				<div className={`w-full px-4 py-3 grid grid-cols-[40px_auto_1fr_20px] 
 					gap-4 items-center bg-white border-gray-60 border-b-[1px]`}
 				>
-					{chatInfoQuery.isSuccess && getProperties().avatar ? (
+					{chatInfoQuery.isSuccess && getProperties() && getProperties().avatar ? (
 						<Image
 							src={getProperties().avatar}
 							alt='avatar'
@@ -113,17 +113,17 @@ const ChatPage = (): JSX.Element => {
 					)}
 					<div>
 						<Paragraph variant='3' tag='h2' className='font-bold'>
-							{chatInfoQuery.isSuccess ? getProperties().title : 'Загрузка...'}
+							{chatInfoQuery.isSuccess && getProperties() ? getProperties().title : 'Загрузка...'}
 						</Paragraph>
 						<Paragraph variant='5' tag='p' className='text-text'>
-							{chatInfoQuery.isSuccess ? getProperties().name : 'Загрузка...'}
+							{chatInfoQuery.isSuccess && getProperties() ? getProperties().name : 'Загрузка...'}
 						</Paragraph>
 					</div>
 					<div></div>
 					<div className='relative'>
 						<button
 							onFocus={() => setIsOpenedMenu(true)}
-							onBlur={() => setTimeout(() => setIsOpenedMenu(false), 20)}
+							onBlur={() => setTimeout(() => setIsOpenedMenu(false), 100)}
 						>
 							<OtherIcon className='fill-icon-secondary' />
 						</button>
@@ -137,9 +137,14 @@ const ChatPage = (): JSX.Element => {
 								<button
 									className={`p-4 w-full flex justify-between items-center text-left
 										text-sm border-b-[1px] border-button-secondary`}
-									onClick={() => router.push('/vacancies/13')}
+									onClick={() => {
+										if(userType === 'user')
+											router.push(`/vacancies/${chatInfoQuery.data.payload.vacancy.id}`);
+										else
+											router.push(`/resumes/${chatInfoQuery.data.payload.user.id}`);
+									}}
 								>
-									Открыть вакансию
+									{userType === 'user' ? 'Открыть вакансию' : 'Открыть резюме'}
 								</button>
 								<button
 									className={`p-4 w-full flex justify-between items-center text-left

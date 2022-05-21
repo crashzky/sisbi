@@ -14,7 +14,7 @@ import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 
 const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vacancyName, minPrice, vacancyId,
-	contactName, contactPhone, contactMail, onContinue, onBack, isLoading, ...props }) => {
+	contactName, contactPhone, contactMail, onContinue, onBack, isLoading, errorMessage, ...props }) => {
 	const formik = useFormik({
 		initialValues: {
 			message: '',
@@ -93,7 +93,7 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 						</span>
 					</Paragraph>
 					<Textarea
-						className='w-full h-[200px] mb-3'
+						className='w-full h-[200px]'
 						placeholder='Сообщение работодателю'
 						name='message'
 						value={formik.values.message}
@@ -101,12 +101,17 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 					>
 
 					</Textarea>
-					<Checkbox
+					{/*<Checkbox
 						name='allowSendContacts'
 						onChange={formik.handleChange}
 						checked={!!formik.values.allowSendContacts.length}
-						label='Предоставить контакты работодателю' />
+						label='Предоставить контакты работодателю' />*/}
 				</div>
+				{errorMessage && (
+					<Paragraph variant='5' tag='p' className='text-red font-semibold px-6 mt-3'>
+						{errorMessage}
+					</Paragraph>
+				)}
 				<div className='px-6 py-4 grid grid-cols-[auto_auto_1fr] gap-[10px]'>
 					{isLoading ? (
 						<PreloaderIcon className='h-9 w-9 mx-5' />

@@ -2,12 +2,12 @@ import Image from 'next/image';
 import Props from './ResumeCard.props';
 import Paragraph from '../Paragraph';
 import Button from '../Button';
-import { intervalToDuration } from 'date-fns';
+import { intervalToDuration, isValid } from 'date-fns';
 
 const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, birthday, onRespond, city,
 	vacancyName, about, skills, tags, minSalary, ...props }) => {
 	const interval = intervalToDuration({
-		start: birthday,
+		start: isValid(birthday) ? birthday : new Date(Date.now()),
 		end: new Date(Date.now()),
 	});
 

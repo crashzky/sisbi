@@ -5,27 +5,39 @@ import Paragraph from '../../components/Paragraph';
 import Headline from '../../components/Headline';
 import Image from 'next/image';
 import Button from '../../components/Button';
-import { format } from 'date-fns';
+import { format, intervalToDuration, parse } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
+import useUserType from '../../hooks/useUserType';
+import { getResumeById } from '../../shared/api/resumes';
+import { useQuery } from 'react-query';
+import { EXPERIENCE } from '../../shared/consts/profile';
+import ContentLoader from 'react-content-loader';
+import useWindowDemantions from '../../hooks/useWindowDementions';
 
 import RespondResumeMenu from '../../components/RespondResumeMenu';
-import useUserType from '../../hooks/useUserType';
 
 const ResumeIdPage = (): JSX.Element => {
 	const router = useRouter();
 	
 	const { userType } = useUserType();
 
+	const { width } = useWindowDemantions();
+
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
 
-	/*const { data, isSuccess } = useQuery([{ id: router.query.id }], getVacancyById, {
+	const { data, isSuccess } = useQuery([{ id: router.query.id }], getResumeById, {
 		enabled: !!(router && router.query),
 	});
 
-	const { title, email, phone, full_name, salary, description, job_category, experience, type_employments,
-		schedules, employer, created_at, avatar, id } = data ? data.payload[0] : {} as any;*/
+	const { first_name, surname, job_category, experience, type_employments, schedules,
+		city, birthday, previous_job, about, min_salary, skills, created_at, avatar } = data ? data.payload : {} as any;
+
+	const interval = intervalToDuration({
+		start: birthday ? parse(birthday, 'dd.MM.yyyy', new Date()) : new Date(Date.now()),
+		end: new Date(Date.now()),
+	});	
 
 	return (
 		<>
@@ -47,111 +59,134 @@ const ResumeIdPage = (): JSX.Element => {
 					onBack={() => setShowRespondMenu(false)} />
 			</Menu>
 			<SearchLayout className='px-40 py-10'>
-				<BreadCrumbs
-					className='mb-10'
-					items={[
-						{
-							label: 'Вакансии',
-							href: {
-								pathname: '/vacancies',
-								query: router.query,
-							},
-						},
-						{
-							label: 'Алексей Сухоров',
-							href: {
-								pathname: router.pathname,
-								query: router.query,
-							},
-						},
-					]} />
-				<div className='flex justify-between'>
-					<div className='max-w-[552px]'>
-						<div className='flex flex-wrap gap-2 mb-4'>
-							{/*isSuccess && [
-								job_category.name, EXPERIENCE[experience], ...type_employments.map((i) => i.name),
-								...schedules.map((i) => i.name)]
-								.map((i, num) => (
-									<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
-										{i}
+				{!isSuccess ? (
+					<ContentLoader
+						height={600}
+						width={width / 1.3}
+						className='mt-5'
+						viewBox='0 0 450 300'
+						backgroundColor='#f5f5f5'
+						foregroundColor='#dbdbdb'
+					>
+						<circle cx='75' cy='75' r='70' />
+						<rect x='160' y='15' rx='3' ry='3' width='50' height='15' />
+						<rect x='215' y='15' rx='3' ry='3' width='50' height='15' />
+						<rect x='270' y='15' rx='3' ry='3' width='50' height='15' />
+						<rect x='325' y='15' rx='3' ry='3' width='50' height='15' />
+				
+						<rect x='160' y='35' rx='3' ry='3' width='290' height='1' />
+				
+						<rect x='160' y='45' rx='3' ry='3' width='35' height='8' />
+						<rect x='380' y='45' rx='3' ry='3' width='70' height='8' />
+				
+						<rect x='160' y='60' rx='3' ry='3' width='140' height='50' />
+						<rect x='310' y='60' rx='3' ry='3' width='140' height='50' />
+						<rect x='160' y='120' rx='3' ry='3' width='140' height='50' />
+						<rect x='310' y='120' rx='3' ry='3' width='140' height='50' />
+						<rect x='160' y='180' rx='3' ry='3' width='140' height='50' />
+						<rect x='310' y='180' rx='3' ry='3' width='140' height='50' />
+				
+						<rect x='5' y='150' rx='3' ry='3' width='130' height='15' />
+						<rect x='5' y='170' rx='3' ry='3' width='70' height='10' />
+						<rect x='10' y='190' rx='3' ry='3' width='115' height='15' />
+						<rect x='10' y='210' rx='3' ry='3' width='35' height='8' />
+						<rect x='50' y='210' rx='3' ry='3' width='35' height='8' />
+						<rect x='90' y='210' rx='3' ry='3' width='35' height='8' />
+					</ContentLoader>
+				) : (
+					<>
+						<BreadCrumbs
+							className='mb-10'
+							items={[
+								{
+									label: 'Резюме',
+									href: {
+										pathname: '/resumes',
+										query: router.query,
+									},
+								},
+								{
+									label: `${first_name} ${surname}`,
+									href: {
+										pathname: router.pathname,
+										query: router.query,
+									},
+								},
+							]} />
+						<div className='flex justify-between'>
+							<div className='max-w-[552px]'>
+								<div className='flex flex-wrap gap-2 mb-4'>
+									{isSuccess && [
+										(job_category && job_category.name), EXPERIENCE[experience],
+										...type_employments.map((i) => i.name), ...schedules.map((i) => i.name)]
+										.filter((i) => !!i).map((i, num) => (
+											<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
+												{i}
+											</span>
+										))}
+								</div>
+								<Paragraph variant='4' tag='p' className='text-text mb-5'>
+									{`${first_name} ${surname}, ${interval.years ? `${interval.years} лет, ` : ''}`}
+									{' '}
+									{city ? city.name : ''}
+								</Paragraph>
+								<Headline variant='3' tag='h1' className='mb-2 font-bold'>
+									{previous_job}
+								</Headline>
+								<Headline variant='5' tag='p' className='mb-6 font-bold text-text'>
+									от
+									{' '}
+									{new Intl.NumberFormat().format(+min_salary)}
+									{' '}
+									<span className='font-rouble text-3xl text-text'>
+										{'c'}
 									</span>
-								))*/}
-							{['Опыт от 3 лет', 'Полный день', 'Удаленная работа', 'Любой город'].map((i, num) => (
-								<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
-									{i}
-								</span>
-							))}
-						</div>
-						<Paragraph variant='4' tag='p' className='text-text mb-5'>
-							Алексей Сухоруков, 29 лет, Новосибирск
-						</Paragraph>
-						<Headline variant='3' tag='h1' className='mb-2 font-bold'>
-							Junior UI/UX дизайнер
-						</Headline>
-						<Headline variant='5' tag='p' className='mb-6 font-bold text-text'>
-							от
-							{' '}
-							{new Intl.NumberFormat().format(125000)}
-							{' '}
-							<span className='font-rouble text-3xl text-text'>
-								{'c'}
-							</span>
-						</Headline>
-						<Paragraph variant='5' tag='p' className='mb-6 text-text-secondary'>
-							Навыки:
-							{' '}
-							{['Figma', 'Photoshop', 'Web-дизайн', 'iOS'].join(', ')}
-						</Paragraph>
-						{(userType && userType === 'employer') && (
-							<Button className='h-12 px-8 mb-8' onClick={() => setShowRespondMenu(true)}>
-								Отправить приглашение
-							</Button>
-						)}
-						<Paragraph variant='5' tag='p' className='mb-8'>
-							«Делать то, что любишь – это свобода! Любить то, что делаешь – это счастье!»
-							Нам интересна наша работа, мы любим, то что создаем!
-							У нас высокие требования, высокий темп и высокие стандарты качества!!!
-							Если у вас есть желание вместе с нами создавать новое и полезное для людей,
-							тогда приходите и побеждайте в конкурсе и станьте частью команды «Бахетле»!
-							Нам нужен Фотограф - Дизайнер, который вдохновлен нашей идеей и готов вместе с
-							нами продвигать идеи, развивать и усиливать Бахетле!
-							Если Вам повезет, и Вы будете работать с нами, Вашей основной задачей будет -
-							создание таких рекламных материалов (макетов, буклетов, иллюстраций, каталогов , бренд-буков и тд)
-							, которые будут олицетворять и продвигать идеи Супермаркета Домашней Еды «Бахетле» и Чудо-магазина
-							русской кухни Добрянка, чтобы каждый гость пришел к нам и купил свежую и вкусную продукцию
-							собственного производства Нам нужен фотограф - дизайнер, который является профессионалом
-							в сфере фуд-съемки, у которого есть чувство стиля и вкуса,
-							Нам нужен фотограф - дизайнер, у которого на одно задание есть несколько решений,
-							каждое из которых лучше другого
-						</Paragraph>
-						<div className='w-full border-t-[1px] border-gray-100 mb-8'></div>
-						<Paragraph variant='3' tag='h2' className='font-semibold mb-6'>
-							Профессиональные навыки
-						</Paragraph>
-						<div className='flex flex-wrap gap-2 mb-4'>
-							{['Figma', 'Photoshop', 'Web-дизайн', 'iOS'].map((i, num) => (
-								<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
-									{i}
-								</span>
-							))}
-						</div>
-						<Paragraph variant='5' tag='p' className='mt-10 text-text-secondary'>
-							Резюме опубликовано
-							{' '}
-							{format(new Date(2022, 0, 18, 19, 20), 'dd MMMM в HH:mm', {
-								locale: ru,
-							})}
-						</Paragraph>
-					</div>
-					<div>
-						<Image
-							className='object-cover rounded-xl'
-							src='/assets/DEV_ONLY.png'
-							width={269}
-							height={269}
-							alt='vacancy' />
-					</div>
-				</div>
+								</Headline>
+								<Paragraph variant='5' tag='p' className='mb-6 text-text-secondary'>
+									Навыки:
+									{' '}
+									{isSuccess && skills.split(' ').join(', ')}
+								</Paragraph>
+								{(userType && userType === 'employer') && (
+									<Button className='h-12 px-8 mb-8' onClick={() => setShowRespondMenu(true)}>
+										Отправить приглашение
+									</Button>
+								)}
+								<Paragraph variant='5' tag='p' className='mb-8'>
+									{about}
+								</Paragraph>
+								<div className='w-full border-t-[1px] border-gray-100 mb-8'></div>
+								<Paragraph variant='3' tag='h2' className='font-semibold mb-6'>
+									Профессиональные навыки
+								</Paragraph>
+								<div className='flex flex-wrap gap-2 mb-4'>
+									{isSuccess && skills.split(' ').map((i, num) => (
+										<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
+											{i}
+										</span>
+									))}
+								</div>
+								<Paragraph variant='5' tag='p' className='mt-10 text-text-secondary'>
+									Резюме опубликовано
+									{' '}
+									{isSuccess && format(new Date(created_at), 'dd MMMM в HH:mm', {
+										locale: ru,
+									})}
+								</Paragraph>
+							</div>
+							<div>
+								{avatar && (
+									<Image
+										className='object-cover rounded-xl'
+										src={avatar}
+										width={269}
+										height={269}
+										alt='resume' />
+								)}
+							</div>
+						</div>	
+					</>
+				)}
 			</SearchLayout>
 		</>
 	);

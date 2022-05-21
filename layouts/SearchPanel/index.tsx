@@ -37,7 +37,7 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 		},
 		onSubmit: (values) => {
 			router.push({
-				pathname: '/vacancies',
+				pathname: router.pathname.includes('resumes') ? '/resumes' : '/vacancies',
 				query: {
 					query: values.query,
 					city: city ? city.value : null,
