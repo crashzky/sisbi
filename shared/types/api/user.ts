@@ -27,6 +27,7 @@ interface IUser {
     education: EducationType;
     previous_job: string;
     views: number;
+	shows: number;
     schedules: ISchedule[];
     created_at: string;
     updated_at: string;
@@ -71,6 +72,16 @@ interface IPutEmployerRequest {
 	employer: Partial<Omit<IEmployer, 'id'>>;
 }
 
+interface IStatsEmployer {
+	result_code: 'ok';
+	payload: {
+		vacancies_shows_sum: number;
+		vacancies_views_sum: number;
+		responses_count: number;
+		invites_count: number;
+	};
+}
+
 export type {
 	IUser,
 	IUserResponse,
@@ -79,4 +90,5 @@ export type {
 	IEmployer,
 	IPutEmployerRequest,
 	IEmployerResponse,
+	IStatsEmployer,
 };

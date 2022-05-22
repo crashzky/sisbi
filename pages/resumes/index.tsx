@@ -17,15 +17,21 @@ import { getResumes } from '../../shared/api/resumes';
 import { EXPERIENCE } from '../../shared/consts/profile';
 import ContentLoader from 'react-content-loader';
 import { parse } from 'date-fns';
+import { createInvite } from '../../shared/api/invites';
+import { AxiosError } from 'axios';
 
 const ResumesPage = (): JSX.Element => {
 	const router = useRouter();
 
 	const [respondedResumeId, setRespondedResumeId] = useState(null);
+	const [sendedResumeId, setSendedResumeId] = useState(null);
 
 	const { activeModal } = useModal(['job_categories']);
 
 	const { data, mutate, isSuccess, isLoading } = useMutation(getResumes);
+	const inviteMutation = useMutation(createInvite, {
+		onSuccess: () => setRespondedResumeId(null),
+	});
 
 	useEffect(() => {
 		mutate({
@@ -56,7 +62,18 @@ const ResumesPage = (): JSX.Element => {
 		return className.join(' ');
 	}
 	
-	const respondedResume = respondedResumeId ? data.payload.find((i) => i.id === respondedResumeId) : null;
+	const respondedResume = respondedResumeId && isSuccess ? data.payload.find((i) => i.id === respondedResumeId) : null;
+
+	function getErrorMessage() {
+		if(inviteMutation.isError && sendedResumeId === respondedResumeId) {
+			switch((inviteMutation.error as AxiosError).response.status) {
+				case 422:
+					return 'Вы уже отправляли приглашение на это резюме';
+				default:
+					return 'Что-то пошло не так. Попробуйте ещё раз позже';
+			}
+		}
+	}
 
 	return (
 		<ModalLayout modals={{
@@ -73,12 +90,24 @@ const ResumesPage = (): JSX.Element => {
 				{respondedResume && (
 					<RespondResumeMenu
 						className='rounded-t-3xl'
+						isLoading={inviteMutation.isLoading}
+						errorMessage={getErrorMessage()}
 						name={respondedResume.first_name}
 						surname={respondedResume.surname}
 						vacancyName={respondedResume.previous_job}
 						minPrice={respondedResume.min_salary}
 						resumeId={respondedResume.id}
-						onContinue={() => setRespondedResumeId(null)}
+						onContinue={(message, isAllowed, vacancyId) => {
+							setSendedResumeId(respondedResumeId);
+
+							inviteMutation.mutate({
+								invite: {
+									user_id: respondedResumeId,
+									vacancy_id: vacancyId,
+									message,
+								},
+							});
+						}}
 						onBack={() => setRespondedResumeId(null)} />
 				)}
 			</Menu>

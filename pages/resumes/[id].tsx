@@ -11,10 +11,12 @@ import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import useUserType from '../../hooks/useUserType';
 import { getResumeById } from '../../shared/api/resumes';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { EXPERIENCE } from '../../shared/consts/profile';
 import ContentLoader from 'react-content-loader';
 import useWindowDemantions from '../../hooks/useWindowDementions';
+import { createInvite } from '../../shared/api/invites';
+import { AxiosError } from 'axios';
 
 import RespondResumeMenu from '../../components/RespondResumeMenu';
 
@@ -31,13 +33,28 @@ const ResumeIdPage = (): JSX.Element => {
 		enabled: !!(router && router.query),
 	});
 
+	const inviteMutation = useMutation(createInvite, {
+		onSuccess: () => setShowRespondMenu(false),
+	});
+
 	const { first_name, surname, job_category, experience, type_employments, schedules,
-		city, birthday, previous_job, about, min_salary, skills, created_at, avatar } = data ? data.payload : {} as any;
+		city, birthday, previous_job, about, min_salary, skills, created_at, id, avatar } = data ? data.payload : {} as any;
 
 	const interval = intervalToDuration({
 		start: birthday ? parse(birthday, 'dd.MM.yyyy', new Date()) : new Date(Date.now()),
 		end: new Date(Date.now()),
 	});	
+
+	function getErrorMessage() {
+		if(inviteMutation.isError) {
+			switch((inviteMutation.error as AxiosError).response.status) {
+				case 422:
+					return 'Вы уже отправляли приглашение на это резюме';
+				default:
+					return 'Что-то пошло не так. Попробуйте ещё раз позже';
+			}
+		}
+	}
 
 	return (
 		<>
@@ -50,12 +67,22 @@ const ResumeIdPage = (): JSX.Element => {
 			>
 				<RespondResumeMenu
 					className='rounded-t-3xl'
-					resumeId={1}
-					name='Алексей'
-					surname='Сухоров'
-					vacancyName='Junior UI/UX дизайнер'
-					minPrice={125000}
-					onContinue={() => setShowRespondMenu(false)}
+					resumeId={id}
+					isLoading={inviteMutation.isLoading}
+					errorMessage={getErrorMessage()}
+					name={first_name}
+					surname={surname}
+					vacancyName={previous_job}
+					minPrice={min_salary}
+					onContinue={(message, isAllowed, vacancyId) => {
+						inviteMutation.mutate({
+							invite: {
+								message,
+								user_id: id,
+								vacancy_id: vacancyId,
+							},
+						});
+					}}
 					onBack={() => setShowRespondMenu(false)} />
 			</Menu>
 			<SearchLayout className='px-40 py-10'>

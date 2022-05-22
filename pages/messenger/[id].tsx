@@ -17,14 +17,18 @@ import { deleteChat, deleteChatEmployer, getChatById, getChatByIdEmployer, getMe
 	getMessagesEmployer } from '../../shared/api/messenger';
 import Image from 'next/image';
 import useUserType from '../../hooks/useUserType';
-import { IMessage } from '../../shared/types/api/messenger';
+import { IMessage, MessageType } from '../../shared/types/api/messenger';
 import WEBSOCKET_URL from '../../shared/consts/webscoket';
 import { format } from 'date-fns';
 import useWindowDemantions from '../../hooks/useWindowDementions';
 import { ru } from 'date-fns/locale';
+import ContentLoader from 'react-content-loader';
+import { acceptResponse, declineResponse } from '../../shared/api/response';
 
+import Preloader from '../../assets/loader.svg';
 import CompanyLIcon from '../../assets/company-L.svg';
 import OtherIcon from '../../assets/navigation/other.svg';
+import { acceptInvite, declineInvite } from '../../shared/api/invites';
 
 const ChatPage = (): JSX.Element => {
 	const router = useRouter();
@@ -59,13 +63,29 @@ const ChatPage = (): JSX.Element => {
 				let _res = [...res.payload];
 				_res.reverse();
 
-				return prev.concat(_res);
+				return [..._res, ...prev];
 			});
 
-			setTimeout(() => {
-				containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
-			}, 1);
+			if(messagesPage === 1 && containerRef.current) {
+				setTimeout(() => {
+					containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
+				}, 1);
+			}
 		},
+	});
+
+	const acceptResponseMutation = useMutation(acceptResponse, {
+		onSuccess: () => router.reload(),
+	});
+	const declineResponseMutation = useMutation(declineResponse, {
+		onSuccess: () => router.reload(),
+	});
+
+	const acceptInviteMutation = useMutation(acceptInvite, {
+		onSuccess: () => router.reload(),
+	});
+	const declineInviteMutation = useMutation(declineInvite, {
+		onSuccess: () => router.reload(),
 	});
 
 	const { lastMessage, sendMessage } = useWebSocket(`${WEBSOCKET_URL}?token=${localStorage.getItem('access_token')}`);
@@ -74,15 +94,28 @@ const ChatPage = (): JSX.Element => {
 		setMessages([]);
 		setMessagesPage(1);
 
-		if(router.query && userType) {
+		if(router.query && router.query.id && userType) {
 			messagesMutation.mutate({
 				chat_id: +router.query.id,
 				page: messagesPage,
 			});
 		}
 
-		sendMessage(`{"command":"subscribe","identifier":"{\\"channel\\":\\"ChatChannel\\",\\"chat_id\\":${router.query.id}}"}`);
+		if(router.query.id) {
+			const _id = router.query.id;
+
+			sendMessage(`{"command":"subscribe","identifier":"{\\"channel\\":\\"ChatChannel\\",\\"chat_id\\":${_id}}"}`);
+		}
 	}, [router, userType]);
+
+	useEffect(() => {
+		if(router.query && router.query.id && userType) {
+			messagesMutation.mutate({
+				chat_id: +router.query.id,
+				page: messagesPage,
+			});
+		}
+	}, [messagesPage]);
 
 	useEffect(() => {
 		if(lastMessage) {
@@ -97,6 +130,17 @@ const ChatPage = (): JSX.Element => {
 			}
 		}
 	}, [lastMessage]);
+
+	function getTitle(typeMessage: MessageType): string {
+		switch(typeMessage) {
+			case 'invite':
+				return 'Приглашение на работу';
+			case 'response':
+				return 'Отклик на вакансию';
+			default:
+				return null;
+		}
+	}
 
 	function getProperties() {
 		if(chatInfoQuery.isSuccess && userType === 'user') {
@@ -123,6 +167,88 @@ const ChatPage = (): JSX.Element => {
 					email: chatInfoQuery.data.payload.user.email,
 				},
 			};
+		}
+	}
+
+	function getButtons() {
+		if(chatInfoQuery.isSuccess && chatInfoQuery.data.payload.last_response
+			&& chatInfoQuery.data.payload.last_response.state === 'created' && userType === 'employer') {
+			return (
+				<div className='pl-[110px] pr-[95px] grid gap-2' ref={buttonsRef}>
+					{acceptResponseMutation.isLoading ? (
+						<Preloader className='mx-auto w-9 h-9 stroke-icon-secondary' />
+					) : (
+						<Button
+							variant='secondary'
+							className='py-2 w-full font-normal'
+							onClick={() => {
+								acceptResponseMutation.mutate({
+									response_id: chatInfoQuery.data.payload.last_response.id,
+								});
+							}}
+						>
+							Одобрить
+						</Button>
+					)}
+					{declineResponseMutation.isLoading ? (
+						<Preloader className='mx-auto w-9 h-9 stroke-red' />
+					) : (
+						<Button
+							variant='danger'
+							className='py-2 w-full font-normal'
+							onClick={() => {
+								declineResponseMutation.mutate({
+									response_id: chatInfoQuery.data.payload.last_response.id,
+								});
+							}}
+						>
+							Отказать
+						</Button>
+					)}
+				</div>
+			);
+		}
+		else if(chatInfoQuery.isSuccess && chatInfoQuery.data.payload.last_invite
+				&& chatInfoQuery.data.payload.last_invite.state === 'created' && userType === 'user') {
+			return (
+				<div className='pl-[110px] pr-[95px] grid gap-2' ref={buttonsRef}>
+					{acceptInviteMutation.isLoading ? (
+						<Preloader className='mx-auto w-9 h-9 stroke-icon-secondary' />
+					) : (
+						<Button
+							variant='secondary'
+							className='py-2 w-full font-normal'
+							onClick={() => {
+								acceptInviteMutation.mutate({
+									invite_id: chatInfoQuery.data.payload.last_invite.id,
+								});
+							}}
+						>
+							Одобрить
+						</Button>
+					)}
+					{declineInviteMutation.isLoading ? (
+						<Preloader className='mx-auto w-9 h-9 stroke-red' />
+					) : (
+						<Button
+							variant='danger'
+							className='py-2 w-full font-normal'
+							onClick={() => {
+								declineInviteMutation.mutate({
+									invite_id: chatInfoQuery.data.payload.last_invite.id,
+								});
+							}}
+						>
+							Отказать
+						</Button>
+					)}
+				</div>
+			);
+		}
+		else {
+			return (
+				<div ref={buttonsRef}></div>
+			);
 		}
 	}
 
@@ -223,7 +349,25 @@ const ChatPage = (): JSX.Element => {
 					style={{
 						maxHeight: `${windowSizes.height - buttonsSizes.height - 275}px`,
 					}}
+					onScroll={(e) => {
+						if((e.target as any).scrollTop === 0 && messagesMutation.isSuccess
+							&& messagesMutation.data.total_pages >= messagesPage + 1)
+							setMessagesPage((prev) => prev + 1);
+					}}
 				>
+					{messagesMutation.isLoading && (
+						<ContentLoader viewBox='0 0 446 160' height={200} className='mt-10'>
+							<circle cx='19' cy='25' r='16' />
+							<rect x='39' y='12' rx='5' ry='5' width='220' height='10' />
+							<rect x='40' y='29' rx='5' ry='5' width='220' height='10' />
+							<circle cx='420' cy='71' r='16' />
+							<rect x='179' y='76' rx='5' ry='5' width='220' height='10' />
+							<rect x='179' y='58' rx='5' ry='5' width='220' height='10' />
+							<circle cx='21' cy='117' r='16' />
+							<rect x='45' y='104' rx='5' ry='5' width='220' height='10' />
+							<rect x='45' y='122' rx='5' ry='5' width='220' height='10' />
+						</ContentLoader>
+					)}
 					{messages.map((i, num) => {
 						const showDate = num <= 1 || num + 1 === messages.length ||
 						messages[num + 1].sender_type !== i.sender_type ||
@@ -245,13 +389,13 @@ const ChatPage = (): JSX.Element => {
 									</Paragraph>
 									<Message
 										key={num + '_message'}
-										label={i.type_message === 'response' ? 'Отклик на вакансию' : null}
+										label={getTitle(i.type_message)}
 										message={i.content as string}
 										sendedDate={new Date(i.created_at)}
 										sender={i.sender_type.toLowerCase() === userType ? 'me' : 'companion'}
 										showDate={showDate}
 										className={showDate && 'pb-3'}
-										readed={true} />
+										readed={!!i.seen_at} />
 								</>
 							);
 						}
@@ -259,29 +403,18 @@ const ChatPage = (): JSX.Element => {
 							return (
 								<Message
 									key={num + '_message'}
-									label={i.type_message === 'response' ? 'Отклик на вакансию' : null}
+									label={getTitle(i.type_message)}
 									message={i.content as string}
 									sendedDate={new Date(i.created_at)}
 									sender={i.sender_type.toLowerCase() === userType ? 'me' : 'companion'}
 									showDate={showDate}
 									className={showDate && 'pb-3'}
-									readed={true} />
+									readed={!!i.seen_at} />
 							);
 						}
 					})}
 				</div>
-				{userType === 'employer' ? (
-					<div className='pl-[110px] pr-[95px] grid gap-2' ref={buttonsRef}>
-						<Button variant='secondary' className='py-2 w-full font-normal'>
-							Одобрить
-						</Button>
-						<Button variant='danger' className='py-2 w-full font-normal'>
-							Отказать
-						</Button>
-					</div>
-				) : (
-					<div ref={buttonsRef}></div>
-				)}
+				{getButtons()}
 				<div>
 					<InputMessenger chatId={+router.query.id} className='pl-[110px] pr-[95px]' />
 				</div>

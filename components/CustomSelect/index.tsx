@@ -14,7 +14,7 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 			className={className + ' relative cursor-pointer'}
 			tabIndex={0}
 			onFocus={() => setIsOpened(true)}
-			onBlur={() => setTimeout(() => setIsOpened(false), 50)}
+			onBlur={() => setTimeout(() => setIsOpened(false), 100)}
 			{...props}
 		>
 			<div className='flex items-center'>
@@ -44,7 +44,7 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 							<Paragraph variant='5' tag='span'>
 								{i.label}
 								<br />
-								{subLabels && (
+								{(subLabels && subLabels.find((j) => j.value === i.value)) && (
 									<span className='text-red text-xs font-normal'>
 										{subLabels.find((j) => j.value === i.value).label}
 									</span>

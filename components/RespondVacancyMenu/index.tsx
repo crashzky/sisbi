@@ -3,7 +3,6 @@ import Props from './RespondVacancyMenu.props';
 import Paragraph from '../Paragraph';
 import Link from 'next/link';
 import Textarea from '../Textarea';
-import Checkbox from '../Checkbox';
 import Button from '../Button';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 

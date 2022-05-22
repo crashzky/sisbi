@@ -23,7 +23,7 @@ const Select: React.FC<Props> = ({
 				if(onInputChange && isLazyLoad) {
 					clearTimeout(lastTimeout);
 
-					const _timeout = setTimeout(() => onInputChange(newValue), 1000);
+					const _timeout = setTimeout(() => onInputChange(newValue), 300);
 					setLastTimeout(_timeout);
 				}
 				else if(onInputChange)

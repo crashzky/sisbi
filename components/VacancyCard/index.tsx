@@ -108,7 +108,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 								<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
 									<PhoneIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-text'>
-										{formatPhoneNumberIntl(`+7${contactPhone}`)}
+										{formatPhoneNumberIntl(contactPhone)}
 									</Paragraph>
 									<MailIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-text'>

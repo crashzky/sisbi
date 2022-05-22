@@ -97,6 +97,7 @@ const VacanciesPage = (): JSX.Element => {
 						companyName={respondedVacancy.employer.name}
 						vacancyName={respondedVacancy.title}
 						vacancyId={respondedVacancyId}
+						isLoading={respondMutation.isLoading}
 						minPrice={respondedVacancy.salary}
 						contactName={respondedVacancy.full_name}
 						contactPhone={respondedVacancy.phone}

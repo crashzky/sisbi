@@ -15,11 +15,13 @@ import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
 
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
 import DownloadSolidIcon from '../../assets/general/download_solid.svg';
+import { getInvites } from '../../shared/api/invites';
 
 const ProfilePageUser = (): JSX.Element => {
 	const router = useRouter();
 
 	const myProfileUserQuery = useQuery('my_profile_user', getMyProfileUser);
+	const invitesQuery = useQuery('invites_user', getInvites);
 
 	const putProfileUserMutation = useMutation(putProfileUser);
 
@@ -64,7 +66,7 @@ const ProfilePageUser = (): JSX.Element => {
 			switch(data.state) {
 				case 'created':
 				case 'deactivated':
-					return 'Сейчас это резюме никому не видно';
+					return 'Резюме ждём модерации';
 				case 'active':
 					if(data.visible)
 						return 'Сейчас это резюме видно всем';
@@ -265,7 +267,7 @@ const ProfilePageUser = (): JSX.Element => {
 				<div className='grid rounded-xl border-[1px] border-gray-100'>
 					<button className='p-4 grid grid-cols-[20px_1fr] gap-2 items-center border-b-[1px] border-gray-100'>
 						<ShareSolidIcon className='fill-icon' />
-						<Link href='/resumes/1'>
+						<Link href={`/resumes/${data && data.id}`}>
 							<a target='_blank' className='text-text text-left text-sm'>
 								Поделиться
 							</a>
@@ -292,6 +294,7 @@ const ProfilePageUser = (): JSX.Element => {
 						onClick={(e) => {
 							putProfileUserMutation.mutate({
 								user: {
+									state: data.state === 'created' ? 'moderating' : data.state,
 									visible: (e.target as any).checked,
 								},
 							});
@@ -301,10 +304,28 @@ const ProfilePageUser = (): JSX.Element => {
 				<div className='flex justify-between p-4 rounded-xl border-[1px] border-gray-100'>
 					<div>
 						<Paragraph variant='6' tag='p' className='text-text-secondary mb-1'>
+							Показы
+						</Paragraph>
+						<Paragraph variant='4' tag='p' className='font-semibold'>
+							{data && data.shows}
+						</Paragraph>
+					</div>
+					<div className='h-full border-gray-100 border-r-[1px]'></div>
+					<div>
+						<Paragraph variant='6' tag='p' className='text-text-secondary mb-1'>
 							Просмотры
 						</Paragraph>
 						<Paragraph variant='4' tag='p' className='font-semibold'>
 							{data && data.views}
+						</Paragraph>
+					</div>
+					<div className='h-full border-gray-100 border-r-[1px]'></div>
+					<div>
+						<Paragraph variant='6' tag='p' className='text-text-secondary mb-1'>
+							Пришлашения
+						</Paragraph>
+						<Paragraph variant='4' tag='p' className='font-semibold'>
+							{invitesQuery.isSuccess && invitesQuery.data.total_entries}
 						</Paragraph>
 					</div>
 				</div>

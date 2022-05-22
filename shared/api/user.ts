@@ -1,4 +1,4 @@
-import { IEmployerResponse, IPutEmployerRequest, IPutUserRequest, IUserResponse } from '../types/api/user';
+import { IEmployerResponse, IPutEmployerRequest, IPutUserRequest, IStatsEmployer, IUserResponse } from '../types/api/user';
 import instance from './axios';
 
 // User
@@ -53,6 +53,11 @@ const putProlfileFormDataEmployer = (data: IPutEmployerRequest): Promise<IEmploy
 		.then((res) => res.data); 
 };
 
+const getStatsEmployer = (): Promise<IStatsEmployer> => {
+	return instance.get('/v1/employer/stats')
+		.then((res) => res.data);
+}; 
+
 export {
 	getMyProfileUser,
 	putProfileUser,
@@ -61,4 +66,5 @@ export {
 	getMyProfileEmployer,
 	putProfileEmployer,
 	putProlfileFormDataEmployer,
+	getStatsEmployer,
 };

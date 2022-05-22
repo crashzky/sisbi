@@ -7,9 +7,7 @@ import MainLayout from '../../layouts/MainLayout';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
-import { getMyProfileEmployer } from '../../shared/api/user';
-
-import ShareSolidIcon from '../../assets/communication/share_solid.svg';
+import { getMyProfileEmployer, getStatsEmployer } from '../../shared/api/user';
 import ShortVacancyCard from '../../components/ShortVacancyCard';
 import { getMyVacancies } from '../../shared/api/vacancies';
 import { EXPERIENCE } from '../../shared/consts/profile';
@@ -19,6 +17,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 
 	const myProfileUserQuery = useQuery('my_profile_employer', getMyProfileEmployer);
 	const myVacanciesQuery = useQuery([{ page: 1 }], getMyVacancies);
+	const statsQuery = useQuery('stats_employer', getStatsEmployer);
 
 	const data = myProfileUserQuery.isSuccess ? myProfileUserQuery.data.payload : null;
 
@@ -105,15 +104,33 @@ const ProfilePageEmployer = (): JSX.Element => {
 				</section>
 			</div>
 			<div className='grid gap-10 h-fit'>
-				<div className='grid rounded-xl border-[1px] border-gray-100'>
-					<button className='p-4 grid grid-cols-[20px_1fr] gap-2 items-center'>
-						<ShareSolidIcon className='fill-icon' />
-						<Link href='/resumes/1'>
-							<a target='_blank' className='text-text text-left text-sm'>
-								Поделиться
-							</a>
-						</Link>
-					</button>
+				<div className='flex justify-between p-4 rounded-xl border-[1px] border-gray-100'>
+					<div>
+						<Paragraph variant='6' tag='p' className='text-text-secondary mb-1'>
+							Показы
+						</Paragraph>
+						<Paragraph variant='4' tag='p' className='font-semibold'>
+							{statsQuery.isSuccess && statsQuery.data.payload.vacancies_shows_sum}
+						</Paragraph>
+					</div>
+					<div className='h-full border-gray-100 border-r-[1px]'></div>
+					<div>
+						<Paragraph variant='6' tag='p' className='text-text-secondary mb-1'>
+							Просмотры
+						</Paragraph>
+						<Paragraph variant='4' tag='p' className='font-semibold'>
+							{statsQuery.isSuccess && statsQuery.data.payload.vacancies_views_sum}
+						</Paragraph>
+					</div>
+					<div className='h-full border-gray-100 border-r-[1px]'></div>
+					<div>
+						<Paragraph variant='6' tag='p' className='text-text-secondary mb-1'>
+							Отклики
+						</Paragraph>
+						<Paragraph variant='4' tag='p' className='font-semibold'>
+							{statsQuery.isSuccess && statsQuery.data.payload.responses_count}
+						</Paragraph>
+					</div>
 				</div>
 			</div>
 		</MainLayout>

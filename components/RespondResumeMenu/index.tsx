@@ -3,7 +3,6 @@ import Props from './RespondResumeMenu.props';
 import Paragraph from '../Paragraph';
 import Link from 'next/link';
 import Textarea from '../Textarea';
-import Checkbox from '../Checkbox';
 import Button from '../Button';
 import { useRouter } from 'next/router';
 import Radio from '../Radio';
@@ -12,10 +11,11 @@ import { getMyVacancies } from '../../shared/api/vacancies';
 import { useEffect, useState } from 'react';
 import { IVacancy } from '../../shared/types/api/vacancies';
 
+import PreloaderIcon from '../../assets/loader.svg';
 import CloseIcon from '../../assets/general/close.svg';
 
 const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vacancyName, minPrice, resumeId,
-	onContinue, onBack, ...props }) => {
+	onContinue, onBack, isLoading, errorMessage, ...props }) => {
 	const router = useRouter();
 
 	const [vacancies, setVacancies] = useState<IVacancy[]>([]);
@@ -52,7 +52,8 @@ const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vac
 			allowSendContacts: [],
 		},
 		onSubmit: (values) => {
-			onContinue(values.message, !!values.allowSendContacts.length);
+			onContinue(values.message, !!values.allowSendContacts.length,
+				vacancies.find((i) => i.title === values.selectedVacancy).id);
 		},
 	});
 
@@ -125,16 +126,25 @@ const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vac
 					>
 
 					</Textarea>
-					<Checkbox
+					{/*<Checkbox
 						name='allowSendContacts'
 						onChange={formik.handleChange}
 						checked={!!formik.values.allowSendContacts.length}
-						label='Предоставить контакты соискателю' />
+						label='Предоставить контакты соискателю' />*/}
 				</div>
+				{errorMessage && (
+					<Paragraph variant='5' tag='p' className='text-red font-semibold px-6 mt-3'>
+						{errorMessage}
+					</Paragraph>
+				)}
 				<div className='px-6 py-4 grid grid-cols-[auto_auto_1fr] gap-[10px]'>
-					<Button className='h-9 px-4'>
-						Отправить приглашение
-					</Button>
+					{isLoading ? (
+						<PreloaderIcon className='h-9 w-9 mx-5' />
+					) : (
+						<Button className='h-9 px-4'>
+							Отправить приглашение
+						</Button>
+					)}
 					<Button variant='secondary' type='button' className='h-9 px-4' onClick={onBack}>
 						Отменить
 					</Button>

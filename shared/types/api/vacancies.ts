@@ -17,6 +17,7 @@ interface IVacancy {
 	experience: ExperienceType;
 	state: VacancyStatesType;
 	salary: number;
+	count_responses: number;
 	views: number;
 	shows: number;
 	visible: boolean;
@@ -86,6 +87,18 @@ interface IUpdateTypeEmployementsRequest {
 	type_employments: number[];
 }
 
+interface IResponse {
+	chat_id: number;
+	created_at: string;
+	employer_id: number;
+	id: number;
+	message_id: number;
+	state: IRespondStateType;
+	updated_at: string;
+	user_id: number;
+	vacancy_id: number;
+}
+
 interface IRespondVacancyRequest {
 	response: {
 		message: string;
@@ -122,4 +135,5 @@ export type {
 	IRespondVacancyRequest,
 	IRespondVacancyResponse,
 	IDeleteVacancyRequest,
+	IResponse,
 };

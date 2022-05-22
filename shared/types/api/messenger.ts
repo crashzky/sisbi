@@ -1,8 +1,9 @@
 import { IPage, UserType } from './common';
+import { IInvite } from './invites';
 import { IEmployer, IUser } from './user';
-import { IVacancy } from './vacancies';
+import { IResponse, IVacancy } from './vacancies';
 
-type MessageType = 'response' | 'text' | 'picture' | 'voice';
+type MessageType = 'response' | 'text' | 'picture' | 'voice' | 'invite';
 
 interface IMessage {
 	id: number;
@@ -13,6 +14,7 @@ interface IMessage {
 	chat_id: number;
 	created_at: string;
 	updated_at: string;
+	seen_at: string | null;
 	sender: IUser | IEmployer;
 }
 
@@ -24,6 +26,8 @@ interface IChat {
 	user: IUser;
 	employer: IEmployer;
 	vacancy: IVacancy;
+	last_response?: IResponse;
+	last_invite?: IInvite;
 }
 
 interface IChatRequest {
@@ -56,7 +60,7 @@ interface ISendMessageRequest {
 	message: {
 		content: string | File;
 		chat_id: number;
-		type_message: 0 | 1 | 2 | 3; // response: 0, text: 1, picture: 2, voice: 3
+		type_message: 0 | 1 | 2 | 3; // response: 0, text: 1, picture: 2, voice: 3, invite: 4
 	}
 }
 
@@ -66,6 +70,7 @@ interface ISendMessageResponse {
 }
 
 export type {
+	MessageType,
 	IChat,
 	IMessage,
 	IChatRequest,

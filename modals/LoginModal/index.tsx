@@ -25,7 +25,7 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 		validate: (values) => {
 			let errors: any = {};
 
-			if(values.phone.length !== 13 || !isValidPhoneNumber('+7' + values.phone))
+			if(values.phone.length !== 13 || !isValidPhoneNumber('+7' + values.phone.replaceAll(' ', '')))
 				errors.phone = 'length';
 
 			return errors;
@@ -34,12 +34,12 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 			switch(values.radio) {
 				case 'Ищу работу':
 					smsCodeMutationUser.mutate({
-						phone: '+7' + values.phone,
+						phone: '+7' + values.phone.replaceAll(' ', ''),
 					});
 					break;
 				case 'Ищу сотрудников':
 					smsCodeMutationEmployer.mutate({
-						phone: '+7' + values.phone,
+						phone: '+7' + values.phone.replaceAll(' ', ''),
 					});
 					break;
 			}
@@ -48,7 +48,7 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 
 	const smsCodeMutationUser = useMutation(getSmsCodeUser, {
 		onSuccess: () => {
-			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone);
+			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone.replaceAll(' ', ''));
 			localStorage.setItem('user_type', USER_TYPES[formik.values.radio]);
 
 			router.push(router.pathname + '/?modal=code');
@@ -57,7 +57,7 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 
 	const smsCodeMutationEmployer = useMutation(getSmsCodeEmployer, {
 		onSuccess: () => {
-			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone);
+			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone.replaceAll(' ', ''));
 			localStorage.setItem('user_type', USER_TYPES[formik.values.radio]);
 
 			router.push(router.pathname + '/?modal=code');
