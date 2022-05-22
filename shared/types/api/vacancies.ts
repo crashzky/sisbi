@@ -58,7 +58,7 @@ interface ICreateVacancyRequest {
 	description: string;
 	full_name: string;
 	phone: string;
-	visible: boolean;
+	visible?: boolean;
 	email: string;
 	city_id: number;
 }
