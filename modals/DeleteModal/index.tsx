@@ -1,10 +1,11 @@
 import Paragraph from '../../components/Paragraph';
 import Props from './DeleteModal.props';
-
-import CloseIcon from '../../assets/general/close.svg';
 import Button from '../../components/Button';
 
-const DeleteModal: React.FC<Props> = ({ className = '', message, onCancel, onConfirm, ...props }) => {
+import PreloaderIcon from '../../assets/loader.svg';
+import CloseIcon from '../../assets/general/close.svg';
+
+const DeleteModal: React.FC<Props> = ({ className = '', message, onCancel, onConfirm, isLoading, ...props }) => {
 	return (
 		<aside className={className + 'bg-white rounded-3xl pt-6 w-[363px]'} {...props}>
 			<div className='flex justify-between items-center px-6'>
@@ -24,9 +25,13 @@ const DeleteModal: React.FC<Props> = ({ className = '', message, onCancel, onCon
 				<Button variant='secondary' className='py-2 px-4' onClick={onCancel}>
 					Отмена
 				</Button>
-				<Button variant='danger' className='py-2 px-4' onClick={onConfirm}>
-					Удалить
-				</Button>
+				{isLoading ? (
+					<PreloaderIcon className='w-9 h-9 mx-[23px] stroke-red' />
+				) : (
+					<Button variant='danger' className='py-2 px-4' onClick={onConfirm}>
+						Удалить
+					</Button>
+				)}
 			</div>
 		</aside>
 	);

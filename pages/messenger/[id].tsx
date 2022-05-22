@@ -5,7 +5,6 @@ import Button from '../../components/Button';
 import Message from '../../components/Message';
 import { useEffect, useRef, useState } from 'react';
 import useRefDemantions from '../../hooks/useRefDemantions';
-import useWindowDemantions from '../../hooks/useWindowDementions';
 import useWebSocket from 'react-use-websocket';
 import ModalLayout from '../../layouts/ModalLayout';
 import ContactsModal from '../../modals/ContactsModal';
@@ -14,16 +13,18 @@ import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import { MAIN_SHADOW } from '../../shared/consts/shadows';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
-import { getChatById, getChatByIdEmployer, getMessages, getMessagesEmployer } from '../../shared/api/messenger';
+import { deleteChat, deleteChatEmployer, getChatById, getChatByIdEmployer, getMessages,
+	getMessagesEmployer } from '../../shared/api/messenger';
 import Image from 'next/image';
 import useUserType from '../../hooks/useUserType';
 import { IMessage } from '../../shared/types/api/messenger';
 import WEBSOCKET_URL from '../../shared/consts/webscoket';
+import { format } from 'date-fns';
+import useWindowDemantions from '../../hooks/useWindowDementions';
+import { ru } from 'date-fns/locale';
 
 import CompanyLIcon from '../../assets/company-L.svg';
 import OtherIcon from '../../assets/navigation/other.svg';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 
 const ChatPage = (): JSX.Element => {
 	const router = useRouter();
@@ -31,12 +32,10 @@ const ChatPage = (): JSX.Element => {
 	const { userType } = useUserType();
 
 	const buttonsRef = useRef();
-	const inputRef = useRef();
-	const endMessageRef = useRef(null);
+	const containerRef = useRef(null);
 
 	const windowSizes = useWindowDemantions();
 	const buttonsSizes = useRefDemantions(buttonsRef);
-	const inputSizes = useRefDemantions(inputRef);
 
 	const [openedModal, setOpenedModal] = useState('');
 	const [isOpenedMenu, setIsOpenedMenu] = useState(false);
@@ -46,6 +45,12 @@ const ChatPage = (): JSX.Element => {
 
 	const chatInfoQuery = useQuery([{ chat_id: +router.query.id }], userType === 'user' ? getChatById : getChatByIdEmployer, {
 		enabled: !!router.query && !!(router.query.id || +router.query.id === 0) && !!userType,
+	});
+
+	const deleteChatMutation = useMutation(userType === 'user' ? deleteChat : deleteChatEmployer, {
+		onSuccess: () => {
+			router.push('/messenger');
+		},
 	});
 
 	const messagesMutation = useMutation(userType === 'user' ? getMessages : getMessagesEmployer, {
@@ -58,7 +63,7 @@ const ChatPage = (): JSX.Element => {
 			});
 
 			setTimeout(() => {
-				endMessageRef.current.scrollIntoView();
+				containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
 			}, 1);
 		},
 	});
@@ -87,7 +92,7 @@ const ChatPage = (): JSX.Element => {
 				setMessages((prev) => prev.concat(MESSAGE.message));
 				
 				setTimeout(() => {
-					endMessageRef.current.scrollIntoView();
+					containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
 				}, 1);
 			}
 		}
@@ -136,7 +141,10 @@ const ChatPage = (): JSX.Element => {
 					<DeleteModal
 						message='Работодатель больше не сможет вам писать, все материалы будут удалены '
 						onCancel={() => setOpenedModal('')}
-						onConfirm={() => setOpenedModal('')} />
+						isLoading={deleteChatMutation.isLoading}
+						onConfirm={() => {
+							deleteChatMutation.mutate({ chat_id: +router.query.id });
+						}} />
 				),
 			}}
 		>
@@ -210,15 +218,17 @@ const ChatPage = (): JSX.Element => {
 					</div>
 				</div>
 				<div
+					ref={containerRef}
 					className='pl-[110px] pr-[95px] overflow-y-scroll h-fit w-full grid gap-1'
 					style={{
-						maxHeight: `${windowSizes.height - buttonsSizes.height - inputSizes.height - 215}px`,
+						maxHeight: `${windowSizes.height - buttonsSizes.height - 275}px`,
 					}}
 				>
 					{messages.map((i, num) => {
-						const showDate = num <= 1 ||
-							new Date(messages[num - 1].created_at).getMinutes() - 
-							new Date(i.created_at).getMinutes() < 3;
+						const showDate = num <= 1 || num + 1 === messages.length ||
+						messages[num + 1].sender_type !== i.sender_type ||
+							new Date(i.created_at).getMinutes() - 
+							new Date(messages[num - 1].created_at).getMinutes() >= 3;
 
 						if(num === 0 || new Date(messages[num - 1].created_at).getDate() !== new Date(i.created_at).getDate()) {
 							return (
@@ -259,7 +269,6 @@ const ChatPage = (): JSX.Element => {
 							);
 						}
 					})}
-					<div ref={endMessageRef}></div>
 				</div>
 				{userType === 'employer' ? (
 					<div className='pl-[110px] pr-[95px] grid gap-2' ref={buttonsRef}>
@@ -271,9 +280,9 @@ const ChatPage = (): JSX.Element => {
 						</Button>
 					</div>
 				) : (
-					<div></div>
+					<div ref={buttonsRef}></div>
 				)}
-				<div ref={inputRef}>
+				<div>
 					<InputMessenger chatId={+router.query.id} className='pl-[110px] pr-[95px]' />
 				</div>
 			</MessengerLayout>

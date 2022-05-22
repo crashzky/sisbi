@@ -14,7 +14,7 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 			className={className + ' relative cursor-pointer'}
 			tabIndex={0}
 			onFocus={() => setIsOpened(true)}
-			onBlur={() => setTimeout(() => setIsOpened(false), 20)}
+			onBlur={() => setTimeout(() => setIsOpened(false), 50)}
 			{...props}
 		>
 			<div className='flex items-center'>

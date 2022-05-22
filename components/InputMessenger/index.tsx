@@ -2,20 +2,29 @@ import Props from './InputMessenger.props';
 import { useMutation } from 'react-query';
 import { sendMessage, sendMessageEmployer } from '../../shared/api/messenger';
 import useUserType from '../../hooks/useUserType';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 //import MicSolidIcon from '../../assets/media/Mic_solid.svg';
+import Preloader from '../../assets/loader.svg';
 import SendSolidIcon from '../../assets/communication/send_solid.svg';
-import { useFormik } from 'formik';
 
 const InputMessenger: React.FC<Props> = ({ className = '', ref, chatId, ...props }) => {
 	const { userType } = useUserType();
 
-	const { mutate } = useMutation(userType === 'user' ? sendMessage : sendMessageEmployer);
+	const { mutate, isLoading } = useMutation(userType === 'user' ? sendMessage : sendMessageEmployer, {
+		onSuccess: () => formik.resetForm(),
+	});
+
+	const validationSchema = Yup.object().shape({
+		message: Yup.string().required('requured'),
+	});
 
 	const formik = useFormik({
 		initialValues: {
 			message: '',
 		},
+		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			mutate({
 				message: {
@@ -24,7 +33,6 @@ const InputMessenger: React.FC<Props> = ({ className = '', ref, chatId, ...props
 					content: values.message,
 				},
 			});
-			formik.resetForm();
 		},
 	});
 
@@ -42,9 +50,13 @@ const InputMessenger: React.FC<Props> = ({ className = '', ref, chatId, ...props
 							0px 1px 2px rgba(35, 47, 59, 0.03), 0px 0px 0px rgba(35, 47, 59, 0.03)`,
 					}}
 					{...props} />
-				<button className='bg-lightBlue h-full w-full rounded-full'>
-					<SendSolidIcon className='fill-white mx-auto scale-75' />
-				</button>
+				{isLoading ? (
+					<Preloader className='w-[52px] h-[52px] stroke-lightBlue' />
+				) : (
+					<button type='button' className='bg-lightBlue h-full w-full rounded-full'>
+						<SendSolidIcon className='fill-white mx-auto scale-75' />
+					</button>
+				)}
 			</form>
 		</div>
 	);

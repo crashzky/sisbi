@@ -10,7 +10,7 @@ const useRefDemantions = (ref: MutableRefObject<any>): IResponse => {
 			setWidth(ref.current.clientWidht);
 			setHeight(ref.current.clientHeight);
 		}
-	}, []);
+	}, [ref, ref.current]);
 
 	return {
 		width,

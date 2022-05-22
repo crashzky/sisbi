@@ -1,5 +1,5 @@
-import { IChatByIdResponse, IChatRequest, IChatsResponse, IMessagesRequest, IMessagesResponse, ISendMessageRequest,
-	ISendMessageResponse } from '../types/api/messenger';
+import { IChatByIdRequest, IChatByIdResponse, IChatRequest, IChatsResponse, IMessagesRequest, IMessagesResponse,
+	ISendMessageRequest, ISendMessageResponse } from '../types/api/messenger';
 import instance from './axios';
 
 const getChats = (data: IChatRequest): Promise<IChatsResponse> => {
@@ -50,14 +50,26 @@ const sendMessageEmployer = (data: ISendMessageRequest): Promise<ISendMessageRes
 		.then((res) => res.data);
 };
 
+const deleteChat = (data: IChatByIdRequest): Promise<null> => {
+	return instance.delete(`/v1/chats/${data.chat_id}`)
+		.then((res) => res.data);
+};
+
+const deleteChatEmployer = (data: IChatByIdRequest): Promise<null> => {
+	return instance.delete(`/v1/employer/chats/${data.chat_id}`)
+		.then((res) => res.data);
+};
+
 export {
 	getChats,
 	getChatById,
 	getMessages,
 	sendMessage,
+	deleteChat,
 
 	getChatsEmployer,
 	getChatByIdEmployer,
 	getMessagesEmployer,
 	sendMessageEmployer,
+	deleteChatEmployer,
 };
