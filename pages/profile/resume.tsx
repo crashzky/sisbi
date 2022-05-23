@@ -139,6 +139,7 @@ const ResumePage = (): JSX.Element => {
 		onSubmit: (values) => {
 			updateProfileMutation.mutate({
 				user: {
+					state: data.payload.state === 'created' ? 'moderating' : data.payload.state,
 					job_category_id: jobCategory,
 					previous_job: values.vacancyName,
 					min_salary: values.minPrice,
@@ -196,7 +197,7 @@ const ResumePage = (): JSX.Element => {
 								name='vacancyName'
 								isDanger={!!formik.errors.vacancyName}
 								onChange={formik.handleChange}
-								placeholder='UX/UI дизайнер' />
+								placeholder='Должность' />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности	
 							</Paragraph>

@@ -7,6 +7,10 @@ export default {
 	component: InputImage,
 } as ComponentMeta<typeof InputImage>;
 
-const Template: ComponentStory<typeof InputImage> = (args) => <InputImage {...args} />;
+const Template: ComponentStory<typeof InputImage> = (args) => (
+	<InputImage
+		noSelectedImage='/assets/no_selected_image.svg'
+		{...args} />
+);
 
 export const Primary = Template.bind({});

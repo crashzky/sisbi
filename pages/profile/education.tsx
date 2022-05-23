@@ -8,15 +8,21 @@ import Button from '../../components/Button';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
+import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+import { UserStatesType } from '../../shared/types/api/common';
+import { useState } from 'react';
 
 import LoaderIcon from '../../assets/loader.svg';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 
 const EductionPage = (): JSX.Element => {
 	const router = useRouter();
+
+	const [state, setState] = useState<UserStatesType>();
 	
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (values) => {
+			setState(values.payload.state);
+			
 			formik.setValues({
 				education: EDUCATION[values.payload.education],
 			});
@@ -34,6 +40,7 @@ const EductionPage = (): JSX.Element => {
 		onSubmit: (values) => {
 			mutate({
 				user: {
+					state: state === 'created' ? 'moderating' : state,
 					education: TO_EDUCATION[values.education],
 				},
 			});

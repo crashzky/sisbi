@@ -186,7 +186,9 @@ const NewVacancyPage = (): JSX.Element => {
 							<Paragraph variant='5' tag='p'>
 								Превью для вакансии
 							</Paragraph>
-							<InputImage onChange={(e) => setAvatar(e.target.files[0])} />
+							<InputImage
+								noSelectedImage='/assets/no_selected_image.svg'
+								onChange={(e) => setAvatar(e.target.files[0])} />
 							<Paragraph variant='5' tag='p'>
 								Название вакансии
 							</Paragraph>

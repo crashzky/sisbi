@@ -20,6 +20,7 @@ import * as Yup from 'yup';
 import removeItemFromArray from '../../../utils/removeItemFromArray';
 
 import LoaderIcon from '../../../assets/loader.svg';
+import { UserStatesType } from '../../../shared/types/api/common';
 
 const UserEditPage = (): JSX.Element => {
 	const router = useRouter();
@@ -30,14 +31,17 @@ const UserEditPage = (): JSX.Element => {
 
 	const [city, setCity] = useState<ISelectOption>();
 
-	const [prevAvatar, setPrevAvatar] = useState<string>();
+	const [prevAvatar, setPrevAvatar] = useState<string>('/assets/no_selected_image.svg');
 	const [avatar, setAvatar] = useState<File>();
 
 	const [errorsList, setErrorsList] = useState<string[]>([]);
+	const [state, setState] = useState<UserStatesType>();
 
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (values) => {
-			const { surname, first_name, gender, email, city, birthday, avatar } = values.payload;
+			const { surname, first_name, gender, email, city, birthday, avatar, state } = values.payload;
+			
+			setState(state);
 
 			formik.setValues({
 				surname,
@@ -108,6 +112,7 @@ const UserEditPage = (): JSX.Element => {
 			if(!_errors_list.length) {
 				putProfileMutation.mutate({
 					user: {
+						state: state === 'created' ? 'moderating' : state,
 						first_name: values.name,
 						surname: values.surname,
 						email: values.email,

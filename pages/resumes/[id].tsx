@@ -17,6 +17,7 @@ import ContentLoader from 'react-content-loader';
 import useWindowDemantions from '../../hooks/useWindowDementions';
 import { createInvite } from '../../shared/api/invites';
 import { AxiosError } from 'axios';
+import yearsToText from '../../utils/yearsToText';
 
 import RespondResumeMenu from '../../components/RespondResumeMenu';
 
@@ -153,7 +154,8 @@ const ResumeIdPage = (): JSX.Element => {
 										))}
 								</div>
 								<Paragraph variant='4' tag='p' className='text-text mb-5'>
-									{`${first_name} ${surname}, ${interval.years ? `${interval.years} лет, ` : ''}`}
+									{`${first_name} ${surname}, ${interval.years ? `${interval.years} 
+									${yearsToText(interval.years)}, ` : ''}`}
 									{' '}
 									{city ? city.name : ''}
 								</Paragraph>

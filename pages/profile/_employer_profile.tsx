@@ -91,6 +91,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 							.map((i, num) => (
 								<ShortVacancyCard
 									key={num}
+									onClick={() => router.push(`/vacancies/${i.id}`)}
 									className='w-[268px]'
 									lastUpdate={new Date(i.updated_at)}
 									label={i.title}

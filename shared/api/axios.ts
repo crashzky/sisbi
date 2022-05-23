@@ -31,8 +31,10 @@ instance.interceptors.request.use((req) => {
 });
 
 instance.interceptors.response.use(null, (error) => {
-	if(error.response.status === 401 && error.request.headers.Authorization)
+	if(error.response.status === 401 && error.config.headers.Authorization) {
 		localStorage.removeItem('access_token');
+		localStorage.removeItem('user_type');
+	}
 
 	return Promise.reject(error);
 });

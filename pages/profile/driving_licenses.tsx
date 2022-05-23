@@ -9,14 +9,20 @@ import { DRIVING_LICENSES } from '../../shared/consts/profile';
 import { useMutation, useQuery } from 'react-query';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
+import { useState } from 'react';
+import { UserStatesType } from '../../shared/types/api/common';
 
 import LoaderIcon from '../../assets/loader.svg';
 
 const DrivingLicensesPage = (): JSX.Element => {
 	const router = useRouter();
 
+	const [state, setState] = useState<UserStatesType>();
+
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (data) => {
+			setState(data.payload.state);
+
 			formik.setValues({
 				licenses: data.payload.driving_license.split(' ').filter((i) => i !== ''),
 			});
@@ -34,6 +40,7 @@ const DrivingLicensesPage = (): JSX.Element => {
 		onSubmit: (values) => {
 			mutate({
 				user: {
+					state: state === 'created' ? 'moderating' : state,
 					driving_license: values.licenses.sort().join(' '),
 				},
 			});

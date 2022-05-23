@@ -11,12 +11,13 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 
 	return (
 		<div
-			className={className + ' relative cursor-pointer'}
-			tabIndex={0}
-			onFocus={() => setIsOpened(true)}
-			onBlur={() => setTimeout(() => setIsOpened(false), 100)}
+			className={className + ' relative'}
 			{...props}
 		>
+			<input
+				className='absolute w-full h-full opacity-0 cursor-pointer'
+				onFocus={() => setIsOpened(true)}
+				onBlur={() => setTimeout(() => setIsOpened(false), 100)} />
 			<div className='flex items-center'>
 				<Paragraph variant='6' tag='p' className='text-text'>
 					{value && value.label}

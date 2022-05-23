@@ -9,29 +9,31 @@ import useProfileTab from '../../hooks/useProfileTab';
 import { MAIN_SHADOW } from '../../shared/consts/shadows';
 
 const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
-	const [showMenu, setShowMenu] = useState(false);
-
 	const router = useRouter();
 
 	const menuItems = useProfileTab();
+	
+	const [showMenu, setShowMenu] = useState(false);
 
 	return (
-		<button
-			onFocus={() => setShowMenu(true)}
-			onBlur={() => setTimeout(() => setShowMenu(false), 150)}
-			className={className + ' relative bg-gray-20 rounded-2xl p-2 grid gap-2 grid-flow-col items-center cursor-pointer'}
-			{...props}
-		>
-			<Image
-				src={avatar ? avatar : '/assets/default_avatar.svg'}
-				width={32}
-				height={32}
-				className='object-cover rounded-full'
-				alt='avatar' />
-			<Paragraph variant='5' tag='p' className='text-darkBlue'>
-				Личный кабинет
-			</Paragraph>
-			<CaretLeftIcon className='-rotate-90 fill-darkBlue' />
+		<div className={className + ' relative'}>
+			<input
+				className='w-full h-full absolute opacity-0 z-10 cursor-pointer'
+				onFocus={() => setShowMenu(true)}
+				onBlur={() => setTimeout(() => setShowMenu(false), 100)}
+				{...props} />
+			<div className='bg-gray-20 rounded-2xl p-2 grid gap-2 grid-flow-col items-center cursor-pointer'>
+				<Image
+					src={avatar ? avatar : '/assets/default_avatar.svg'}
+					width={32}
+					height={32}
+					className='object-cover rounded-full'
+					alt='avatar' />
+				<Paragraph variant='5' tag='p' className='text-darkBlue'>
+					Личный кабинет
+				</Paragraph>
+				<CaretLeftIcon className='-rotate-90 fill-darkBlue' />
+			</div>
 			{showMenu && (
 				<div
 					className='absolute z-20 top-12 w-full grid bg-white rounded-b-2xl'
@@ -65,7 +67,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 					</button>
 				</div>
 			)}
-		</button>
+		</div>
 	);
 };
 

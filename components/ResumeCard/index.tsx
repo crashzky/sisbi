@@ -3,6 +3,7 @@ import Props from './ResumeCard.props';
 import Paragraph from '../Paragraph';
 import Button from '../Button';
 import { intervalToDuration, isValid } from 'date-fns';
+import yearsToText from '../../utils/yearsToText';
 
 const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, birthday, onRespond, city,
 	vacancyName, about, skills, tags, minSalary, ...props }) => {
@@ -30,7 +31,7 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 			)}
 			<div>
 				<Paragraph variant='6' tag='p' className='text-text-secondary mb-3'>
-					{`${name} ${surname}, ${interval.years} лет, ${city}`}
+					{`${name} ${surname}, ${interval.years} ${yearsToText(interval.years)}, ${city}`}
 				</Paragraph>
 				<Paragraph variant='1' tag='h2' className='font-bold mb-1'>
 					{vacancyName}

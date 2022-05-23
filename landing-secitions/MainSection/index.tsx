@@ -3,10 +3,13 @@ import { useRouter } from 'next/router';
 import Button from '../../components/Button';
 import Headline from '../../components/Headline';
 import Paragraph from '../../components/Paragraph';
+import useUserType from '../../hooks/useUserType';
 import Props from './MainSection';
 
 const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 	const router = useRouter();
+
+	const { userType } = useUserType();
 
 	return (
 		<section id='main' className={className + ' grid grid-cols-between'} {...props}>
@@ -24,12 +27,16 @@ const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 				</Paragraph>
 				<div className='grid grid-cols-2 gap-4 h-12 w-[363px] mt-8'>
 					<Button onClick={() => {
-						router.push({
-							pathname: '/',
-							query: {
-								modal: 'signup',
-							},
-						});
+						if(userType)
+							router.push('/vacancies');
+						else {
+							router.push({
+								pathname: '/',
+								query: {
+									modal: 'signup',
+								},
+							});
+						}
 					}}
 					>
 						Искать работу
@@ -37,12 +44,16 @@ const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 					<Button
 						variant='outline'
 						onClick={() => {
-							router.push({
-								pathname: '/',
-								query: {
-									modal: 'signup',
-								},
-							});
+							if(userType)
+								router.push('/resumes');
+							else {
+								router.push({
+									pathname: '/',
+									query: {
+										modal: 'signup',
+									},
+								});
+							}
 						}}
 					>
 						Искать сотрудников

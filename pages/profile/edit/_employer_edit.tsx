@@ -17,7 +17,7 @@ import LoaderIcon from '../../../assets/loader.svg';
 const EmployerEditPage = (): JSX.Element => {
 	const router = useRouter();
 
-	const [prevAvatar, setPrevAvatar] = useState<string>();
+	const [prevAvatar, setPrevAvatar] = useState<string>('/assets/no_selected_image.svg');
 	const [avatar, setAvatar] = useState<File>();
 
 	useQuery('my_profile_employer', getMyProfileEmployer, {

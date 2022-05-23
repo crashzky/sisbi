@@ -16,6 +16,7 @@ import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
 import DownloadSolidIcon from '../../assets/general/download_solid.svg';
 import { getInvites } from '../../shared/api/invites';
+import yearsToText from '../../utils/yearsToText';
 
 const ProfilePageUser = (): JSX.Element => {
 	const router = useRouter();
@@ -105,7 +106,8 @@ const ProfilePageUser = (): JSX.Element => {
 						<div className='print:hidden'>
 							{/* For site */}
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{data && data.birthday ? `${birthdayInterval.years} лет, ${birthday_date}` : 'Нет информации'}
+								{data && data.birthday ? `${birthdayInterval.years} ${yearsToText(birthdayInterval.years)}, 
+								${birthday_date}` : 'Нет информации'}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-3'>
 								{(data && data.city) && data.city.name}
@@ -267,11 +269,19 @@ const ProfilePageUser = (): JSX.Element => {
 				<div className='grid rounded-xl border-[1px] border-gray-100'>
 					<button className='p-4 grid grid-cols-[20px_1fr] gap-2 items-center border-b-[1px] border-gray-100'>
 						<ShareSolidIcon className='fill-icon' />
-						<Link href={`/resumes/${data && data.id}`}>
-							<a target='_blank' className='text-text text-left text-sm'>
-								Поделиться
-							</a>
-						</Link>
+						<button
+							className='text-text text-left text-sm'
+							onClick={() => {
+								navigator.clipboard
+									.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/resumes/${data && data.id}`).then(() => {
+										router.push(`/resumes/${data && data.id}`);
+									}, () => {
+										router.push(`/resumes/${data && data.id}`);
+									});
+							}}
+						>
+							Поделиться
+						</button>
 					</button>
 					<button className='p-4 grid grid-cols-[20px_1fr] gap-2 items-center' onClick={() => print()}>
 						<DownloadSolidIcon className='fill-icon' />

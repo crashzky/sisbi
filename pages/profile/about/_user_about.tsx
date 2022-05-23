@@ -7,14 +7,20 @@ import MainLayout from '../../../layouts/MainLayout';
 import { getMyProfileUser, putProfileUser } from '../../../shared/api/user';
 import Button from '../../../components/Button';
 import { useFormik } from 'formik';
+import { useState } from 'react';
+import { UserStatesType } from '../../../shared/types/api/common';
 
 import LoaderIcon from '../../../assets/loader.svg';
 
 const UserAboutPage = (): JSX.Element => {
 	const router = useRouter();
 
+	const [state, setState] = useState<UserStatesType>();
+
 	useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (data) => {
+			setState(data.payload.state);
+
 			formik.setValues({
 				about: data.payload.about,
 			});
@@ -32,6 +38,7 @@ const UserAboutPage = (): JSX.Element => {
 		onSubmit: (values) => {
 			mutate({
 				user: {
+					state: state === 'created' ? 'moderating' : state,
 					about: values.about,
 				},
 			});

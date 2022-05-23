@@ -35,7 +35,7 @@ import LoaderIcon from '../../../assets/loader.svg';
 const NewVacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
-	const [prevAvatar, setPrevAvatar] = useState<string>();
+	const [prevAvatar, setPrevAvatar] = useState<string>('/assets/no_selected_image.svg');
 	const [avatar, setAvatar] = useState<File>();
 
 	const [description, setDescription] = useState('');
