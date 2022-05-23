@@ -22,7 +22,7 @@ const Message: React.FC<Props> = ({ className = '', label, message, sendedDate, 
 				</Paragraph>
 			</div>
 			{showDate && (
-				<div className='flex justify-end items-center gap-1'>
+				<div className='grid grid-flow-col justify-end items-center gap-1'>
 					{readed && (
 						<DeliveredIcon className='fill-icon' />
 					)}

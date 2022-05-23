@@ -4,7 +4,7 @@ const Radio: React.FC<Props> = ({ className = '', items, name, value, ...props }
 	return (
 		<div className={className}>
 			{items.map((i, num) => (
-				<div key={num} className='flex items-center gap-2'>
+				<div key={num} className='grid grid-flow-col w-fit items-center gap-2'>
 					<input
 						type='radio'
 						className='custom-radio cursor-pointer w-5 h-5'

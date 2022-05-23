@@ -47,7 +47,7 @@ const Footer: React.FC<Props> = ({ className = '', ...props }) => {
 					</button>
 				</div>
 			</div>
-			<div className='mt-16 flex gap-8 items-center'>
+			<div className='mt-16 grid grid-flow-col w-fit items-center gap-8 items-center'>
 				<Link href='/'>
 					<a>
 						<FullLogoSmallIcon />

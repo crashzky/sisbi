@@ -53,7 +53,7 @@ const SelectJobModal: React.FC<Props> = ({ className = '', ...props }) => {
 						<CloseIcon className='fill-icon-secondary' />
 					</button>
 				</div>
-				<div className='h-[240px] overflow-y-scroll flex flex-col gap-2'>
+				<div className='h-[240px] overflow-y-scroll grid gap-2'>
 					{jobCategoriesQuery.data.payload.map((i) => (
 						<Checkbox
 							key={i.id}

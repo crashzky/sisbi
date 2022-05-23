@@ -33,7 +33,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 					className='flex justify-between items-start pb-12 border-b-[1px] border-gray-80'
 				>
 					<div>
-						<div className='flex gap-4 items-center mb-4'>
+						<div className='grid grid-flow-col w-fit items-center gap-4 items-center mb-4'>
 							<Headline variant='5' tag='h1' className='font-bold'>
 								{data ? data.name : 'Загрузка...'}
 							</Headline>
@@ -60,7 +60,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 					) : ''}
 				</section>
 				<section className='pb-8 border-b-[1px] border-gray-80'>
-					<div className='flex items-center gap-4 mb-3'>
+					<div className='grid grid-flow-col w-fit items-center gap-4 mb-3'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							О компании
 						</Paragraph>
@@ -75,7 +75,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 					</Paragraph>
 				</section>
 				<section className='pb-8'>
-					<div className='flex items-center gap-4 mb-3'>
+					<div className='grid grid-flow-col w-fit items-center gap-4 mb-3'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							Размещенные вакансии
 						</Paragraph>
@@ -85,7 +85,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 							</a>
 						</Link>
 					</div>
-					<div className='flex flex-wrap gap-4'>
+					<div className='grid grid-flow-col w-fit items-center gap-4'>
 						{myVacanciesQuery.isSuccess &&
 						myVacanciesQuery.data.payload.sort((a, b) => a.shows > b.shows ? 1 : -1).slice(0, 4)
 							.map((i, num) => (

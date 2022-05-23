@@ -18,7 +18,7 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...
 	}, [code]);
 
 	return (
-		<div className={className + ' flex gap-2'} {...props}>
+		<div className={className + ' grid grid-flow-col gap-2'} {...props}>
 			{BLOCKS_REFS.map((i, num) => (
 				<div
 					key={num}

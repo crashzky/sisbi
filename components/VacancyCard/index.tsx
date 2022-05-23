@@ -32,7 +32,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 				</div>
 			)}
 			<div>
-				<div className='flex gap-2 mb-3'>
+				<div className='grid grid-flow-col w-fit items-center gap-2 mb-3'>
 					{companyAvatar ? (
 						<Image
 							width={20}

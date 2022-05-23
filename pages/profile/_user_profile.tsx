@@ -93,7 +93,7 @@ const ProfilePageUser = (): JSX.Element => {
 					className='flex justify-between items-start pb-12 border-b-[1px] border-gray-80 print:border-none print:pb-0'
 				>
 					<div>
-						<div className='flex gap-4 items-center mb-4'>
+						<div className='grid grid-flow-col w-fit items-center gap-4 mb-4'>
 							<Headline variant='5' tag='h1' className='font-bold'>
 								{data ? `${data.first_name} ${data.surname} ${data.last_name}` : 'Загрузка...'}
 							</Headline>
@@ -158,7 +158,7 @@ const ProfilePageUser = (): JSX.Element => {
 					) : ''}
 				</section>
 				<section className='pb-8 border-b-[1px] border-gray-80 print:border-none print:pb-0'>
-					<div className='flex items-center gap-4 mb-1'>
+					<div className='grid grid-flow-col w-fit items-center gap-4 mb-1'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							{data && data.previous_job}
 						</Paragraph>
@@ -225,7 +225,7 @@ const ProfilePageUser = (): JSX.Element => {
 					) : ''}
 				</section>
 				<section className='pb-8 border-b-[1px] border-gray-80 print:border-none'>
-					<div className='flex items-center gap-4 mb-3 print:hidden'>
+					<div className='grid grid-flow-col w-fit items-center gap-4 mb-3 print:hidden'>
 						<Paragraph variant='1' tag='h2' className='font-semibold'>
 							О себе
 						</Paragraph>
@@ -242,7 +242,7 @@ const ProfilePageUser = (): JSX.Element => {
 						{data && data.about}
 					</Paragraph>
 				</section>
-				<section className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
+				<section className='grid grid-flow-col w-fit items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
 						{data && data.education ? EDUCATION[data.education] : 'Нет информации'}
 					</Paragraph>
@@ -252,7 +252,7 @@ const ProfilePageUser = (): JSX.Element => {
 						</a>
 					</Link>
 				</section>
-				<section className='flex items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
+				<section className='grid grid-flow-col w-fit items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>
 						Категории водительских прав:
 						{' '}

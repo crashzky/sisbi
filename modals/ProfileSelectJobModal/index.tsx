@@ -44,7 +44,7 @@ const ProfileSelectJobModal: React.FC<Props> = ({ className = '', onCloseModal, 
 						<CloseIcon className='fill-icon-secondary' />
 					</button>
 				</div>
-				<div className='h-[240px] overflow-y-scroll flex flex-col gap-2'>
+				<div className='h-[240px] overflow-y-scroll grid gap-2'>
 					<Radio
 						name='job_category'
 						className='grid gap-2'

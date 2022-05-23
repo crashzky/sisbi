@@ -107,7 +107,7 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 				value={formik.values.phone}
 				onChange={formik.handleChange} />
 			<Radio
-				className='mt-6 mb-3 flex gap-4'
+				className='mt-6 mb-3 grid grid-flow-col gap-4'
 				name='radio'
 				onChange={formik.handleChange}
 				value={formik.values.radio}

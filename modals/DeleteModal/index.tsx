@@ -21,7 +21,7 @@ const DeleteModal: React.FC<Props> = ({ className = '', message, onCancel, onCon
 					{message}
 				</Paragraph>
 			</div>
-			<div className='py-4 px-6 flex justify-end gap-2'>
+			<div className='py-4 px-6 grid grid-flow-col justify-end gap-2'>
 				<Button variant='secondary' className='py-2 px-4' onClick={onCancel}>
 					Отмена
 				</Button>

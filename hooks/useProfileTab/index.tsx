@@ -32,10 +32,10 @@ const useProfileTab = () => {
 					title: 'Мессенджер',
 					onClick: () => router.push('/messenger'),
 				},
-				{
+				/*{
 					title: 'Тарифы',
 					onClick: () => router.push('/prices'),
-				},
+				},*/
 			];
 	}
 };
