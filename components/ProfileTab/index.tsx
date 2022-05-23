@@ -20,7 +20,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 			<input
 				className='w-full h-full absolute opacity-0 z-10 cursor-pointer'
 				onFocus={() => setShowMenu(true)}
-				onBlur={() => setTimeout(() => setShowMenu(false), 100)}
+				onBlur={() => setShowMenu(false)}
 				{...props} />
 			<div className='bg-gray-20 rounded-2xl p-2 grid gap-2 grid-flow-col items-center cursor-pointer'>
 				<Image
@@ -45,7 +45,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 						<button
 							key={num}
 							className='p-4 w-full text-left border-b-[1px] border-button-secondary'
-							onClick={i.onClick}
+							onMouseDown={i.onClick}
 						>
 							<Paragraph variant='5' tag='span'>
 								{i.title}
@@ -54,7 +54,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 					))}
 					<button
 						className='p-4 w-full text-left'
-						onClick={() => {
+						onMouseDown={() => {
 							localStorage.removeItem('access_token');
 							localStorage.removeItem('user_type');
 

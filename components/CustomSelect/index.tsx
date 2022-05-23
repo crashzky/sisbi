@@ -17,7 +17,7 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 			<input
 				className='absolute w-full h-full opacity-0 cursor-pointer'
 				onFocus={() => setIsOpened(true)}
-				onBlur={() => setTimeout(() => setIsOpened(false), 100)} />
+				onBlur={() => setIsOpened(false)} />
 			<div className='flex items-center'>
 				<Paragraph variant='6' tag='p' className='text-text'>
 					{value && value.label}
@@ -36,8 +36,8 @@ const CustomSelect: React.FC<Props> = ({ className = '', value, options, onChang
 						<button
 							key={num}
 							className={`p-4 w-full flex justify-between items-center text-left
-								border-b-[1px] border-button-secondary`}
-							onClick={() => {
+								border-b-[1px] border-button-secondary cursor-pointer`}
+							onMouseDown={() => {
 								if(onChange)
 									onChange(i);
 							}}
