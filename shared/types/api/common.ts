@@ -7,7 +7,7 @@ type EmploymentTypes = 'internship' | 'project_work' | 'part_time' | 'full';
 type EducationType = 'secondary' | 'secondary_special' | 'incomplete_higher' | 'higher' | 'bachelor' | 'master'
 	| 'candidate' | 'doctor';
 type ExperienceType = 'no' | 'y_1_3' | 'y_2_6' | 'more_6';
-type UserType = 'User' | 'Employer';
+type UserType = 'User' | 'Employer' | 'System';
  
 interface ICommonResponse {
 	result_code: 'ok';

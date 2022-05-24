@@ -24,11 +24,12 @@ import useWindowDemantions from '../../hooks/useWindowDementions';
 import { ru } from 'date-fns/locale';
 import ContentLoader from 'react-content-loader';
 import { acceptResponse, declineResponse } from '../../shared/api/response';
+import { acceptInvite, declineInvite } from '../../shared/api/invites';
+import { IWebScoketMessage } from '../../shared/types/api/websocket';
 
 import Preloader from '../../assets/loader.svg';
 import CompanyLIcon from '../../assets/company-L.svg';
 import OtherIcon from '../../assets/navigation/other.svg';
-import { acceptInvite, declineInvite } from '../../shared/api/invites';
 
 const ChatPage = (): JSX.Element => {
 	const router = useRouter();
@@ -40,6 +41,8 @@ const ChatPage = (): JSX.Element => {
 
 	const windowSizes = useWindowDemantions();
 	const buttonsSizes = useRefDemantions(buttonsRef);
+
+	const [isOnline, setIsOnline] = useState(false);
 
 	const [openedModal, setOpenedModal] = useState('');
 	const [isOpenedMenu, setIsOpenedMenu] = useState(false);
@@ -119,15 +122,20 @@ const ChatPage = (): JSX.Element => {
 
 	useEffect(() => {
 		if(lastMessage) {
-			const MESSAGE = JSON.parse(lastMessage.data);
+			const MESSAGE = JSON.parse(lastMessage.data) as IWebScoketMessage;
 			
 			if(MESSAGE.identifier && MESSAGE.message) {
+				setIsOnline(true);
+
 				setMessages((prev) => prev.concat(MESSAGE.message));
 				
 				setTimeout(() => {
 					containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
 				}, 1);
 			}
+
+			if(MESSAGE.message && MESSAGE.message.sender_type == 'System')
+				setIsOnline(MESSAGE.message.online);
 		}
 	}, [lastMessage]);
 
@@ -293,6 +301,7 @@ const ChatPage = (): JSX.Element => {
 					<div>
 						<Paragraph variant='3' tag='h2' className='font-bold'>
 							{chatInfoQuery.isSuccess && getProperties() ? getProperties().title : 'Загрузка...'}
+							{isOnline && ' (online)'}
 						</Paragraph>
 						<Paragraph variant='5' tag='p' className='text-text'>
 							{chatInfoQuery.isSuccess && getProperties() ? getProperties().name : 'Загрузка...'}
@@ -368,7 +377,7 @@ const ChatPage = (): JSX.Element => {
 							<rect x='45' y='122' rx='5' ry='5' width='220' height='10' />
 						</ContentLoader>
 					)}
-					{messages.map((i, num) => {
+					{messages.filter((i) => i.content).map((i, num) => {
 						const showDate = num <= 1 || num + 1 === messages.length ||
 						messages[num + 1].sender_type !== i.sender_type ||
 							new Date(i.created_at).getMinutes() - 
@@ -383,7 +392,7 @@ const ChatPage = (): JSX.Element => {
 										tag='p'
 										className='text-text-secondary text-center my-4'
 									>
-										{format(new Date(i.created_at), 'dd MMMM yyyy', {
+										{i.created_at && format(new Date(i.created_at), 'dd MMMM yyyy', {
 											locale: ru,
 										})}
 									</Paragraph>
@@ -391,7 +400,7 @@ const ChatPage = (): JSX.Element => {
 										key={num + '_message'}
 										label={getTitle(i.type_message)}
 										message={i.content as string}
-										sendedDate={new Date(i.created_at)}
+										sendedDate={i.created_at && new Date(i.created_at)}
 										sender={i.sender_type.toLowerCase() === userType ? 'me' : 'companion'}
 										showDate={showDate}
 										className={showDate && 'pb-3'}

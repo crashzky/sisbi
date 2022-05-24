@@ -6,16 +6,21 @@ import { IResponse, IVacancy } from './vacancies';
 type MessageType = 'response' | 'text' | 'picture' | 'voice' | 'invite';
 
 interface IMessage {
-	id: number;
-	type_message: MessageType;
-	content: string | File,
+	id?: number;
+	type_message?: MessageType;
+	content?: string | File,
 	sender_type: UserType;
-	seen: boolean;
-	chat_id: number;
-	created_at: string;
-	updated_at: string;
-	seen_at: string | null;
-	sender: IUser | IEmployer;
+	seen?: boolean;
+	chat_id?: number;
+	created_at?: string;
+	updated_at?: string;
+	seen_at?: string | null;
+	sender?: IUser | IEmployer;
+
+	class_id?: number;
+	class_type?: UserType;
+	message?: string;
+	online?: boolean;
 }
 
 interface IChat {
