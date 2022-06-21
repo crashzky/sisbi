@@ -109,7 +109,7 @@ const NewVacancyPage = (): JSX.Element => {
 	const formik = useFormik({
 		initialValues: {
 			title: '',
-			salary: 0,
+			salary: null,
 			experience: null,
 			employement_types: [],
 			schedules: [],
@@ -136,7 +136,7 @@ const NewVacancyPage = (): JSX.Element => {
 					full_name: values.contactFullName,
 					email: values.contactEmail,
 					phone: '+7' + (values.contactPhone as string).replaceAll(' ', ''),
-					description,
+					description: description.replaceAll('\n', '<br>'),
 					job_category_id: jobCategory,
 					city_id: +city.value,
 				});
@@ -195,9 +195,9 @@ const NewVacancyPage = (): JSX.Element => {
 							<Input
 								value={formik.values.title}
 								name='title'
-								isDanger={!!formik.errors.title}
+								isDanger={!!formik.errors.title && !!formik.submitCount}
 								onChange={formik.handleChange}
-								placeholder='Например, Junior UI/UX дизайнер' />
+								placeholder='Например, менеджер по продажам' />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности
 							</Paragraph>
@@ -233,7 +233,7 @@ const NewVacancyPage = (): JSX.Element => {
 								value={formik.values.salary}
 								name='salary'
 								type='number'
-								isDanger={!!formik.errors.salary}
+								isDanger={!!formik.errors.salary && !!formik.submitCount}
 								min={0}
 								onChange={formik.handleChange}
 								placeholder='Зарплата от 150 000 ₽' />
@@ -300,19 +300,19 @@ const NewVacancyPage = (): JSX.Element => {
 								<Input
 									value={formik.values.contactFullName}
 									name='contactFullName'
-									isDanger={!!formik.errors.contactFullName}
+									isDanger={!!formik.errors.contactFullName && !!formik.submitCount}
 									onChange={formik.handleChange}
 									placeholder='ФИО' />
 								<InputPhone
 									value={formik.values.contactPhone}
 									name='contactPhone'
-									isDanger={!!formik.errors.contactPhone}
+									isDanger={!!formik.errors.contactPhone && !!formik.submitCount}
 									onChange={formik.handleChange} />
 								<Input
 									value={formik.values.contactEmail}
 									name='contactEmail'
 									type='email'
-									isDanger={!!formik.errors.contactEmail}
+									isDanger={!!formik.errors.contactEmail && !!formik.submitCount}
 									onChange={formik.handleChange}
 									placeholder='Email-адрес' />
 							</div>

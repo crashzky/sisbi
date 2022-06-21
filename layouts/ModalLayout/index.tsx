@@ -21,6 +21,20 @@ const ModalLayout: React.FC<Props> = ({ children, modals, ...props }) => {
 				setOpenedModal(i);
 			}
 		});
+
+		if(props.openedModal) {
+			document.querySelector('html').style.scrollBehavior = 'auto';
+
+			window.scrollTo({
+				top: 0,
+			});
+
+			document.body.style.overflowY = 'hidden';
+		}
+		else {
+			document.querySelector('html').style.scrollBehavior = 'smooth';
+			document.body.style.overflowY = 'scroll';	
+		}
 	}, [router, router.query, props.openedModal]);
 	
 	return (

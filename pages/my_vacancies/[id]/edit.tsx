@@ -66,7 +66,7 @@ const NewVacancyPage = (): JSX.Element => {
 				contactEmail: email,
 			});
 
-			setDescription(description);
+			setDescription(description.replaceAll('<br>', '\n'));
 			setJobCategory(job_category.id);
 			setPrevAvatar(avatar);
 			setCity({ value: city.id.toString(), label: city.name });
@@ -182,7 +182,7 @@ const NewVacancyPage = (): JSX.Element => {
 				full_name: values.contactFullName,
 				email: values.contactEmail,
 				phone: '+7' + (values.contactPhone as string).replaceAll(' ', ''),
-				description,
+				description: description.replaceAll('\n', '<br>'),
 				job_category_id: jobCategory,
 				city_id: +city.value,
 				...withAvatar,
@@ -243,7 +243,7 @@ const NewVacancyPage = (): JSX.Element => {
 								name='title'
 								isDanger={!!formik.errors.title}
 								onChange={formik.handleChange}
-								placeholder='Например, Junior UI/UX дизайнер' />
+								placeholder='Например, менеджер по продажам' />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности
 							</Paragraph>
@@ -365,14 +365,52 @@ const NewVacancyPage = (): JSX.Element => {
 							<Paragraph variant='5' tag='p'>
 								Описание
 							</Paragraph>
-							<Button
-								type='button'
-								variant='secondary'
-								className='h-9 w-[150px] font-normal rounded-lg'
-								onClick={() => setShowDescriptionEditor(true)}
-							>
-								{description ? 'Изменить описание' : 'Добавить описание'}
-							</Button>
+							<div>
+								{description && (
+									<div className='p-4 pb-6 bg-gray-40 rounded-xl mb-2'>
+										{description && description.split('\n').map((i, num) => {
+											if(num != description.split('\n').length - 1) {
+												return (
+													<Paragraph key={num} variant='5' tag='p'>
+														{i}
+														<br />
+													</Paragraph>
+												);
+											}
+											else {
+												return (
+													<Paragraph key={num} variant='5' tag='p'>
+														{i}
+													</Paragraph>
+												);
+											}
+										})}
+									</div>
+								)}
+								<div className='grid grid-cols-2 gap-2 h-9'>
+									<Button
+										type='button'
+										variant='secondary'
+										className='font-normal py-2 rounded-lg'
+										onClick={() => setShowDescriptionEditor(true)}
+									>
+										{description ? 'Изменить описание' : 'Добавить описание'}
+									</Button>
+									{description && (
+										<Button
+											type='button'
+											variant='outline_secondary'
+											className='py-2 rounded-lg'
+											style={{
+												fontWeight: 400,
+											}}
+											onClick={() => setDescription('')}
+										>
+											Удалить описание
+										</Button>
+									)}
+								</div>
+							</div>
 						</div>
 						<div className='grid grid-flow-col w-fit gap-2 mt-8'>
 							{putVacancyMutation.isLoading || addSchedulesMutation.isLoading

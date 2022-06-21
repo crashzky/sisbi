@@ -238,9 +238,23 @@ const ProfilePageUser = (): JSX.Element => {
 					<Paragraph variant='4' tag='h2' className='font-bold mb-2 hidden print:block'>
 						Обо мне
 					</Paragraph>
-					<Paragraph variant='5' tag='p' className='max-w-[550px]'>
-						{data && data.about}
-					</Paragraph>
+					{data && data.about.split('<br>').map((i, num) => {
+						if(num != data.about.split('<br>').length - 1) {
+							return (
+								<Paragraph key={num} variant='5' tag='p' className='max-w-[550px]'>
+									{i}
+									<br />
+								</Paragraph>
+							);
+						}
+						else {
+							return (
+								<Paragraph key={num} variant='5' tag='p' className='max-w-[550px]'>
+									{i}
+								</Paragraph>
+							);
+						}
+					})}
 				</section>
 				<section className='grid grid-flow-col w-fit items-center gap-4 pb-8 border-b-[1px] border-gray-80 print:hidden'>
 					<Paragraph variant='1' tag='h2' className='font-semibold'>

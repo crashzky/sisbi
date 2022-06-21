@@ -21,9 +21,11 @@ const UserAboutPage = (): JSX.Element => {
 		onSuccess: (data) => {
 			setState(data.payload.state);
 
-			formik.setValues({
-				about: data.payload.about,
-			});
+			if(!state) {
+				formik.setValues({
+					about: data.payload.about.replaceAll('<br>', '\n'),
+				});
+			}
 		},
 	});
 
@@ -39,7 +41,7 @@ const UserAboutPage = (): JSX.Element => {
 			mutate({
 				user: {
 					state: state === 'created' ? 'moderating' : state,
-					about: values.about,
+					about: values.about.replaceAll('\n', '<br>'),
 				},
 			});
 		},

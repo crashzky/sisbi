@@ -27,7 +27,7 @@ const LatestVacanciesSection: React.FC<Props> = ({ className = '', ...props }) =
 						lastUpdate={new Date(i.updated_at)}
 						label={i.title}
 						minPrice={i.salary}
-						description={i.description}
+						description={i.description ? i.description.replaceAll('<br>', '') : i.description}
 						tags={[
 							i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
 							...i.schedules.map((i) => i.name)]} />	

@@ -140,7 +140,7 @@ const VacanciesPage = (): JSX.Element => {
 									companyName={i.employer.name}
 									label={i.title}
 									minPrice={i.salary}
-									description={i.description}
+									description={i.description ? i.description.replaceAll('<br>', '') : i.description}
 									companyAvatar={i.employer.avatar}
 									tags={[
 										i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),

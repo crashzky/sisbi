@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
+import { useState } from 'react';
+import { CompanyStatesType } from '../../../shared/types/api/common';
 import BackButton from '../../../components/BackButton';
 import Headline from '../../../components/Headline';
 import Textarea from '../../../components/Textarea';
@@ -13,11 +15,17 @@ import LoaderIcon from '../../../assets/loader.svg';
 const EmployerAboutPage = (): JSX.Element => {
 	const router = useRouter();
 
+	const [state, setState] = useState<CompanyStatesType>();
+
 	useQuery('my_profile_employer', getMyProfileEmployer, {
 		onSuccess: (data) => {
-			formik.setValues({
-				about: data.payload.about,
-			});
+			setState(data.payload.state);
+
+			if(!state) {
+				formik.setValues({
+					about: data.payload.about.replaceAll('<br>', '\n'),
+				});
+			}
 		},
 	});
 
@@ -32,7 +40,7 @@ const EmployerAboutPage = (): JSX.Element => {
 		onSubmit: (values) => {
 			mutate({
 				employer: {
-					about: values.about,
+					about: values.about.replaceAll('\n', '<br>'),
 				},
 			});
 		},

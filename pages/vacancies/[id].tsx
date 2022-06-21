@@ -200,9 +200,23 @@ const VacancyPage = (): JSX.Element => {
 										Показать контакты
 									</Button>
 								</div>
-								<Paragraph variant='5' tag='p' className='mb-8'>
-									{description}
-								</Paragraph>
+								{description && description.split('<br>').map((i, num) => {
+									if(num != description.split('<br>').length - 1) {
+										return (
+											<Paragraph key={num} variant='5' tag='p'>
+												{i}
+												<br />
+											</Paragraph>
+										);
+									}
+									else {
+										return (
+											<Paragraph key={num} variant='5' tag='p' className='mb-8'>
+												{i}
+											</Paragraph>
+										);
+									}
+								})}
 								<div className='w-full border-t-[1px] border-gray-100 mb-8' id='contacts'></div>
 								<Paragraph variant='3' tag='h2' className='font-semibold mb-4'>
 									Контактная информация

@@ -160,7 +160,7 @@ const ResumesPage = (): JSX.Element => {
 									surname={i.surname}
 									vacancyName={i.previous_job}
 									minSalary={i.min_salary}
-									about={i.about}
+									about={i.about ? i.about.replaceAll('<br>', '') : i.about}
 									tags={[
 										(i.job_category && i.job_category.name), EXPERIENCE[i.experience],
 										...i.type_employments.map((j) => j.name), ...i.schedules.map((j) => j.name),

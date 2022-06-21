@@ -1,19 +1,17 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import ContentLoader from 'react-content-loader';
 import { useQuery } from 'react-query';
-import Headline from '../../components/Headline';
-import MyVacancyCard from '../../components/MyVacancyCard';
-import PageSlider from '../../components/PageSlider';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
-import MainLayout from '../../layouts/MainLayout';
-import { getMyVacancies } from '../../shared/api/vacancies';
-import { EXPERIENCE } from '../../shared/consts/profile';
+import Headline from '../components/Headline';
+import PageSlider from '../components/PageSlider';
+import MainLayout from '../layouts/MainLayout';
+import ContentLoader from 'react-content-loader';
+import { getFavoriteVacancies } from '../shared/api/favorites';
+import MyVacancyCard from '../components/MyVacancyCard';
+import { EXPERIENCE } from '../shared/consts/profile';
 
-const MyVacanciesPage = (): JSX.Element => {
+const FavoritesPage = (): JSX.Element => {
 	const router = useRouter();
 
-	const { data, isSuccess } = useQuery([{ page: router.query.page ? +router.query.page : 1 }], getMyVacancies, {
+	const { data, isSuccess } = useQuery([{ page: router.query.page ? +router.query.page : 1 }], getFavoriteVacancies, {
 		enabled: !!(router && router.query),
 	});
 
@@ -31,19 +29,12 @@ const MyVacanciesPage = (): JSX.Element => {
 
 		return className.join(' ');
 	}
-	
+
 	return (
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
-			<div className='grid grid-flow-col w-fit items-center gap-4 mb-10'>
-				<Headline variant='5' tag='h1' className='font-bold'>
-					Мои вакансии
-				</Headline>
-				<Link href='/my_vacancies/new'>
-					<a className='text-xs font-semibold text-text'>
-						Добавить вакансию
-					</a>
-				</Link>
-			</div>
+			<Headline variant='5' tag='h1' className='font-bold mb-10'>
+				Избранные вакансии
+			</Headline>
 			<div className='grid mb-10'>
 				{isSuccess ? data.payload.map((i, num) => (
 					<MyVacancyCard
@@ -98,7 +89,4 @@ const MyVacanciesPage = (): JSX.Element => {
 	);
 };
 
-export default withCheckAuthLayout(MyVacanciesPage, {
-	checkLoggined: true,
-	checkUserType: 'employer',
-});
+export default FavoritesPage;
