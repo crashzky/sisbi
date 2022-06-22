@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Textarea from '../Textarea';
 import Button from '../Button';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
+import Image from 'next/image';
 
 import PreloaderIcon from '../../assets/loader.svg';
 import CloseIcon from '../../assets/general/close.svg';
@@ -12,7 +13,7 @@ import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 
-const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vacancyName, minPrice, vacancyId,
+const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, companyAvatar, vacancyName, minPrice, vacancyId,
 	contactName, contactPhone, contactMail, onContinue, onBack, isLoading, errorMessage, ...props }) => {
 	const formik = useFormik({
 		initialValues: {
@@ -38,7 +39,16 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, vaca
 				<div className='px-6 py-4 flex justify-between border-b-[1px] border-button-secondary'>
 					<div className='grid gap-1'>
 						<div className='grid grid-cols-[20px_auto] gap-2 items-center'>
-							<CompanyIcon />
+							{companyAvatar ? (
+								<Image
+									className='object-cover rounded-full'
+									src={companyAvatar}
+									alt='company avatar'
+									width={20}
+									height={20} />
+							) : (
+								<CompanyIcon />
+							)}
 							<Paragraph variant='6' tag='p'>
 								{companyName}
 							</Paragraph>

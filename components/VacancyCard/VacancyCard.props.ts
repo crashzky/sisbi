@@ -8,7 +8,10 @@ interface Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement
 	minPrice: number;
 	description: string;
 	tags: string[];
+	isFavorited?: boolean;
 	onRespond: () => void;
+	onAddToFavorites: () => void;
+	onRemoveFromFavorited: () => void;
 
 	contactName: string;
 	contactPhone: string;

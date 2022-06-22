@@ -4,6 +4,8 @@ import Paragraph from '../Paragraph';
 import Button from '../Button';
 import { useState } from 'react';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
+import RateButton from '../RateButton';
+import useUserType from '../../hooks/useUserType';
 
 import CompanyIcon from '../../assets/company.svg';
 import CloseIcon from '../../assets/general/close.svg';
@@ -11,8 +13,12 @@ import PhoneIcon from '../../assets/communication/phone_solid.svg';
 import MailIcon from '../../assets/communication/mail_solid.svg';
 
 const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, label, minPrice, description, tags,
-	contactName, contactPhone, contactMail, companyAvatar, onRespond, ...props }) => {
+	contactName, contactPhone, contactMail, companyAvatar, onRespond, isFavorited, onAddToFavorites, onRemoveFromFavorited,
+	...props }) => {
+	const { userType } = useUserType();
+
 	const [showContacts, setShowContacts] = useState(false);
+	const [_isFavorited, setIsFavorited] = useState(isFavorited);
 
 	return (
 		<article
@@ -68,7 +74,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 						</span>
 					))}
 				</div>
-				<div className='grid grid-cols-[121px_155px_1fr] gap-2'>
+				<div className='grid grid-cols-[121px_155px_1fr_auto] gap-2'>
 					{localStorage.getItem('user_type') === 'user' && (
 						<Button
 							variant='outline_secondary'
@@ -118,6 +124,19 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 							</div>
 						)}
 					</div>
+					<div></div>
+					{userType === 'user' && (
+						<RateButton
+							isActive={_isFavorited}
+							onClick={() => {
+								if(_isFavorited)
+									onRemoveFromFavorited();
+								else
+									onAddToFavorites();
+
+								setIsFavorited((prev) => !prev);
+							}} />
+					)}
 				</div>
 			</div>
 		</article>

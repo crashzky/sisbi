@@ -22,6 +22,7 @@ interface IVacancy {
 	shows: number;
 	visible: boolean;
 	created_at: string;
+	is_favorite: boolean;
 	updated_at: string;
 	job_category: IJobCategory;
 	schedules: ISchedule[];

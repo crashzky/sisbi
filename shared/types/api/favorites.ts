@@ -18,9 +18,7 @@ interface IFavoriteVacancyResponse extends IPage {
 }
 
 interface IAddVacancyToFavoriteRequest {
-	favorite_vacancy: {
-		vacancy_id: number;
-	}
+	vacancy_id: number;
 }
 
 interface IRemoveVacancyByFavoritesRequest {

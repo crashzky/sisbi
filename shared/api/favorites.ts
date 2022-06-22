@@ -15,11 +15,13 @@ const getFavoriteVacancyById = (data: IFavoriteVacancyRequet): Promise<IFavorite
 };
 
 const addVacancyToFavorite = (data: IAddVacancyToFavoriteRequest): Promise<IFavoriteVacancyResponse> => {
-	return axios.post('v1/favorite_vacancies/', data)
+	return axios.post('v1/favorite_vacancies/', {
+		favorite_vacancy: data,
+	})
 		.then((res) => res.data);
 };
 
-const removeFacancyFromFavorites = (data: IRemoveVacancyByFavoritesRequest): Promise<null> => {
+const removeVacancyFromFavorites = (data: IRemoveVacancyByFavoritesRequest): Promise<null> => {
 	return axios.delete(`v1/favorite_vacancies/${data.favorite_vacancy_id}`).then((res) => res.data);
 };
 
@@ -27,5 +29,5 @@ export {
 	getFavoriteVacancies,
 	getFavoriteVacancyById,
 	addVacancyToFavorite,
-	removeFacancyFromFavorites,
+	removeVacancyFromFavorites,
 };

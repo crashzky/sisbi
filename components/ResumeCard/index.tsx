@@ -4,13 +4,20 @@ import Paragraph from '../Paragraph';
 import Button from '../Button';
 import { intervalToDuration, isValid } from 'date-fns';
 import yearsToText from '../../utils/yearsToText';
+import RateButton from '../RateButton';
+import { useState } from 'react';
+import useUserType from '../../hooks/useUserType';
 
 const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, birthday, onRespond, city,
 	vacancyName, about, skills, tags, minSalary, ...props }) => {
+	const { userType } = useUserType();
+
 	const interval = intervalToDuration({
 		start: isValid(birthday) ? birthday : new Date(Date.now()),
 		end: new Date(Date.now()),
 	});
+
+	const [isFavorited, setIsFavorited] = useState(false);
 
 	return (
 		<article
@@ -59,16 +66,23 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 						</span>
 					))}
 				</div>
-				{localStorage.getItem('user_type') === 'employer' && (
-					<Button
-						variant='outline_secondary'
-						size='S'
-						className='w-[190px] h-9'
-						onClick={onRespond}
-					>
-						Отправить приглашение
-					</Button>
-				)}
+				<div className='flex justify-between'>
+					<div>
+						{localStorage.getItem('user_type') === 'employer' && (
+							<Button
+								variant='outline_secondary'
+								size='S'
+								className='w-[190px] h-9'
+								onClick={onRespond}
+							>
+								Отправить приглашение
+							</Button>
+						)}
+					</div>
+					{userType === 'employer' && (
+						<RateButton isActive={isFavorited} onClick={() => setIsFavorited((prev) => !prev)} />
+					)}
+				</div>
 			</div>
 		</article>
 	);

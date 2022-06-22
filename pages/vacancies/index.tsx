@@ -18,6 +18,7 @@ import ContentLoader from 'react-content-loader';
 import { AxiosError } from 'axios';
 
 import SelectJobModal from '../../modals/SelectJobModal';
+import { addVacancyToFavorite, removeVacancyFromFavorites } from '../../shared/api/favorites';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -37,6 +38,9 @@ const VacanciesPage = (): JSX.Element => {
 			setRespondedVacancyId(null);
 		},
 	});
+
+	const addToFavoritesMutation = useMutation(addVacancyToFavorite);
+	const removeFromFavoritesMutation = useMutation(removeVacancyFromFavorites);
 
 	useEffect(() => {
 		mutate({
@@ -95,6 +99,7 @@ const VacanciesPage = (): JSX.Element => {
 					<RespondVacancyMenu
 						className='rounded-t-3xl'
 						companyName={respondedVacancy.employer.name}
+						companyAvatar={respondedVacancy.employer.avatar}
 						vacancyName={respondedVacancy.title}
 						vacancyId={respondedVacancyId}
 						isLoading={respondMutation.isLoading}
@@ -148,7 +153,12 @@ const VacanciesPage = (): JSX.Element => {
 									contactName={i.full_name}
 									contactPhone={i.phone}
 									contactMail={i.email}
-									onRespond={() => setRespondedVacancyId(i.id)} />
+									isFavorited={i.is_favorite}
+									onRespond={() => setRespondedVacancyId(i.id)}
+									onAddToFavorites={() => addToFavoritesMutation.mutate({ vacancy_id: i.id })}
+									onRemoveFromFavorited={() => {
+										removeFromFavoritesMutation.mutate({ favorite_vacancy_id: i.id });
+									}} />
 							)) : (
 								<ContentLoader
 									width='100%'

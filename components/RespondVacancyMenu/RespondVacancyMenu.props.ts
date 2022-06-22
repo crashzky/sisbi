@@ -4,6 +4,7 @@ interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDi
 	errorMessage?: string;
 	isLoading?: boolean;
 	companyName: string;
+	companyAvatar?: string;
 	vacancyName: string;
 	vacancyId: number;
 	minPrice: number;
