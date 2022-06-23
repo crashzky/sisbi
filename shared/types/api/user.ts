@@ -27,6 +27,7 @@ interface IUser {
     education: EducationType;
     previous_job: string;
     views: number;
+	is_favorite: boolean;
 	shows: number;
     schedules: ISchedule[];
     created_at: string;

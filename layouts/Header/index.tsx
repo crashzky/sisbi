@@ -11,7 +11,6 @@ import FullLogoIcon from '../../assets/full-logo.svg';
 import SolidFlashIcon from '../../assets/custom/solid_flash.svg';
 import ChatIcon from '../../assets/communication/chat.svg';
 import RateIcon from '../../assets/general/rate.svg';
-import { IUserResponse } from '../../shared/types/api/user';
 
 const Header: React.FC<Props> = ({ className = '', items = [], userData, ...props }) => {
 	const router = useRouter();

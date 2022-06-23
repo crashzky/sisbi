@@ -19,6 +19,7 @@ import ContentLoader from 'react-content-loader';
 import { parse } from 'date-fns';
 import { createInvite } from '../../shared/api/invites';
 import { AxiosError } from 'axios';
+import { addUserToFavorite, removeUserFromFavorites } from '../../shared/api/favorite_users';
 
 const ResumesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -32,6 +33,9 @@ const ResumesPage = (): JSX.Element => {
 	const inviteMutation = useMutation(createInvite, {
 		onSuccess: () => setRespondedResumeId(null),
 	});
+
+	const addUserToFavoritesMutation = useMutation(addUserToFavorite);
+	const removeUserFromFavoritesMutation = useMutation(removeUserFromFavorites);
 
 	useEffect(() => {
 		mutate({
@@ -169,7 +173,12 @@ const ResumesPage = (): JSX.Element => {
 									city={i.city ? i.city.name : ''}
 									birthday={parse(i.birthday, 'dd.MM.yyyy', new Date())}
 									skills={i.skills.split(' ')}
-									onRespond={() => setRespondedResumeId(i.id)} />
+									isFavorited={i.is_favorite}
+									onRespond={() => setRespondedResumeId(i.id)}
+									onAddToFavorites={() => addUserToFavoritesMutation.mutate({ user_id: i.id })}
+									onRemoveFromFavorited={() => {
+										removeUserFromFavoritesMutation.mutate({ favorite_user_id: i.id });
+									}} />
 							))}
 						</div>
 						<PageSlider

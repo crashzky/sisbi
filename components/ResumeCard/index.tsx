@@ -9,7 +9,7 @@ import { useState } from 'react';
 import useUserType from '../../hooks/useUserType';
 
 const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, birthday, onRespond, city,
-	vacancyName, about, skills, tags, minSalary, ...props }) => {
+	vacancyName, about, skills, tags, minSalary, isFavorited, onAddToFavorites, onRemoveFromFavorited, ...props }) => {
 	const { userType } = useUserType();
 
 	const interval = intervalToDuration({
@@ -17,7 +17,7 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 		end: new Date(Date.now()),
 	});
 
-	const [isFavorited, setIsFavorited] = useState(false);
+	const [_isFavorited, setIsFavorited] = useState(isFavorited);
 
 	return (
 		<article
@@ -80,7 +80,16 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 						)}
 					</div>
 					{userType === 'employer' && (
-						<RateButton isActive={isFavorited} onClick={() => setIsFavorited((prev) => !prev)} />
+						<RateButton
+							isActive={_isFavorited}
+							onClick={() => {
+								if(_isFavorited)
+									onRemoveFromFavorited();
+								else
+									onAddToFavorites();
+
+								setIsFavorited((prev) => !prev);
+							}} />
 					)}
 				</div>
 			</div>

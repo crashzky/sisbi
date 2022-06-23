@@ -24,7 +24,7 @@ function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig
 			retryDelay: 2,
 			enabled: userType === 'user',
 			onSuccess: (data) => {
-				if(!data.payload.city)
+				if(data && !data.payload.city && !document.URL.includes('?modal='))
 					router.push('/?modal=signup1');
 			},
 		});

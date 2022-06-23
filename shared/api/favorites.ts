@@ -1,7 +1,6 @@
 import axios from './axios';
 import { IAddVacancyToFavoriteRequest, IFavoriteVacanciesResponse, IFavoriteVacancyRequet,
-	IFavoriteVacancyResponse, 
-	IRemoveVacancyByFavoritesRequest } from '../types/api/favorites';
+	IFavoriteVacancyResponse, IRemoveVacancyByFavoritesRequest } from '../types/api/favorites';
 
 const getFavoriteVacancies = ({ queryKey }): Promise<IFavoriteVacanciesResponse> => {
 	return axios.get('/v1/favorite_vacancies', {

@@ -12,28 +12,58 @@ import RespondVacancyMenu from '../components/RespondVacancyMenu';
 import { useState } from 'react';
 import { respondVacancy } from '../shared/api/vacancies';
 import { AxiosError } from 'axios';
+import withCheckAuthLayout from '../layouts/CheckAuthLayout';
+import useUserType from '../hooks/useUserType';
+import { addUserToFavorite, getFavoriteUsers, removeUserFromFavorites } from '../shared/api/favorite_users';
+import { IVacancy } from '../shared/types/api/vacancies';
+import { IUser } from '../shared/types/api/user';
+import { createInvite } from '../shared/api/invites';
+import RespondResumeMenu from '../components/RespondResumeMenu';
+import ResumeCard from '../components/ResumeCard';
+import { parse } from 'date-fns';
 
 const FavoritesPage = (): JSX.Element => {
 	const router = useRouter();
 
-	const [respondedVacancyId, setRespondedVacancyId] = useState(null);
-	const [sendedVacancyId, setSendedVacancyId] = useState(null);
+	const { userType } = useUserType();
+
+	const [respondedId, setRespondedId] = useState(null);
+	const [sendedId, setSendedId] = useState(null);
 
 	const respondMutation = useMutation(respondVacancy, {
 		onMutate: () => {
-			setSendedVacancyId(respondedVacancyId);
+			setSendedId(respondedId);
 		},
 		onSuccess: () => {
-			setRespondedVacancyId(null);
+			setRespondedId(null);
 		},
 	});
 
-	const addToFavoritesMutation = useMutation(addVacancyToFavorite);
-	const removeFromFavoritesMutation = useMutation(removeVacancyFromFavorites);
-
-	const { data, isSuccess } = useQuery([{ page: router.query.page ? +router.query.page : 1 }], getFavoriteVacancies, {
-		enabled: !!(router && router.query),
+	const inviteMutation = useMutation(createInvite, {
+		onMutate: () => {
+			setSendedId(respondedId);
+		},
+		onSuccess: () => {
+			setRespondedId(null);
+		},
 	});
+
+	const addVacancyToFavoritesMutation = useMutation(addVacancyToFavorite);
+	const removeVacancyFromFavoritesMutation = useMutation(removeVacancyFromFavorites);
+
+	const addUserToFavoritesMutation = useMutation(addUserToFavorite);
+	const removeUserFromFavoritesMutation = useMutation(removeUserFromFavorites);
+
+	const favoriteVacancies = useQuery([{ page: router.query.page ? +router.query.page : 1 }], getFavoriteVacancies, {
+		enabled: !!(router && router.query) && userType === 'user',
+	});
+
+	const favoriteUsers = useQuery([{ page: router.query.page ? +router.query.page : 1 }], getFavoriteUsers, {
+		enabled: !!(router && router.query) && userType === 'employer',
+	});
+
+	const data = userType === 'user' ? favoriteVacancies.data : favoriteUsers.data;
+	const isSuccess = userType === 'user' ? favoriteVacancies.isSuccess : favoriteUsers.isSuccess;
 
 	function getRoundedStyles(current) {
 		let className = [];
@@ -50,13 +80,30 @@ const FavoritesPage = (): JSX.Element => {
 		return className.join(' ');
 	}
 
-	const respondedVacancy = respondedVacancyId ? data.payload.find((i) => i.id === respondedVacancyId) : null;
+	const respondedVacancy = respondedId && userType === 'user'
+		? (data.payload as IVacancy[]).find((i) => i.id === respondedId)
+		: null;
 
-	function getErrorMessage() {
-		if(respondMutation.isError && sendedVacancyId === respondedVacancyId) {
+	function getErrorMessageVacancy() {
+		if(respondMutation.isError && sendedId === respondedId) {
 			switch((respondMutation.error as AxiosError).response.status) {
 				case 422:
 					return 'Вы уже откликались на эту вакансию';
+				default:
+					return 'Что-то пошло не так. Попробуйте ещё раз позже';
+			}
+		}
+	}
+
+	const respondedResume = respondedId && userType === 'employer'
+		? (data.payload as IUser[]).find((i) => i.id === respondedId)
+		: null;
+
+	function getErrorMessageResume() {
+		if(respondMutation.isError && sendedId === respondedId) {
+			switch((respondMutation.error as AxiosError).response.status) {
+				case 422:
+					return 'Вы уже откликались на это резюме';
 				default:
 					return 'Что-то пошло не так. Попробуйте ещё раз позже';
 			}
@@ -67,9 +114,9 @@ const FavoritesPage = (): JSX.Element => {
 		<>
 			<Menu
 				right
-				isOpen={!!respondedVacancyId}
+				isOpen={!!respondedId}
 				burgerButtonClassName='hidden'
-				onClose={() => setRespondedVacancyId(null)}
+				onClose={() => setRespondedId(null)}
 				width={457}
 			>
 				{respondedVacancy && (
@@ -78,56 +125,54 @@ const FavoritesPage = (): JSX.Element => {
 						companyName={respondedVacancy.employer.name}
 						companyAvatar={respondedVacancy.employer.avatar}
 						vacancyName={respondedVacancy.title}
-						vacancyId={respondedVacancyId}
+						vacancyId={respondedId}
 						isLoading={respondMutation.isLoading}
 						minPrice={respondedVacancy.salary}
 						contactName={respondedVacancy.full_name}
 						contactPhone={respondedVacancy.phone}
 						contactMail={respondedVacancy.email}
-						errorMessage={getErrorMessage()}
+						errorMessage={getErrorMessageVacancy()}
 						onContinue={(message) => {
 							respondMutation.mutate({
 								response: {
-									vacancy_id: respondedVacancyId,
+									vacancy_id: respondedId,
 									message,
 								},
 							});
 						}}
-						onBack={() => setRespondedVacancyId(null)} />
+						onBack={() => setRespondedId(null)} />
+				)}
+
+				{respondedResume && (
+					<RespondResumeMenu
+						className='rounded-t-3xl'
+						isLoading={inviteMutation.isLoading}
+						errorMessage={getErrorMessageResume()}
+						name={respondedResume.first_name}
+						surname={respondedResume.surname}
+						vacancyName={respondedResume.previous_job}
+						minPrice={respondedResume.min_salary}
+						resumeId={respondedResume.id}
+						onContinue={(message, isAllowed, vacancyId) => {
+							setSendedId(respondedId);
+
+							inviteMutation.mutate({
+								invite: {
+									user_id: respondedId,
+									vacancy_id: vacancyId,
+									message,
+								},
+							});
+						}}
+						onBack={() => setRespondedId(null)} />
 				)}
 			</Menu>
 			<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
 				<Headline variant='5' tag='h1' className='font-bold mb-10'>
-					Избранные вакансии
+					{userType === 'user' ? 'Избранные вакансии' : 'Избранные резюме'}
 				</Headline>
 				<div className='grid mb-10'>
-					{isSuccess ? data.payload.map((i, num) => (
-						<VacancyCard
-							key={num}
-							onClick={(e) => {
-								if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
-									router.push(`/vacancies/${i.id}`);
-							}}
-							className={getRoundedStyles(num)}
-							imageSrc={i.avatar}
-							companyName={i.employer.name}
-							label={i.title}
-							minPrice={i.salary}
-							description={i.description ? i.description.replaceAll('<br>', '') : i.description}
-							companyAvatar={i.employer.avatar}
-							tags={[
-								i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
-								...i.schedules.map((i) => i.name), (i.city && i.city.name)]}
-							contactName={i.full_name}
-							contactPhone={i.phone}
-							contactMail={i.email}
-							onRespond={() => setRespondedVacancyId(i.id)}
-							isFavorited={i.is_favorite}
-							onAddToFavorites={() => addToFavoritesMutation.mutate({ vacancy_id: i.id })}
-							onRemoveFromFavorited={() => {
-								removeFromFavoritesMutation.mutate({ favorite_vacancy_id: i.id });
-							}} />
-					)) : (
+					{!isSuccess && (
 						<ContentLoader
 							width='100%'
 							height={300}
@@ -150,11 +195,68 @@ const FavoritesPage = (): JSX.Element => {
 							<rect x='376' y='41' rx='3' ry='3' width='231' height='29' />
 						</ContentLoader>
 					)}
+					{(data && userType === 'user') && (data.payload as IVacancy[]).map((i, num) => (
+						<VacancyCard
+							key={num}
+							onClick={(e) => {
+								if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
+									router.push(`/vacancies/${i.id}`);
+							}}
+							className={getRoundedStyles(num)}
+							imageSrc={i.avatar}
+							companyName={i.employer.name}
+							label={i.title}
+							minPrice={i.salary}
+							description={i.description ? i.description.replaceAll('<br>', '') : i.description}
+							companyAvatar={i.employer.avatar}
+							tags={[
+								i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
+								...i.schedules.map((i) => i.name), (i.city && i.city.name)]}
+							contactName={i.full_name}
+							contactPhone={i.phone}
+							contactMail={i.email}
+							onRespond={() => setRespondedId(i.id)}
+							isFavorited={i.is_favorite}
+							onAddToFavorites={() => addVacancyToFavoritesMutation.mutate({ vacancy_id: i.id })}
+							onRemoveFromFavorited={() => {
+								removeVacancyFromFavoritesMutation.mutate({ favorite_vacancy_id: i.id });
+							}} />
+					))}
+					{(data && userType === 'employer') && (data.payload as IUser[]).map((i, num) => (
+						<ResumeCard
+							key={num}
+							onClick={(e) => {
+								if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
+									router.push(`/resumes/${i.id}`);
+							}}
+							className={getRoundedStyles(num)}
+							avatar={i.avatar}
+							name={i.first_name}
+							surname={i.surname}
+
+							vacancyName={i.previous_job}
+							minSalary={i.min_salary}
+							about={i.about ? i.about.replaceAll('<br>', '') : i.about}
+							isFavorited={i.is_favorite}
+							tags={[
+								(i.job_category && i.job_category.name), EXPERIENCE[i.experience],
+								...i.type_employments.map((j) => j.name), ...i.schedules.map((j) => j.name),
+								(i.city && i.city.name),
+							].filter((i) => !!i)}
+							city={i.city ? i.city.name : ''}
+							birthday={parse(i.birthday, 'dd.MM.yyyy', new Date())}
+							skills={i.skills.split(' ')}
+							onRespond={() => setRespondedId(i.id)}
+							onAddToFavorites={() => addUserToFavoritesMutation.mutate({ user_id: i.id })}
+							onRemoveFromFavorited={() => {
+								removeUserFromFavoritesMutation.mutate({ favorite_user_id: i.id });
+							}} />
+					))}
 				</div>
 				<PageSlider
 					currentPage={router && router.query.page ? +router.query.page : 1}
 					maxPages={isSuccess ? data.total_pages : 1}
-					onMove={(pageNumber) => router.push('/my_vacancies', {
+					onMove={(pageNumber) => router.push('/favorites', {
 						query: {
 							page: pageNumber,
 						},
@@ -164,4 +266,6 @@ const FavoritesPage = (): JSX.Element => {
 	);
 };
 
-export default FavoritesPage;
+export default withCheckAuthLayout(FavoritesPage, {
+	checkLoggined: true,
+});
