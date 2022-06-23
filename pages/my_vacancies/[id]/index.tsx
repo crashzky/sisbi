@@ -154,7 +154,7 @@ const MyVacancyPage = (): JSX.Element => {
 								)}
 							</div>
 						</div>
-						{data && description.split('<br>').map((i, num) => {
+						{(data && description) && description.split('<br>').map((i, num) => {
 							if(num != description.split('<br>').length - 1) {
 								return (
 									<Paragraph key={num} variant='5' tag='p'>

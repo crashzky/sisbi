@@ -233,7 +233,7 @@ const ResumePage = (): JSX.Element => {
 								type='number'
 								value={formik.values.minPrice}
 								name='minPrice'
-								isDanger={!!formik.errors.minPrice}
+								isDanger={!!formik.errors.minPrice && !!formik.submitCount}
 								onChange={formik.handleChange}
 								placeholder='150 000 ₽' />
 							<Paragraph variant='5' tag='p'>

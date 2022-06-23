@@ -3,7 +3,7 @@ import Props from './PageSlider.props';
 import CaretLeftSmallIcon from '../../assets/arrows/caret_left_small.svg';
 
 const PageSlider: React.FC<Props> = ({ className = '', currentPage, maxPages, onMove, ...props }) => {
-	if(maxPages) {
+	if(maxPages && maxPages > 1) {
 		return (
 			<div className={className + ' rounded-lg grid-flow-col border-[1px] border-button-outline w-fit'} {...props}>
 				<button

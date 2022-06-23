@@ -238,7 +238,7 @@ const ProfilePageUser = (): JSX.Element => {
 					<Paragraph variant='4' tag='h2' className='font-bold mb-2 hidden print:block'>
 						Обо мне
 					</Paragraph>
-					{data && data.about.split('<br>').map((i, num) => {
+					{(data && data.about) && data.about.split('<br>').map((i, num) => {
 						if(num != data.about.split('<br>').length - 1) {
 							return (
 								<Paragraph key={num} variant='5' tag='p' className='max-w-[550px]'>

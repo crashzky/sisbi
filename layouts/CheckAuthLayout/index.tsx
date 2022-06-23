@@ -1,5 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import useUserType from '../../hooks/useUserType';
+import { getMyProfileUser } from '../../shared/api/user';
 import { ICheckAuthConfig } from './CheckAuthLayout.props';
 
 const defaultConfig: ICheckAuthConfig = {
@@ -13,7 +16,18 @@ function withCheckAuthLayout<T>(Component: React.FC<T>, config: ICheckAuthConfig
 	function CheckAuthLayout(props): JSX.Element {
 		const router = useRouter();
 
+		const { userType } = useUserType();
+
 		const [isAuthed, setIsAuthed] = useState(null);
+
+		useQuery('my_profile_user', getMyProfileUser, {
+			retryDelay: 2,
+			enabled: userType === 'user',
+			onSuccess: (data) => {
+				if(!data.payload.city)
+					router.push('/?modal=signup1');
+			},
+		});
 
 		useEffect(() => {
 			if(localStorage.getItem('access_token'))

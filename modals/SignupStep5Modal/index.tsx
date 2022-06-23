@@ -50,6 +50,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 						user: {
 							previous_job: formik.values.job,
 							experience: EXPERIENCE[selectedValue],
+							min_salary: null,
 						},
 					});
 				}

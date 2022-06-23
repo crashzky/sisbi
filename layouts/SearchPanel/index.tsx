@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
