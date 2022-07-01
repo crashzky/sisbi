@@ -41,7 +41,7 @@ const ProfileTab: React.FC<Props> = ({ className = '', avatar, ...props }) => {
 						boxShadow: MAIN_SHADOW,
 					}}
 				>
-					{menuItems.map((i, num) => (
+					{menuItems && menuItems.map((i, num) => (
 						<button
 							key={num}
 							className='p-4 w-full text-left border-b-[1px] border-button-secondary'

@@ -34,6 +34,8 @@ const Header: React.FC<Props> = ({ className = '', items = [], userData, ...prop
 		},
 	});
 
+	const PATHS = ['/', '/vacancies', '/resumes'];
+
 	useEffect(() => {
 		if(userType) {
 			mutate({
@@ -52,7 +54,10 @@ const Header: React.FC<Props> = ({ className = '', items = [], userData, ...prop
 			<nav className='grid grid-flow-col w-fit gap-6'>
 				{items.map((i, num) => (
 					<Link href={i.href} key={num}>
-						<a className='text-text-secondary text-sm hover:text-text hover:font-semibold'>
+						<a
+							className={'text-sm hover:text-text hover:font-semibold ' +
+							(PATHS[num] === router.pathname ? 'text-text font-semibold' : 'text-text-secondary')}
+						>
 							{i.title}
 						</a>
 					</Link>

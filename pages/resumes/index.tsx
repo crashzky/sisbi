@@ -164,7 +164,7 @@ const ResumesPage = (): JSX.Element => {
 									surname={i.surname}
 									vacancyName={i.previous_job}
 									minSalary={i.min_salary}
-									about={i.about ? i.about.replaceAll('<br>', '') : i.about}
+									about={i.about}
 									tags={[
 										(i.job_category && i.job_category.name), EXPERIENCE[i.experience],
 										...i.type_employments.map((j) => j.name), ...i.schedules.map((j) => j.name),
@@ -172,7 +172,7 @@ const ResumesPage = (): JSX.Element => {
 									].filter((i) => !!i)}
 									city={i.city ? i.city.name : ''}
 									birthday={parse(i.birthday, 'dd.MM.yyyy', new Date())}
-									skills={i.skills.split(' ')}
+									skills={i.skills ? i.skills.split(' ') : []}
 									isFavorited={i.is_favorite}
 									onRespond={() => setRespondedResumeId(i.id)}
 									onAddToFavorites={() => addUserToFavoritesMutation.mutate({ user_id: i.id })}

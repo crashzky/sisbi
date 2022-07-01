@@ -300,9 +300,12 @@ const ResumePage = (): JSX.Element => {
 								Профессиональные навыки
 							</Paragraph>
 							<div>
-								<div className='flex flex-wrap gap-2 mb-4'>
+								<div className='flex flex-wrap mb-4'>
 									{skills && skills.map((i, num) => (
-										<span key={num} className='bg-softGold py-1 px-2 grid grid-cols-[1fr_auto] gap-3 rounded'>
+										<span
+											key={num}
+											className='bg-softGold py-1 px-2 m-1 grid grid-cols-[1fr_auto] gap-3 rounded'
+										>
 											{i}
 											<button
 												type='button'

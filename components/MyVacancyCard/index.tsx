@@ -101,9 +101,9 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 				<Paragraph variant='6' tag='p' className='mb-3'>
 					{description}
 				</Paragraph>
-				<div className='flex flex-wrap gap-2 mb-6'>
+				<div className='flex flex-wrap mb-6'>
 					{tags.map((i, num) => (
-						<span key={num} className='s bg-softGold py-0.5 px-1 rounded-[4px]'>
+						<span key={num} className=' bg-softGold py-0.5 px-1 m-1 rounded-[4px]'>
 							{i}
 						</span>
 					))}

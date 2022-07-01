@@ -19,12 +19,16 @@ import { AxiosError } from 'axios';
 
 import SelectJobModal from '../../modals/SelectJobModal';
 import { addVacancyToFavorite, removeVacancyFromFavorites } from '../../shared/api/favorites';
+import useUserType from '../../hooks/useUserType';
+import Button from '../../components/Button';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
 
 	const [respondedVacancyId, setRespondedVacancyId] = useState(null);
 	const [sendedVacancyId, setSendedVacancyId] = useState(null);
+
+	const { userType } = useUserType();
 
 	const { activeModal } = useModal(['job_categories']);
 
@@ -120,11 +124,18 @@ const VacanciesPage = (): JSX.Element => {
 				)}
 			</Menu>
 			<SearchLayout className='px-40'>
-				<Headline variant='5' tag='h1' className='py-10 font-bold'>
-					Найдено
-					{` ${data && data.total_entries ? data.total_entries : 0} `}
-					вакансий
-				</Headline>
+				<div className='flex justify-between items-center'>
+					<Headline variant='5' tag='h1' className='py-10 font-bold'>
+						Найдено
+						{` ${data && data.total_entries ? data.total_entries : 0} `}
+						вакансий
+					</Headline>
+					{userType === 'employer' && (
+						<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/my_vacancies/new')}>
+							Добавить вакансию
+						</Button>
+					)}
+				</div>
 				<div className='grid grid-cols-[216px_1fr] gap-[68px]'>
 					<VacanciesFiltres
 						variant='vacancies'
@@ -145,7 +156,7 @@ const VacanciesPage = (): JSX.Element => {
 									companyName={i.employer.name}
 									label={i.title}
 									minPrice={i.salary}
-									description={i.description ? i.description.replaceAll('<br>', '') : i.description}
+									description={i.description}
 									companyAvatar={i.employer.avatar}
 									tags={[
 										i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),

@@ -77,12 +77,12 @@ const MyVacancyPage = (): JSX.Element => {
 					]} />
 				<div className='flex justify-between'>
 					<div className='max-w-[552px]'>
-						<div className='flex flex-wrap gap-2 mb-4'>
+						<div className='flex flex-wrap mb-4'>
 							{isSuccess && [
 								job_category.name, EXPERIENCE[experience], ...type_employments.map((i) => i.name),
 								...schedules.map((i) => i.name), city.name]
 								.map((i, num) => (
-									<span className='py-[2px] px-1 bg-softGold rounded-[4px]' key={num}>
+									<span className='py-[2px] px-1 m-1 bg-softGold rounded-[4px]' key={num}>
 										{i}
 									</span>
 								))}

@@ -35,9 +35,9 @@ const SkillsSelectPage = ({ onClickBack, skills = [], onContinue }: Props): JSX.
 			<Headline variant='5' tag='h1' className='font-bold mb-10'>
 				Профессиональные навыки
 			</Headline>
-			<div className='flex flex-wrap gap-2 mb-8'>
+			<div className='flex flex-wrap mb-8'>
 				{localSkills.map((i, num) => (
-					<span key={num} className='bg-softGold py-1 px-2 grid grid-cols-[1fr_auto] gap-3 rounded'>
+					<span key={num} className='bg-softGold py-1 px-2 m-1 grid grid-cols-[1fr_auto] gap-3 rounded'>
 						{i}
 						<button onClick={() => setLocalSkills((prev) => prev.filter((j) => j !== i))}>
 							<CloseIcon className='fill-icon-secondary' />

@@ -93,17 +93,24 @@ const ChatItem: React.FC<Props> = ({ className = '', companionAvatar, companionN
 			>
 				{vacancyName}
 			</Paragraph>
-			<Paragraph
-				variant='5'
-				tag='p'
-				className={'mt-1 text-text-secondary text-left ' + (isActiveChat ? 'text-white' : 'opacity-70')}
-			>
-				{lastMessageSender === 'me' ? 'Вы' : companionName}
-				{': '}
-				<span className={isActiveChat ? 'text-white' : 'opacity-100'}>
-					{lastMessageValue ? sliceMessage() : 'Чат создан'}
-				</span>
-			</Paragraph>
+			<div className='flex justify-between items-center'>
+				<Paragraph
+					variant='5'
+					tag='p'
+					className={'mt-1 text-text-secondary text-left ' + (isActiveChat ? 'text-white' : 'opacity-70')}
+				>
+					{lastMessageSender === 'me' ? 'Вы' : companionName}
+					{': '}
+					<span className={isActiveChat ? 'text-white' : 'opacity-100'}>
+						{lastMessageValue ? sliceMessage() : 'Чат создан'}
+					</span>
+				</Paragraph>
+				{(!lastMessageReadedDate && lastMessageSender === 'companion') && (
+					<div className='w-[22px] h-[22px] rounded-full bg-lightBlue text-white font-semibold'>
+						!
+					</div>
+				)}
+			</div>
 		</button>
 	);
 };

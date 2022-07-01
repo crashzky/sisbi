@@ -207,7 +207,7 @@ const FavoritesPage = (): JSX.Element => {
 							companyName={i.employer.name}
 							label={i.title}
 							minPrice={i.salary}
-							description={i.description ? i.description.replaceAll('<br>', '') : i.description}
+							description={i.description}
 							companyAvatar={i.employer.avatar}
 							tags={[
 								i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
@@ -236,7 +236,7 @@ const FavoritesPage = (): JSX.Element => {
 
 							vacancyName={i.previous_job}
 							minSalary={i.min_salary}
-							about={i.about ? i.about.replaceAll('<br>', '') : i.about}
+							about={i.about}
 							isFavorited={i.is_favorite}
 							tags={[
 								(i.job_category && i.job_category.name), EXPERIENCE[i.experience],
@@ -245,7 +245,7 @@ const FavoritesPage = (): JSX.Element => {
 							].filter((i) => !!i)}
 							city={i.city ? i.city.name : ''}
 							birthday={parse(i.birthday, 'dd.MM.yyyy', new Date())}
-							skills={i.skills.split(' ')}
+							skills={i.skills ? i.skills.split(' ') : []}
 							onRespond={() => setRespondedId(i.id)}
 							onAddToFavorites={() => addUserToFavoritesMutation.mutate({ user_id: i.id })}
 							onRemoveFromFavorited={() => {

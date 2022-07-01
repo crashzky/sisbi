@@ -26,9 +26,9 @@ const ShortVacancyCard: React.FC<Props> = ({ className = '', lastUpdate, label, 
 			<Paragraph variant='6' tag='p' className='mb-[52px]'>
 				{description.length > 145 ? description.slice(0, 142) + '...' : description}
 			</Paragraph>
-			<div className='flex flex-wrap gap-2'>
+			<div className='flex flex-wrap'>
 				{tags.map((i, num) => (
-					<span key={num} className='px-1 py-[2px] bg-softGold text-xs rounded-[4px]'>
+					<span key={num} className='px-1 py-[2px] m-1 bg-softGold text-xs rounded-[4px]'>
 						{i}
 					</span>
 				))}

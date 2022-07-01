@@ -54,9 +54,10 @@ const MyVacanciesPage = (): JSX.Element => {
 						isVisible={i.visible}
 						label={i.title}
 						minPrice={i.salary}
-						description={i.description ? i.description.replaceAll('<br>', '') : i.description}
+						description={i.description}
 						tags={[
-							i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
+							(i.job_category && i.job_category.name), EXPERIENCE[i.experience],
+							...i.type_employments.map((i) => i.name),
 							...i.schedules.map((i) => i.name)]}
 						last_update={i.updated_at}
 						views={i.views}
