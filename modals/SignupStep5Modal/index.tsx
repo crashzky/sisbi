@@ -23,6 +23,13 @@ const SingupStep5Modal: React.FC<Props> = () => {
 		onSubmit: null,
 	});
 
+	const formik2 = useFormik({
+		initialValues: {
+			minSalary: '',
+		},
+		onSubmit: null,
+	});
+
 	const { mutate, isLoading } = useMutation(putProfileUser, {
 		onSuccess: () => {
 			router.push(router.pathname + '/?modal=signup6');
@@ -38,7 +45,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 			isLoading={isLoading}
 			onClickBack={() => router.push(router.pathname + '/?modal=signup4')}
 			onClickContinue={() => {
-				if(formik.isValid && selectedValue && formik.values.job !== '') {
+				if(formik.isValid && selectedValue && formik.values.job !== '' && formik2.values.minSalary) {
 					const EXPERIENCE = {
 						'Нет опыта': 'no',
 						'1 - 3 года': 'y_1_3',
@@ -50,7 +57,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 						user: {
 							previous_job: formik.values.job,
 							experience: EXPERIENCE[selectedValue],
-							min_salary: null,
+							min_salary: +formik2.values.minSalary,
 						},
 					});
 				}
@@ -74,6 +81,16 @@ const SingupStep5Modal: React.FC<Props> = () => {
 				value={selectedValue}
 				onChange={(e) => setSelectedValue(e.target.value)}
 				items={['Нет опыта', '1 - 3 года', '3 - 6 лет', 'более 6 лет']} />
+			<form onSubmit={formik2.handleSubmit}>
+				<Input
+					name='minSalary'
+					type='number'
+					value={formik2.values.minSalary}
+					onChange={formik2.handleChange}
+					isDanger={!!formik2.errors.minSalary}
+					placeholder='Минимальная зарплата'
+					className='mt-4' />
+			</form>
 		</SignupStepLayout>
 	);
 };

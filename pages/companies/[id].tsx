@@ -42,7 +42,7 @@ const CompanyPage = (): JSX.Element => {
 						alt='avatar' />
 				) : ''}
 			</section>
-			<section className='pt-4 pb-8'>
+			<section className='pt-4 pb-8ç'>
 				<Paragraph variant='1' tag='h2' className='font-semibold mb-4'>
 					О компании
 				</Paragraph>
