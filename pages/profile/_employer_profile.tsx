@@ -33,7 +33,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 					className='flex justify-between items-start pb-12 border-b-[1px] border-gray-80'
 				>
 					<div>
-						<div className='grid grid-flow-col w-fit items-center gap-4 items-center mb-4'>
+						<div className='grid grid-flow-col w-fit items-center gap-4 mb-4'>
 							<Headline variant='5' tag='h1' className='font-bold'>
 								{data ? data.name : 'Загрузка...'}
 							</Headline>
