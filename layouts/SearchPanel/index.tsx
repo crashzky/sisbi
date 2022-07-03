@@ -17,13 +17,13 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 	const [suggestion, setSuggestion] = useState<ISelectOption>();
 
 	const citiesMutation = useMutation(getCities);
-	const SuggestsMutation = useMutation(getSuggestions);
+	const suggestsMutation = useMutation(getSuggestions);
 
 	useEffect(() => {
 		citiesMutation.mutate({ name: '' });
 
 		if(router.pathname.includes('vacancies'))
-			SuggestsMutation.mutate({ name: '' });
+			suggestsMutation.mutate({ name: '' });
 
 		if(router.query && router.query.query) {
 			formik.setValues({
@@ -79,14 +79,14 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 					<Select
 						variant='with_gap'
 						placeholder='Название должности'
-						onInputChange={(newValue) => SuggestsMutation.mutate({ name: newValue })}
+						onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
 						noOptionsMessage={() => 'Ничего не найдено'}
 						loadingMessage={() => 'Загрузка...'}
-						isLoading={SuggestsMutation.isLoading}
+						isLoading={suggestsMutation.isLoading}
 						value={suggestion}
 						onChange={setSuggestion}
-						options={SuggestsMutation.isSuccess
-							? SuggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
+						options={suggestsMutation.isSuccess
+							? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
 							: []} />
 				) : (
 					<Input

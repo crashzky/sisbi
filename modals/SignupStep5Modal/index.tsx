@@ -8,22 +8,19 @@ import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { putProfileUser } from '../../shared/api/user';
 import { useFormik } from 'formik';
+import Select from '../../components/Select';
+import { getSuggestions } from '../../shared/api/vacancies_suggestions';
 
 import Step5Image from '../../assets/signup_steps/5.svg';
+import { ISelectOption } from '../../components/Select/Select.props';
 
 const SingupStep5Modal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const [selectedValue, setSelectedValue] = useState<string>();
+	const [suggestion, setSuggestion] = useState<ISelectOption>();
 
 	const formik = useFormik({
-		initialValues: {
-			job: '',
-		},
-		onSubmit: null,
-	});
-
-	const formik2 = useFormik({
 		initialValues: {
 			minSalary: '',
 		},
@@ -36,6 +33,8 @@ const SingupStep5Modal: React.FC<Props> = () => {
 		},
 	});
 
+	const suggestsMutation = useMutation(getSuggestions);
+
 	return (
 		<SignupStepLayout
 			label='Расскажите о вашей професии'
@@ -45,7 +44,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 			isLoading={isLoading}
 			onClickBack={() => router.push(router.pathname + '/?modal=signup4')}
 			onClickContinue={() => {
-				if(formik.isValid && selectedValue && formik.values.job !== '' && formik2.values.minSalary) {
+				if(suggestion && selectedValue && formik.values.minSalary) {
 					const EXPERIENCE = {
 						'Нет опыта': 'no',
 						'1 - 3 года': 'y_1_3',
@@ -55,24 +54,27 @@ const SingupStep5Modal: React.FC<Props> = () => {
 
 					mutate({
 						user: {
-							previous_job: formik.values.job,
+							previous_job: suggestion.label,
 							experience: EXPERIENCE[selectedValue],
-							min_salary: +formik2.values.minSalary,
+							min_salary: +formik.values.minSalary,
 						},
 					});
 				}
 			}}
 		>
-			<form onSubmit={formik.handleSubmit}>
-				<Input
-					name='job'
-					value={formik.values.job}
-					onChange={formik.handleChange}
-					isDanger={!!formik.errors.job}
-					placeholder='Должность'
-					className='mb-4' />
-			</form>
-			<Paragraph variant='4' tag='h3' className='font-bold mb-3'>
+			<Select
+				variant='primary'
+				placeholder='Название должности'
+				onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+				noOptionsMessage={() => 'Ничего не найдено'}
+				loadingMessage={() => 'Загрузка...'}
+				isLoading={suggestsMutation.isLoading}
+				value={suggestion}
+				onChange={setSuggestion}
+				options={suggestsMutation.isSuccess
+					? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
+					: []} />
+			<Paragraph variant='4' tag='h3' className='font-bold my-3'>
 				Опыт работы
 			</Paragraph>
 			<Radio
@@ -81,13 +83,13 @@ const SingupStep5Modal: React.FC<Props> = () => {
 				value={selectedValue}
 				onChange={(e) => setSelectedValue(e.target.value)}
 				items={['Нет опыта', '1 - 3 года', '3 - 6 лет', 'более 6 лет']} />
-			<form onSubmit={formik2.handleSubmit}>
+			<form onSubmit={formik.handleSubmit}>
 				<Input
 					name='minSalary'
 					type='number'
-					value={formik2.values.minSalary}
-					onChange={formik2.handleChange}
-					isDanger={!!formik2.errors.minSalary}
+					value={formik.values.minSalary}
+					onChange={formik.handleChange}
+					isDanger={!!formik.errors.minSalary}
 					placeholder='Минимальная зарплата'
 					className='mt-4' />
 			</form>
