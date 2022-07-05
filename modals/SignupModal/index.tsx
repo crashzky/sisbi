@@ -156,13 +156,20 @@ const SignupModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) =>
 			<Button
 				variant='outline'
 				className='w-full h-14 mt-3 mb-4'
+				type='button'
 				onClick={() => {
-					router.push({
-						pathname: '/',
-						query: {
-							modal: 'login',
-						},
-					});
+					switch(formik.values.radio) {
+						case 'Ищу работу':
+							smsCodeMutationUser.mutate({
+								phone: '+7' + formik.values.phone.replaceAll(' ', ''),
+							});
+							break;
+						case 'Ищу сотрудников':
+							smsCodeMutationEmployer.mutate({
+								phone: '+7' + formik.values.phone.replaceAll(' ', ''),
+							});
+							break;
+					}
 				}}
 			>
 				Войти

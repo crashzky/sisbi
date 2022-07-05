@@ -55,14 +55,20 @@ const SingupStep2Modal: React.FC<Props> = () => {
 				<Input
 					name='name'
 					value={formik.values.name}
-					onChange={formik.handleChange}
+					onChange={(e) => formik.handleChange({
+						value: e.target.value.replaceAll(' ', ''),
+						...e,
+					})}
 					isDanger={!!formik.errors.name && !!formik.values.name}
 					placeholder='Имя'
 					className='mb-4' />
 				<Input
 					name='surname'
 					value={formik.values.surname}
-					onChange={formik.handleChange}
+					onChange={(e) => formik.handleChange({
+						value: e.target.value.replaceAll(' ', ''),
+						...e,
+					})}
 					isDanger={!!formik.errors.surname && !!formik.values.surname}
 					placeholder='Фамилия' />
 			</form>

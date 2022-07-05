@@ -5,7 +5,7 @@ import InputPhone from '../../components/InputPhone';
 import Button from '../../components/Button';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
-import { getSmsCodeEmployer, getSmsCodeUser } from '../../shared/api/auth';
+import { getSmsCodeEmployer, getSmsCodeUser, signupEmployer, signupUser } from '../../shared/api/auth';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import Radio from '../../components/Radio';
 import USER_TYPES from '../../shared/consts/userTypes';
@@ -46,12 +46,28 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 		},
 	});
 
+	const signupMutationUser = useMutation(signupUser, {
+		onSuccess: () => {
+			smsCodeMutationUser.mutate({
+				phone: '+7' + formik.values.phone.replaceAll(' ', ''),
+			});
+		},
+	});
+
 	const smsCodeMutationUser = useMutation(getSmsCodeUser, {
 		onSuccess: () => {
 			sessionStorage.setItem('signup_phone', '+7' + formik.values.phone.replaceAll(' ', ''));
 			localStorage.setItem('user_type', USER_TYPES[formik.values.radio]);
 
 			router.push(router.pathname + '/?modal=code');
+		},
+	});
+
+	const signupMutationEmployer = useMutation(signupEmployer, {
+		onSuccess: () => {
+			smsCodeMutationEmployer.mutate({
+				phone: '+7' + formik.values.phone.replaceAll(' ', ''),
+			});
 		},
 	});
 
@@ -81,6 +97,27 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 					return 'Что-то пошло не так, попробуйте ещё раз позже';
 			}
 		}
+	}
+
+	function getErrorMessageSignup() {
+		if(signupMutationUser.isError) {
+			switch((signupMutationUser.error as AxiosError).response.status) {
+				case 422:
+					return 'Такой пользователь уже существует';
+				default:
+					return 'Что-то пошло не так, попробуйте ещё раз позже';
+			}
+		}
+		else if(signupMutationEmployer.isError) {
+			switch((signupMutationEmployer.error as AxiosError).response.status) {
+				case 422:
+					return 'Такой пользователь уже существует';
+				default:
+					return 'Что-то пошло не так, попробуйте ещё раз позже';
+			}
+		}
+		else if(smsCodeMutationUser.isError || smsCodeMutationEmployer.isError)
+			return 'Что-то пошло не так, попробуйте ещё раз позже';
 	}
 
 	return (
@@ -130,17 +167,33 @@ const LoginModal: React.FC<Props> = ({ className = '', onSubmit, ...props }) => 
 			<Button
 				variant='outline'
 				className='w-full h-14'
+				type='button'
 				onClick={() => {
-					router.push({
-						pathname: '/',
-						query: {
-							modal: 'signup',
-						},
-					});
+					switch(formik.values.radio) {
+						case 'Ищу работу':
+							signupMutationUser.mutate({
+								user: {
+									phone: '+7' + formik.values.phone.replaceAll(' ', ''),
+								},
+							});
+							break;
+						case 'Ищу сотрудников':
+							signupMutationEmployer.mutate({
+								employer: {
+									phone: '+7' + formik.values.phone.replaceAll(' ', ''),
+								},
+							});
+							break;
+					}
 				}}
 			>
 				Создать аккаунт
 			</Button>
+			{(signupMutationUser.isError || signupMutationEmployer.isError) && (
+				<Paragraph variant='5' tag='p' className='text-center text-red mt-4'>
+					{getErrorMessageSignup()}
+				</Paragraph>
+			)}
 		</form>
 	);
 };
