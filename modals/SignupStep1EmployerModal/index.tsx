@@ -13,7 +13,7 @@ const SingupStep1EmployerModal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
-		email: Yup.string().email('incorrect'),
+		email: Yup.string().email(),
 	});
 
 	const formik = useFormik({
@@ -21,7 +21,13 @@ const SingupStep1EmployerModal: React.FC<Props> = () => {
 			email: '',
 		},
 		validationSchema: validatiionSchema,
-		onSubmit: null,
+		onSubmit: () => {
+			mutate({
+				employer: {
+					email: formik.values.email,
+				},
+			});
+		},
 	});
 
 	const { mutate, isLoading } = useMutation(putProfileEmployer, {
@@ -37,15 +43,7 @@ const SingupStep1EmployerModal: React.FC<Props> = () => {
 			maxSteps={2}
 			HeaderImage={Step3Image}
 			isLoading={isLoading}
-			onClickContinue={() => {
-				if(formik.isValid) {
-					mutate({
-						employer: {
-							email: formik.values.email,
-						},
-					});
-				}
-			}}
+			onClickContinue={formik.submitForm}
 		>
 			<form onSubmit={formik.handleSubmit}>
 				<Input

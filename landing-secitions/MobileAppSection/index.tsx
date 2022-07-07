@@ -25,7 +25,7 @@ const MobileAppSection: React.FC<Props> = ({ className = '', ...props }) => {
 				<Paragraph variant='4' tag='p' className='mb-4'>
 					Такого вы еще не видели. Ищите работу или сотрудников,
 					<br />
-					свайпая карточки. Лучше один раз увидеть, чем 100 раз прочитать
+					свайпая карточки. Лучше один раз увидеть, чем 100 раз прочитать.
 				</Paragraph>
 				<div className='grid grid-flow-col gap-2 w-min'>
 					<Link href='#'>

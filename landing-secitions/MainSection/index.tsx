@@ -15,10 +15,10 @@ const MainSection: React.FC<Props> = ({ className = '', ...props }) => {
 		<section id='main' className={className + ' grid grid-cols-between'} {...props}>
 			<div className='self-center'>
 				<Headline className='font-bold' tag='h1' variant='2'>
-					SISBI — новый сервис
+					SISBI — сервис по поиску
 					{' '}
 					<br />
-					по поиску работы
+					работы и персонала
 				</Headline>
 				<Paragraph variant='3' tag='p' className='mt-4'>
 					Создайте резюме в пару шагов, общайтесь с

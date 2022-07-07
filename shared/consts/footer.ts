@@ -54,7 +54,7 @@ const FOOTER_ITEMS: IFooterItem[] = [
 			},
 			{
 				title: 'Политика',
-				href: '#',
+				href: '/policy.pdf',
 			},
 			{
 				title: 'Контакты',

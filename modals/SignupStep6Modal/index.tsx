@@ -51,7 +51,10 @@ const SingupStep6Modal: React.FC<Props> = () => {
 			schedule: [],
 			employment: [],
 		},
-		onSubmit: null,
+		onSubmit: () => {
+			if(city)
+				onClickContinue();
+		},
 	});
 
 	const putProfileMutation = useMutation(putProfileUser, {
@@ -117,10 +120,7 @@ const SingupStep6Modal: React.FC<Props> = () => {
 			isLoading={addSchedulesUserMutattion.isLoading || removeSchedulesUserMutation.isLoading 
 				|| addTypeEmployementUserMutation.isLoading || removeTypeEmployementUserMutation.isLoading}
 			onClickBack={() => router.push(router.pathname + '/?modal=signup5')}
-			onClickContinue={() => {
-				if(city)
-					onClickContinue();
-			}}
+			onClickContinue={formik.submitForm}
 		>
 			<form onSubmit={formik.handleSubmit}>
 				<div className='grid grid-cols-2 mb-5'>

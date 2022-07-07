@@ -13,7 +13,7 @@ const SingupStep3Modal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
-		email: Yup.string().email('incorrect'),
+		email: Yup.string().email().required(),
 	});
 
 	const formik = useFormik({
@@ -21,7 +21,13 @@ const SingupStep3Modal: React.FC<Props> = () => {
 			email: '',
 		},
 		validationSchema: validatiionSchema,
-		onSubmit: null,
+		onSubmit: () => {
+			mutate({
+				user: {
+					email: formik.values.email,
+				},
+			});
+		},
 	});
 
 	const { mutate, isLoading } = useMutation(putProfileUser, {
@@ -38,20 +44,13 @@ const SingupStep3Modal: React.FC<Props> = () => {
 			HeaderImage={Step3Image}
 			isLoading={isLoading}
 			onClickBack={() => router.push(router.pathname + '/?modal=signup2')}
-			onClickContinue={() => {
-				if(formik.isValid) {
-					mutate({
-						user: {
-							email: formik.values.email,
-						},
-					});
-				}
-			}}
+			onClickContinue={formik.submitForm}
 		>
 			<form onSubmit={formik.handleSubmit}>
 				<Input
 					name='email'
 					value={formik.values.email}
+					isDanger={!!formik.errors.email && !!formik.submitCount}
 					onChange={formik.handleChange}
 					type='email'
 					placeholder='Email-адрес' />

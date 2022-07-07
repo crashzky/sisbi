@@ -26,7 +26,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 		<QueryClientProvider client={queryClient}>
 			<Head>
 				<title>
-					SISBI — новый сервис по поиску работы
+					SISBI —  сервис по поиску работы и персонала
 				</title>
 				<link rel='icon' href='/favicon.ico' type='image/x-icon' />
 				<meta
@@ -37,7 +37,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 					content='работа, вакансии, работа, поиск вакансий, резюме, работы, работу, работ, ищу работу, поиск' />
 				<meta property='og:type' content='website' />
 				<meta property='og:url' content='https://sisbi.ru/' />
-				<meta property='og:title' content='SkillActive - поиск секций и кружков для ребёнка' />
+				<meta property='og:title' content='SISBI —  сервис по поиску работы и персонала' />
 				<meta
 					property='og:description'
 					content='Создайте резюме в пару шагов, общайтесь с работодателями через наш встроенный мессенджер!' />
@@ -47,7 +47,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
 					
 				<meta property='twitter:card' content='summary_large_image' />
 				<meta property='twitter:url' content='https://sisbi.ru/' />
-				<meta property='twitter:title' content='SISBI — новый сервис по поиску работы' />
+				<meta property='twitter:title' content='SISBI —  сервис по поиску работы и персонала' />
 				<meta
 					property='twitter:description'
 					content='Создайте резюме в пару шагов, общайтесь с работодателями через наш встроенный мессенджер!' />

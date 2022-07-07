@@ -13,8 +13,8 @@ const SingupStep2Modal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
-		name: Yup.string().matches(/^[А-Яа-яёЁ]+$/, 'Only russian').required('This field requeres'),
-		surname: Yup.string().matches(/^[А-Яа-яёЁ]+$/, 'Only russian').required('This field requeres'),
+		name: Yup.string().matches(/^[А-Яа-яёЁ]+$/).required(),
+		surname: Yup.string().matches(/^[А-Яа-яёЁ]+$/).required(),
 	});
 
 	const formik = useFormik({
@@ -23,7 +23,14 @@ const SingupStep2Modal: React.FC<Props> = () => {
 			surname: '',
 		},
 		validationSchema: validatiionSchema,
-		onSubmit: null,
+		onSubmit: () => {
+			mutate({
+				user: {
+					first_name: formik.values.name,
+					surname: formik.values.surname,
+				},
+			});
+		},
 	});
 
 	const { mutate, isLoading } = useMutation(putProfileUser, {
@@ -40,36 +47,21 @@ const SingupStep2Modal: React.FC<Props> = () => {
 			HeaderImage={Step2Image}
 			isLoading={isLoading}
 			onClickBack={() => router.push(router.pathname + '/?modal=signup1')}
-			onClickContinue={() => {
-				if(formik.isValid) {
-					mutate({
-						user: {
-							first_name: formik.values.name,
-							surname: formik.values.surname,
-						},
-					});
-				}
-			}}
+			onClickContinue={formik.submitForm}
 		>
 			<form onSubmit={formik.handleSubmit}>
 				<Input
 					name='name'
 					value={formik.values.name}
-					onChange={(e) => formik.handleChange({
-						value: e.target.value.replaceAll(' ', ''),
-						...e,
-					})}
-					isDanger={!!formik.errors.name && !!formik.values.name}
+					onChange={(formik.handleChange)}
+					isDanger={!!formik.errors.name}
 					placeholder='Имя'
 					className='mb-4' />
 				<Input
 					name='surname'
 					value={formik.values.surname}
-					onChange={(e) => formik.handleChange({
-						value: e.target.value.replaceAll(' ', ''),
-						...e,
-					})}
-					isDanger={!!formik.errors.surname && !!formik.values.surname}
+					onChange={formik.handleChange}
+					isDanger={!!formik.errors.surname}
 					placeholder='Фамилия' />
 			</form>
 		</SignupStepLayout>
