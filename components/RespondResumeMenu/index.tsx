@@ -10,6 +10,7 @@ import { useMutation } from 'react-query';
 import { getMyVacancies } from '../../shared/api/vacancies';
 import { useEffect, useState } from 'react';
 import { IVacancy } from '../../shared/types/api/vacancies';
+import useUserType from '../../hooks/useUserType';
 
 import PreloaderIcon from '../../assets/loader.svg';
 import CloseIcon from '../../assets/general/close.svg';
@@ -17,6 +18,8 @@ import CloseIcon from '../../assets/general/close.svg';
 const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vacancyName, minPrice, resumeId,
 	onContinue, onBack, isLoading, errorMessage, ...props }) => {
 	const router = useRouter();
+
+	const { userType } = useUserType();
 
 	const [vacancies, setVacancies] = useState<IVacancy[]>([]);
 
@@ -58,14 +61,16 @@ const RespondResumeMenu: React.FC<Props> = ({ className = '', name, surname, vac
 	});
 
 	useEffect(() => {
-		getVacanciesMutation.mutate({
-			queryKey: [
-				{
-					page: 1,
-				},
-			],
-		});
-	}, []);
+		if(userType === 'employer') {
+			getVacanciesMutation.mutate({
+				queryKey: [
+					{
+						page: 1,
+					},
+				],
+			});
+		}
+	}, [userType]);
 
 	return (
 		<aside className={className} {...props}>
