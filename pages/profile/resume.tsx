@@ -11,7 +11,7 @@ import { useFormik } from 'formik';
 import { useMutation, useQuery } from 'react-query';
 import { addSchedulesUser, getSchedules, removeSchedulesUser } from '../../shared/api/schedules';
 import { addTypeEmployementUser, getTypeEmployments, removeTypeEmployementUser } from '../../shared/api/type_employments';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 import { EXPERIENCE, TO_EXPERIENCE } from '../../shared/consts/profile';
@@ -24,6 +24,9 @@ import * as Yup from 'yup';
 
 import CloseIcon from '../../assets/general/close.svg';
 import LoaderIcon from '../../assets/loader.svg';
+import { getSuggestions } from '../../shared/api/vacancies_suggestions';
+import Select from '../../components/Select';
+import { ISelectOption } from '../../components/Select/Select.props';
 
 const ResumePage = (): JSX.Element => {
 	const router = useRouter();
@@ -33,11 +36,11 @@ const ResumePage = (): JSX.Element => {
 
 	const [jobCategory, setJobCategory] = useState(null);
 	const [showJobSelect, setShowJobSelect] = useState(false);
+	const [suggestion, setSuggestion] = useState<ISelectOption>();
 
 	const { data } = useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (value) => {
 			formik.setValues({
-				vacancyName: value.payload.previous_job,
 				minPrice: value.payload.min_salary,
 				experience: EXPERIENCE[value.payload.experience],
 				employement_type: value.payload.type_employments.map((i) => i.id.toString()),
@@ -51,6 +54,14 @@ const ResumePage = (): JSX.Element => {
 
 			if(!skills)
 				setSkills(value.payload.skills.split(' ').filter((i) => i !== ''));
+
+			if(value.payload.previous_job) {
+				getSuggestions({ name: value.payload.previous_job })
+					.then((res) => {
+						if(res.payload.length)
+							setSuggestion({ label: res.payload[0].name, value: res.payload[0].name });
+					});
+			}
 		},
 	});
 
@@ -121,13 +132,13 @@ const ResumePage = (): JSX.Element => {
 	});
 
 	const validatiionSchema = Yup.object().shape({
-		vacancyName: Yup.string().required('required'),
-		minPrice: Yup.number().required('required'),
+		minPrice: Yup.number().min(0).required(),
 	});
+
+	const suggestsMutation = useMutation(getSuggestions);
 
 	const formik = useFormik({
 		initialValues: {
-			vacancyName: '',
 			minPrice: null,
 			experience: null,
 			employement_type: [],
@@ -141,7 +152,7 @@ const ResumePage = (): JSX.Element => {
 				user: {
 					state: data.payload.state === 'created' ? 'moderating' : data.payload.state,
 					job_category_id: jobCategory,
-					previous_job: values.vacancyName,
+					previous_job: suggestion.label,
 					min_salary: values.minPrice,
 					experience: TO_EXPERIENCE[values.experience],
 					ready_mission: !!values.ready_mission.length,
@@ -151,6 +162,8 @@ const ResumePage = (): JSX.Element => {
 			});
 		},
 	});
+
+	useEffect(() => suggestsMutation.mutate({ name: '' }), []);
 
 	if(showSkillsSelect) {
 		return (
@@ -192,12 +205,19 @@ const ResumePage = (): JSX.Element => {
 							<Paragraph variant='5' tag='p'>
 								Желаемая должность	
 							</Paragraph>
-							<Input
-								value={formik.values.vacancyName}
-								name='vacancyName'
-								isDanger={!!formik.errors.vacancyName}
-								onChange={formik.handleChange}
-								placeholder='Должность' />
+							<Select
+								variant='primary'
+								placeholder='Должность'
+								isDanger={!suggestion && !!formik.submitCount}
+								onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+								noOptionsMessage={() => 'Ничего не найдено'}
+								loadingMessage={() => 'Загрузка...'}
+								isLoading={suggestsMutation.isLoading}
+								value={suggestion}
+								onChange={setSuggestion}
+								options={suggestsMutation.isSuccess
+									? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
+									: []} />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности	
 							</Paragraph>
