@@ -60,7 +60,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 
 	return (
 		<SignupStepLayout
-			label='Расскажите о вашей професии'
+			label='Кем бы вы хотели бы работать'
 			currentStep={5}
 			maxSteps={7}
 			HeaderImage={Step5Image}
@@ -90,6 +90,11 @@ const SingupStep5Modal: React.FC<Props> = () => {
 				value={selectedValue}
 				onChange={(e) => setSelectedValue(e.target.value)}
 				items={['Нет опыта', '1 - 3 года', '3 - 6 лет', 'более 6 лет']} />
+			{!selectedValue && formik.submitCount ? (
+				<p className='text-center text-red my-2'>
+					Заполните ваш опыт работы
+				</p>
+			) : ''}
 			<form onSubmit={formik.handleSubmit}>
 				<Input
 					name='minSalary'

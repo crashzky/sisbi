@@ -81,11 +81,15 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, comp
 					<div className='grid grid-cols-[20px_auto_20px_auto] gap-3 items-center'>
 						<PhoneSolidIcon className='fill-icon' />
 						<Paragraph variant='5' tag='p' className='text-text'>
-							{formatPhoneNumberIntl(contactPhone)}
+							<a href={`tel:${contactPhone}`}>
+								{formatPhoneNumberIntl(contactPhone)}
+							</a>
 						</Paragraph>
 						<MailSolidIcon className='fill-icon' />
 						<Paragraph variant='5' tag='p' className='text-text'>
-							{contactMail}
+							<a href={`mailto:${contactMail}`}>
+								{contactMail}
+							</a>
 						</Paragraph>
 					</div>
 				</div>

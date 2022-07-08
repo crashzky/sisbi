@@ -26,6 +26,7 @@ import ContentLoader from 'react-content-loader';
 import { acceptResponse, declineResponse } from '../../shared/api/response';
 import { acceptInvite, declineInvite } from '../../shared/api/invites';
 import { IWebScoketMessage } from '../../shared/types/api/websocket';
+import Link from 'next/link';
 
 import Preloader from '../../assets/loader.svg';
 import CompanyLIcon from '../../assets/company-L.svg';
@@ -161,6 +162,7 @@ const ChatPage = (): JSX.Element => {
 					phone: chatInfoQuery.data.payload.vacancy.phone,
 					email: chatInfoQuery.data.payload.vacancy.email,
 				},
+				profileUrl: '/vacancies/' + chatInfoQuery.data.payload.vacancy.id,
 			};
 		}
 		else if(chatInfoQuery.isSuccess && userType === 'employer') {
@@ -174,6 +176,7 @@ const ChatPage = (): JSX.Element => {
 					phone: '+' + chatInfoQuery.data.payload.user.phone.toString(),
 					email: chatInfoQuery.data.payload.user.email,
 				},
+				profileUrl: '/resumes/' + chatInfoQuery.data.payload.user.id,
 			};
 		}
 	}
@@ -288,24 +291,36 @@ const ChatPage = (): JSX.Element => {
 				<div className={`w-full px-4 py-3 grid grid-cols-[40px_auto_1fr_20px] 
 					gap-4 items-center bg-white border-gray-60 border-b-[1px]`}
 				>
-					{chatInfoQuery.isSuccess && getProperties() && getProperties().avatar ? (
-						<Image
-							src={getProperties().avatar}
-							alt='avatar'
-							className='rounded-full object-cover'
-							height={40}
-							width={40} />
-					) : (
-						<CompanyLIcon />
-					)}
+					<Link href={getProperties() ? getProperties().profileUrl : ''}>
+						<a>
+							{chatInfoQuery.isSuccess && getProperties() && getProperties().avatar ? (
+								<Image
+									src={getProperties().avatar}
+									alt='avatar'
+									className='rounded-full object-cover'
+									height={40}
+									width={40} />
+							) : (
+								<CompanyLIcon />
+							)}
+						</a>
+					</Link>
 					<div>
-						<Paragraph variant='3' tag='h2' className='font-bold'>
-							{chatInfoQuery.isSuccess && getProperties() ? getProperties().title : 'Загрузка...'}
-							{isOnline && ' (online)'}
-						</Paragraph>
-						<Paragraph variant='5' tag='p' className='text-text'>
-							{chatInfoQuery.isSuccess && getProperties() ? getProperties().name : 'Загрузка...'}
-						</Paragraph>
+						<Link href={getProperties() ? getProperties().profileUrl : ''}>
+							<a>
+								<Paragraph variant='3' tag='h2' className='font-bold'>
+									{chatInfoQuery.isSuccess && getProperties() ? getProperties().title : 'Загрузка...'}
+									{isOnline && ' (online)'}
+								</Paragraph>
+							</a>
+						</Link>
+						<Link href={getProperties() ? getProperties().profileUrl : ''}>
+							<a>
+								<Paragraph variant='5' tag='p' className='text-text'>
+									{chatInfoQuery.isSuccess && getProperties() ? getProperties().name : 'Загрузка...'}
+								</Paragraph>
+							</a>
+						</Link>
 					</div>
 					<div></div>
 					<div className='relative'>

@@ -12,6 +12,7 @@ import { GENDERS, TO_GENDERS } from '../../shared/consts/profile';
 const SingupStep1Modal: React.FC<Props> = () => {
 	const router = useRouter();
 
+	const [isError, setIsError] = useState(false);
 	const [selectedValue, setSelectedValue] = useState();
 
 	const { mutate, isLoading } = useMutation(putProfileUser, {
@@ -27,18 +28,32 @@ const SingupStep1Modal: React.FC<Props> = () => {
 			maxSteps={7}
 			HeaderImage={Step1Image}
 			isLoading={isLoading}
-			onClickContinue={() => mutate({
-				user: {
-					gender: selectedValue,
-				},
-			})}
+			onClickContinue={() => {
+				if(selectedValue) {
+					mutate({
+						user: {
+							gender: selectedValue,
+						},
+					});
+				}
+				else
+					setIsError(true);
+			}}
 		>
 			<Radio
 				className='grid gap-3'
 				name='sex'
 				value={selectedValue && GENDERS[selectedValue]}
-				onChange={(e) => setSelectedValue(TO_GENDERS[e.target.value])}
+				onChange={(e) => {
+					setSelectedValue(TO_GENDERS[e.target.value]);
+					setIsError(false);
+				}}
 				items={['Мужской', 'Женский']} />
+			{isError && (
+				<p className='text-center text-red mt-2'>
+					Выберите пожалуйста ваш пол
+				</p>
+			)}
 		</SignupStepLayout>
 	);
 };

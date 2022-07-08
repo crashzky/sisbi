@@ -13,7 +13,7 @@ const SingupStep1EmployerModal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
-		email: Yup.string().email(),
+		email: Yup.string().email().required(),
 	});
 
 	const formik = useFormik({
@@ -49,6 +49,7 @@ const SingupStep1EmployerModal: React.FC<Props> = () => {
 				<Input
 					name='email'
 					value={formik.values.email}
+					isDanger={!!formik.errors.email && !!formik.submitCount}
 					onChange={formik.handleChange}
 					type='email'
 					placeholder='Email-адрес' />

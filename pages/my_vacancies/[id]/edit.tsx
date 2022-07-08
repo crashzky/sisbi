@@ -47,8 +47,9 @@ const NewVacancyPage = (): JSX.Element => {
 	const [city, setCity] = useState<ISelectOption>();
 
 	const [errorsList, setErrorsList] = useState<string[]>([]);
+	const [isSaveWithPublish, setIsSaveWithPublish] = useState(true);
 
-	const getVacancyQuery = useQuery([{ id: router.query.id }], getVacancyById, {
+	useQuery([{ id: router.query.id }], getVacancyById, {
 		enabled: !!(router && router.query),
 		onSuccess: (res) => {
 			const { title, salary, experience, type_employments, schedules, full_name, phone, email,
@@ -111,7 +112,7 @@ const NewVacancyPage = (): JSX.Element => {
 	const putVacancyMutation = useMutation(putVacancy, {
 		onSuccess: (res) => removeSchedulesMutation.mutate({
 			id: res.payload.id,
-			schedules: getVacancyQuery.data.payload[0].schedules.map((i) => i.id),
+			schedules: res.payload.schedules.map((i) => i.id),
 		}),
 	});
 
@@ -125,7 +126,7 @@ const NewVacancyPage = (): JSX.Element => {
 	const addSchedulesMutation = useMutation(addSchedulesVacancy, {
 		onSuccess: (res) => removeTypeEmployementsMutation.mutate({
 			id: res.payload.id,
-			type_employments: getVacancyQuery.data.payload[0].type_employments.map((i) => i.id),
+			type_employments: res.payload.type_employments.map((i) => i.id),
 		}),
 	});
 
@@ -185,8 +186,11 @@ const NewVacancyPage = (): JSX.Element => {
 				description: description.replaceAll('\n', '<br>'),
 				job_category_id: jobCategory,
 				city_id: +city.value,
+				visible: isSaveWithPublish,
 				...withAvatar,
 			});
+
+			setIsSaveWithPublish(true);
 		},
 	});
 	
@@ -420,7 +424,21 @@ const NewVacancyPage = (): JSX.Element => {
 									<LoaderIcon className='h-12 w-[209px]' />
 								) : (
 									<Button className='h-12 w-[229px]'>
-										Сохранить
+										Сохранить и опубликовать
+									</Button>
+								)}
+							{putVacancyMutation.isLoading || addSchedulesMutation.isLoading
+							|| addTypeEmployementsMutation.isLoading || removeSchedulesMutation.isLoading
+							|| removeTypeEmployementsMutation.isLoading
+								? (
+									<LoaderIcon className='h-12 w-[209px]' />
+								) : (
+									<Button
+										variant='outline'
+										className='h-12 w-[229px]'
+										onClick={() => setIsSaveWithPublish(false)}
+									>
+										Сохранить без публикации
 									</Button>
 								)}
 							<Button

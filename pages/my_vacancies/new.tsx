@@ -43,6 +43,7 @@ const NewVacancyPage = (): JSX.Element => {
 	const [city, setCity] = useState<ISelectOption>();
 
 	const [errorsList, setErrorsList] = useState<string[]>([]);
+	const [isSaveWithPublish, setIsSaveWithPublish] = useState(true);
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
 		initialData: {
@@ -139,7 +140,10 @@ const NewVacancyPage = (): JSX.Element => {
 					description: description.replaceAll('\n', '<br>'),
 					job_category_id: jobCategory,
 					city_id: +city.value,
+					visible: isSaveWithPublish,
 				});
+
+				setIsSaveWithPublish(true);
 			}
 		},
 	});
@@ -187,7 +191,7 @@ const NewVacancyPage = (): JSX.Element => {
 								Превью для вакансии
 							</Paragraph>
 							<InputImage
-								noSelectedImage='/assets/no_selected_image.svg'
+								noSelectedImage={avatar ? URL.createObjectURL(avatar) : '/assets/no_selected_image.svg'}
 								onChange={(e) => setAvatar(e.target.files[0])} />
 							<Paragraph variant='5' tag='p'>
 								Название вакансии
@@ -319,14 +323,52 @@ const NewVacancyPage = (): JSX.Element => {
 							<Paragraph variant='5' tag='p'>
 								Описание
 							</Paragraph>
-							<Button
-								type='button'
-								variant='secondary'
-								className='h-9 w-[150px] font-normal rounded-lg'
-								onClick={() => setShowDescriptionEditor(true)}
-							>
-								{description ? 'Изменить описание' : 'Добавить описание'}
-							</Button>
+							<div>
+								{description && (
+									<div className='p-4 pb-6 bg-gray-40 rounded-xl mb-2'>
+										{description && description.split('\n').map((i, num) => {
+											if(num != description.split('\n').length - 1) {
+												return (
+													<Paragraph key={num} variant='5' tag='p'>
+														{i}
+														<br />
+													</Paragraph>
+												);
+											}
+											else {
+												return (
+													<Paragraph key={num} variant='5' tag='p'>
+														{i}
+													</Paragraph>
+												);
+											}
+										})}
+									</div>
+								)}
+								<div className='grid grid-cols-2 gap-2 h-9 w-fit'>
+									<Button
+										type='button'
+										variant='secondary'
+										className='h-9 w-[150px] font-normal rounded-lg'
+										onClick={() => setShowDescriptionEditor(true)}
+									>
+										{description ? 'Изменить описание' : 'Добавить описание'}
+									</Button>
+									{description && (
+										<Button
+											type='button'
+											variant='outline_secondary'
+											className='py-2 rounded-lg'
+											style={{
+												fontWeight: 400,
+											}}
+											onClick={() => setDescription('')}
+										>
+											Удалить описание
+										</Button>
+									)}
+								</div>
+							</div>
 						</div>
 						<div className='grid grid-flow-col w-fit gap-2 mt-8'>
 							{createVacancyMutation.isLoading || addSchedulesMutation.isLoading
@@ -336,6 +378,19 @@ const NewVacancyPage = (): JSX.Element => {
 								) : (
 									<Button className='h-12 w-[229px]'>
 										Сохранить и опубликовать
+									</Button>
+								)}
+							{createVacancyMutation.isLoading || addSchedulesMutation.isLoading
+							|| addTypeEmployementsMutation.isLoading
+								? (
+									<LoaderIcon className='h-12 w-[209px]' />
+								) : (
+									<Button
+										variant='outline'
+										className='h-12 w-[229px]'
+										onClick={() => setIsSaveWithPublish(false)}
+									>
+										Сохранить без публикации
 									</Button>
 								)}
 							<Button

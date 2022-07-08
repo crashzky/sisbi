@@ -13,7 +13,7 @@ const SingupStep2EmployerModal: React.FC<Props> = () => {
 	const router = useRouter();
 
 	const validatiionSchema = Yup.object().shape({
-		email: Yup.string().email(),
+		name: Yup.string().required(),
 	});
 
 	const formik = useFormik({
@@ -50,6 +50,7 @@ const SingupStep2EmployerModal: React.FC<Props> = () => {
 				<Input
 					name='name'
 					value={formik.values.name}
+					isDanger={!!formik.errors.name && !!formik.submitCount}
 					onChange={formik.handleChange}
 					type='text'
 					placeholder='Название организации' />

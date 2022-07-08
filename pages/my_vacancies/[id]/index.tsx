@@ -18,12 +18,10 @@ import { EXPERIENCE } from '../../../shared/consts/profile';
 import CompanyIcon from '../../../assets/company.svg';
 import PhoneSolidIcon from '../../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../../assets/communication/mail_solid.svg';
-import CloseIcon from '../../../assets/general/close.svg';
 
 const MyVacancyPage = (): JSX.Element => {
 	const router = useRouter();
 
-	const [showContacts, setShowContacts] = useState(false);
 	const [showRespondMenu, setShowRespondMenu] = useState(false);
 
 	const { data, isSuccess } = useQuery([{ id: router.query.id }], getVacancyById, {
@@ -115,44 +113,13 @@ const MyVacancyPage = (): JSX.Element => {
 							<Button className='h-12 px-8' onClick={() => setShowRespondMenu(true)}>
 								Откликнуться
 							</Button>
-							<div className='relative'>
-								<Button
-									variant='secondary'
-									className='h-12 px-8'
-									onClick={() => setShowContacts((prev) => !prev)}
-								>
-									Показать контакты
-								</Button>
-								{showContacts && (
-									<div
-										className='absolute top-18 w-[314px] bg-[#FAFBFC] p-4 rounded-xl'
-										style={{
-											boxShadow: `0px 80px 32px rgba(35, 47, 59, 0.01), 0px 45px 27px
-											rgba(35, 47, 59, 0.03), 0px 20px 20px rgba(35, 47, 59, 0.04),
-											0px 5px 11px rgba(35, 47, 59, 0.05), 0px 0px 0px rgba(35, 47, 59, 0.05)`,
-										}}
-									>
-										<div className='flex justify-between items-center mb-4'>
-											<Paragraph variant='4' tag='p' className='font-semibold'>
-												{full_name}
-											</Paragraph>
-											<button onClick={() => setShowContacts(false)}>
-												<CloseIcon className='fill-icon-secondary' />
-											</button>
-										</div>
-										<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
-											<PhoneSolidIcon className='fill-darkBlue' />
-											<Paragraph variant='5' tag='p' className='text-text'>
-												{formatPhoneNumberIntl(phone)}
-											</Paragraph>
-											<MailSolidIcon className='fill-darkBlue' />
-											<Paragraph variant='5' tag='p' className='text-text'>
-												{email}
-											</Paragraph>
-										</div>
-									</div>
-								)}
-							</div>
+							<Button
+								variant='secondary'
+								className='h-12 px-8'
+								onClick={() => router.push('#contacts')}
+							>
+								Показать контакты
+							</Button>
 						</div>
 						{(data && description) && description.split('<br>').map((i, num) => {
 							if(num != description.split('<br>').length - 1) {
@@ -178,14 +145,18 @@ const MyVacancyPage = (): JSX.Element => {
 						<Paragraph variant='5' tag='p' className='mb-2'>
 							{full_name}
 						</Paragraph>
-						<div className='grid grid-flow-col w-fit gap-3 items-center'>
+						<div className='grid grid-flow-col w-fit gap-3 items-center' id='contacts'>
 							<PhoneSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
-								{formatPhoneNumberIntl(phone)}
+								<a href={`tel:${phone}`}>
+									{formatPhoneNumberIntl(phone)}
+								</a>
 							</Paragraph>
 							<MailSolidIcon className='fill-darkBlue' />
 							<Paragraph variant='5' tag='p' className='text-darkBlue'>
-								{email}
+								<a href={`mailto:${email}`}>
+									{email}
+								</a>
 							</Paragraph>
 						</div>
 						<Paragraph variant='5' tag='p' className='mt-10 text-text-secondary'>

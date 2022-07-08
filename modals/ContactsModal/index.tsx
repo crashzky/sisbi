@@ -20,11 +20,15 @@ const ContactsModal: React.FC<Props> = ({ className = '', fullName, phone, mail,
 			<div className='mt-6 grid grid-cols-[16px_1fr] gap-x-3 gap-y-[14px]'>
 				<PhoneIcon className='fill-icon' />
 				<Paragraph variant='5' tag='p' className='text-text'>
-					{formatPhoneNumberIntl(phone)}
+					<a href={`tel:${phone}`}>
+						{formatPhoneNumberIntl(phone)}
+					</a>
 				</Paragraph>
 				<MailIcon className='fill-icon' />
 				<Paragraph variant='5' tag='p' className='text-text'>
-					{mail}
+					<a href={`mailto:${mail}`}>
+						{mail}
+					</a>
 				</Paragraph>
 			</div>
 		</aside>

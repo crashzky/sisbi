@@ -148,7 +148,8 @@ const VacanciesPage = (): JSX.Element => {
 								<VacancyCard
 									key={num}
 									onClick={(e) => {
-										if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg')
+										if((e.target as any).tagName !== 'BUTTON' && (e.target as any).tagName !== 'svg'
+											&& (e.target as any).tagName !== 'A')
 											router.push(`/vacancies/${i.id}`);
 									}}
 									className={getRoundedStyles(num)}

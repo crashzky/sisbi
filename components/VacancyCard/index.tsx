@@ -103,7 +103,7 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 						</Button>
 						{showContacts && (
 							<div
-								className='absolute top-10 w-[314px] bg-[#FAFBFC] p-4 rounded-xl'
+								className='absolute z-10 top-10 w-[314px] bg-[#FAFBFC] p-4 rounded-xl'
 								style={{
 									boxShadow: `0px 80px 32px rgba(35, 47, 59, 0.01), 0px 45px 27px
 									rgba(35, 47, 59, 0.03), 0px 20px 20px rgba(35, 47, 59, 0.04),
@@ -121,11 +121,15 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 								<div className='grid grid-cols-[16px_1fr] gap-x-4 gap-y-[10px] items-center'>
 									<PhoneIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-text'>
-										{formatPhoneNumberIntl(contactPhone)}
+										<a href={`tel:${contactPhone}`}>
+											{formatPhoneNumberIntl(contactPhone)}
+										</a>
 									</Paragraph>
 									<MailIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-text'>
-										{contactMail}
+										<a href={`mailto:${contactMail}`}>
+											{contactMail}
+										</a>
 									</Paragraph>
 								</div>
 							</div>

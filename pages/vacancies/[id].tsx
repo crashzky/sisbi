@@ -227,11 +227,15 @@ const VacancyPage = (): JSX.Element => {
 								<div className='grid grid-flow-col w-fit gap-3 items-center'>
 									<PhoneSolidIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
-										{formatPhoneNumberIntl(phone)}
+										<a href={`tel:${phone}`}>
+											{formatPhoneNumberIntl(phone)}
+										</a>
 									</Paragraph>
 									<MailSolidIcon className='fill-darkBlue' />
 									<Paragraph variant='5' tag='p' className='text-darkBlue'>
-										{email}
+										<a href={`mailto:${email}`}>
+											{email}
+										</a>
 									</Paragraph>
 								</div>
 								<Paragraph variant='5' tag='p' className='mt-10 text-text-secondary'>

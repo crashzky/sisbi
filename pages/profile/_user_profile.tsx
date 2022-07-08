@@ -113,10 +113,14 @@ const ProfilePageUser = (): JSX.Element => {
 								{(data && data.city) && data.city.name}
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{data && data.phone ? formatPhoneNumberIntl('+' + data.phone) : ''}
+								<a href={`tel:${data && data.phone}`}>
+									{data && data.phone ? formatPhoneNumberIntl('+' + data.phone) : ''}
+								</a>
 							</Paragraph>
 							<Paragraph variant='3' tag='p' className='mb-1'>
-								{data && data.email}
+								<a href={`mailto:${data && data.email}`}>
+									{data && data.email}
+								</a>
 							</Paragraph>
 						</div>
 

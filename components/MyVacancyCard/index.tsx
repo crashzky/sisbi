@@ -129,7 +129,14 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 					<Button
 						variant='outline_secondary'
 						className='w-9 h-9 rounded-full'
-						onClick={() => router.push(`/vacancies/${vacancyId}`)}
+						onClick={() => {
+							navigator.clipboard
+								.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/vacancies/${vacancyId}`).then(() => {
+									router.push(`/vacancies/${vacancyId}`);
+								}, () => {
+									router.push(`/vacancies/${vacancyId}`);
+								});
+						}}
 					>
 						<ShareIcon
 							className='mx-auto fill-icon-secondary'
