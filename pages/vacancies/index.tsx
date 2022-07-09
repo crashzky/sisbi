@@ -8,7 +8,6 @@ import useModal from '../../hooks/useModal';
 import { slide as Menu } from 'react-burger-menu';
 import { useEffect, useState } from 'react';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import PageSlider from '../../components/PageSlider';
 import { useMutation } from 'react-query';
 import { getVacancies, respondVacancy } from '../../shared/api/vacancies';
@@ -215,6 +214,4 @@ const VacanciesPage = (): JSX.Element => {
 	);
 };
 
-export default withCheckAuthLayout(VacanciesPage, {
-	checkLoggined: true,
-});
+export default VacanciesPage;

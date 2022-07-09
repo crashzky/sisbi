@@ -64,16 +64,18 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 						{'c'}
 					</span>
 				</Paragraph>
-				{description && description.split('<br>').filter((i) => i.length).map((i, num) => (
-					<>
-						<Paragraph variant='6' tag='p' key={num}>
-							{i}
-						</Paragraph>
-						{num !== description.split('<br>').length && (
-							<br />
-						)}
-					</>
-				))}
+				<div className='h-[60px] overflow-y-hidden mb-3'>
+					{description && description.split('<br>').filter((i) => i.length).map((i, num) => (
+						<>
+							<Paragraph variant='6' tag='p' key={num}>
+								{i}
+							</Paragraph>
+							{num !== description.split('<br>').length && (
+								<br />
+							)}
+						</>
+					))}
+				</div>
 				<div className='flex flex-wrap mb-6'>
 					{tags.map((i, num) => (
 						<span key={num} className=' bg-softGold py-0.5 px-1 m-1 rounded-[4px]'>

@@ -56,16 +56,18 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 					{' ' }
 					{skills.join(', ')}
 				</Paragraph>
-				{about && about.split('<br>').filter((i) => i.length).map((i, num) => (
-					<>
-						<Paragraph variant='6' tag='p' key={num}>
-							{i}
-						</Paragraph>
-						{num !== about.split('<br>').length && (
-							<br />
-						)}
-					</>
-				))}
+				<div className='h-[60px] overflow-y-hidden mb-3'>
+					{about && about.split('<br>').filter((i) => i.length).map((i, num) => (
+						<>
+							<Paragraph variant='6' tag='p' key={num}>
+								{i}
+							</Paragraph>
+							{num !== about.split('<br>').length && (
+								<br />
+							)}
+						</>
+					))}
+				</div>
 				<div className='flex flex-wrap mb-6'>
 					{tags.map((i, num) => (
 						<span key={num} className='s bg-softGold py-0.5 px-1 m-1 rounded-[4px]'>

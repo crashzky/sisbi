@@ -98,7 +98,7 @@ const MyVacancyCard: React.FC<Props> = ({ className = '', imageSrc, label, minPr
 						</div>
 					</div>
 				</div>
-				<Paragraph variant='6' tag='p' className='mb-3'>
+				<Paragraph variant='6' tag='p' className='h-[60px] overflow-y-hidden mb-3'>
 					{description}
 				</Paragraph>
 				<div className='flex flex-wrap mb-6'>

@@ -12,11 +12,11 @@ import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
 import { getMyProfileUser, putProfileUser } from '../../shared/api/user';
 import { EDUCATION, EXPERIENCE, GENDERS } from '../../shared/consts/profile';
+import { getInvites } from '../../shared/api/invites';
+import yearsToText from '../../utils/yearsToText';
 
 import ShareSolidIcon from '../../assets/communication/share_solid.svg';
 import DownloadSolidIcon from '../../assets/general/download_solid.svg';
-import { getInvites } from '../../shared/api/invites';
-import yearsToText from '../../utils/yearsToText';
 
 const ProfilePageUser = (): JSX.Element => {
 	const router = useRouter();

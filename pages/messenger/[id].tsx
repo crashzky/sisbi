@@ -324,12 +324,11 @@ const ChatPage = (): JSX.Element => {
 					</div>
 					<div></div>
 					<div className='relative'>
-						<button
+						<input
 							onFocus={() => setIsOpenedMenu(true)}
-							onBlur={() => setTimeout(() => setIsOpenedMenu(false), 100)}
-						>
-							<OtherIcon className='fill-icon-secondary' />
-						</button>
+							onBlur={() => setIsOpenedMenu(false)}
+							className='absolute w-full h-full opacity-0 cursor-pointer' />
+						<OtherIcon className='fill-icon-secondary' />
 						{isOpenedMenu && (
 							<div
 								className='absolute z-20 top-10 right-0 w-[186px] grid bg-white rounded-b-2xl'
@@ -340,7 +339,7 @@ const ChatPage = (): JSX.Element => {
 								<button
 									className={`p-4 w-full flex justify-between items-center text-left
 										text-sm border-b-[1px] border-button-secondary`}
-									onClick={() => {
+									onMouseDown={() => {
 										if(userType === 'user')
 											router.push(`/vacancies/${chatInfoQuery.data.payload.vacancy.id}`);
 										else
@@ -352,14 +351,14 @@ const ChatPage = (): JSX.Element => {
 								<button
 									className={`p-4 w-full flex justify-between items-center text-left
 										text-sm border-b-[1px] border-button-secondary`}
-									onClick={() => setOpenedModal('contacts')}
+									onMouseDown={() => setOpenedModal('contacts')}
 								>
 									Показать контакты
 								</button>
 								<button
 									className={`p-4 w-full flex justify-between items-center text-red text-left
 										text-sm`}
-									onClick={() => setOpenedModal('delete')}
+									onMouseDown={() => setOpenedModal('delete')}
 								>
 									Удалить чат
 								</button>

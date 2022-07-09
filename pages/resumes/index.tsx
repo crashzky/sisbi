@@ -6,7 +6,6 @@ import VacanciesFiltres from '../../layouts/VacanciesFiltres';
 import useModal from '../../hooks/useModal';
 import { slide as Menu } from 'react-burger-menu';
 import { useEffect, useState } from 'react';
-import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import PageSlider from '../../components/PageSlider';
 import { useMutation } from 'react-query';
 import withRouterParam from '../../utils/withRouterParam';
@@ -201,6 +200,4 @@ const ResumesPage = (): JSX.Element => {
 	);
 };
 
-export default withCheckAuthLayout(ResumesPage, {
-	checkLoggined: true,
-});
+export default ResumesPage;

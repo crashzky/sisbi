@@ -59,7 +59,6 @@ const FOOTER_ITEMS: IFooterItem[] = [
 			{
 				title: 'Контакты',
 				href: '#',
-				
 			},
 			{
 				title: 'Мобильное приложение',
