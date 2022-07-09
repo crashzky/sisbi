@@ -187,11 +187,16 @@ const VacancyPage = (): JSX.Element => {
 									{isSuccess && job_category.name}
 								</Paragraph>
 								<div className='grid grid-flow-col gap-2 w-fit mb-8'>
-									{(userType && userType=== 'user') ? (
-										<Button className='h-12 px-8' onClick={() => setShowRespondMenu(true)}>
+									{userType !== 'employer' && (
+										<Button
+											className='h-12 px-8'
+											onClick={localStorage.getItem('user_type') === 'user'
+												? () => setShowRespondMenu(true)
+												: () => router.push('/?modal=login') }
+										>
 											Откликнуться
 										</Button>
-									) : <></>}
+									)}
 									<Button
 										variant='secondary'
 										className='h-12 px-8'

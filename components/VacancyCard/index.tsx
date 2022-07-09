@@ -98,16 +98,18 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 						Откликнуться
 					</Button>
 					<div className='relative'>
-						<Button
-							variant={showContacts ? 'secondary' : 'outline_secondary'}
-							size='S'
-							className='w-[155px] h-9'
-							onClick={localStorage.getItem('user_type') === 'user'
-								? () => setShowContacts((prev) => !prev)
-								: () => router.push('/?modal=login')}
-						>
-							Показать контакты
-						</Button>
+						{userType !== 'employer' && (
+							<Button
+								variant={showContacts ? 'secondary' : 'outline_secondary'}
+								size='S'
+								className='w-[155px] h-9'
+								onClick={localStorage.getItem('user_type') === 'user'
+									? () => setShowContacts((prev) => !prev)
+									: () => router.push('/?modal=login')}
+							>
+								Показать контакты
+							</Button>
+						)}
 						{showContacts && (
 							<div
 								className='absolute z-10 top-10 w-[314px] bg-[#FAFBFC] p-4 rounded-xl'
