@@ -195,7 +195,9 @@ const VacancyPage = (): JSX.Element => {
 									<Button
 										variant='secondary'
 										className='h-12 px-8'
-										onClick={() => router.push('#contacts')}
+										onClick={localStorage.getItem('user_type') === 'user'
+											? () => router.push('#contacts')
+											: () => router.push('/?modal=login')}
 									>
 										Показать контакты
 									</Button>
@@ -218,26 +220,30 @@ const VacancyPage = (): JSX.Element => {
 									}
 								})}
 								<div className='w-full border-t-[1px] border-gray-100 mb-8' id='contacts'></div>
-								<Paragraph variant='3' tag='h2' className='font-semibold mb-4'>
-									Контактная информация
-								</Paragraph>
-								<Paragraph variant='5' tag='p' className='mb-2'>
-									{full_name}
-								</Paragraph>
-								<div className='grid grid-flow-col w-fit gap-3 items-center'>
-									<PhoneSolidIcon className='fill-darkBlue' />
-									<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
-										<a href={`tel:${phone}`}>
-											{formatPhoneNumberIntl(phone)}
-										</a>
-									</Paragraph>
-									<MailSolidIcon className='fill-darkBlue' />
-									<Paragraph variant='5' tag='p' className='text-darkBlue'>
-										<a href={`mailto:${email}`}>
-											{email}
-										</a>
-									</Paragraph>
-								</div>
+								{localStorage.getItem('user_type') === 'user' && (
+									<>
+										<Paragraph variant='3' tag='h2' className='font-semibold mb-4'>
+											Контактная информация
+										</Paragraph>
+										<Paragraph variant='5' tag='p' className='mb-2'>
+											{full_name}
+										</Paragraph>
+										<div className='grid grid-flow-col w-fit gap-3 items-center'>
+											<PhoneSolidIcon className='fill-darkBlue' />
+											<Paragraph variant='5' tag='p' className='mr-3 text-darkBlue'>
+												<a href={`tel:${phone}`}>
+													{formatPhoneNumberIntl(phone)}
+												</a>
+											</Paragraph>
+											<MailSolidIcon className='fill-darkBlue' />
+											<Paragraph variant='5' tag='p' className='text-darkBlue'>
+												<a href={`mailto:${email}`}>
+													{email}
+												</a>
+											</Paragraph>
+										</div>	
+									</>
+								)}
 								<Paragraph variant='5' tag='p' className='mt-10 text-text-secondary'>
 									Вакансия опубликована
 									{' '}

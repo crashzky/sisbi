@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
 import RateButton from '../RateButton';
 import useUserType from '../../hooks/useUserType';
+import { useRouter } from 'next/router';
 
 import CompanyIcon from '../../assets/company.svg';
 import CloseIcon from '../../assets/general/close.svg';
@@ -15,6 +16,8 @@ import MailIcon from '../../assets/communication/mail_solid.svg';
 const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, label, minPrice, description, tags,
 	contactName, contactPhone, contactMail, companyAvatar, onRespond, isFavorited, onAddToFavorites, onRemoveFromFavorited,
 	...props }) => {
+	const router = useRouter();
+
 	const { userType } = useUserType();
 
 	const [showContacts, setShowContacts] = useState(false);
@@ -84,22 +87,24 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 					))}
 				</div>
 				<div className='grid grid-cols-[121px_155px_1fr_auto] gap-2'>
-					{localStorage.getItem('user_type') === 'user' && (
-						<Button
-							variant='outline_secondary'
-							size='S'
-							className='w-[121px] h-9'
-							onClick={onRespond}
-						>
-							Откликнуться
-						</Button>
-					)}
+					<Button
+						variant='outline_secondary'
+						size='S'
+						className='w-[121px] h-9'
+						onClick={localStorage.getItem('user_type') === 'user'
+							? onRespond
+							: () => router.push('/?modal=login')}
+					>
+						Откликнуться
+					</Button>
 					<div className='relative'>
 						<Button
 							variant={showContacts ? 'secondary' : 'outline_secondary'}
 							size='S'
 							className='w-[155px] h-9'
-							onClick={() => setShowContacts((prev) => !prev)}
+							onClick={localStorage.getItem('user_type') === 'user'
+								? () => setShowContacts((prev) => !prev)
+								: () => router.push('/?modal=login')}
 						>
 							Показать контакты
 						</Button>
