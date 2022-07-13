@@ -57,12 +57,12 @@ const ResumeCard: React.FC<Props> = ({ className = '', avatar, name, surname, bi
 					{skills.join(', ')}
 				</Paragraph>
 				<div className='h-[60px] overflow-y-hidden mb-3'>
-					{about && about.split('<br>').filter((i) => i.length).map((i, num) => (
+					{about && about.split('\n').filter((i) => i.length).map((i, num) => (
 						<>
 							<Paragraph variant='6' tag='p' key={num}>
 								{i}
 							</Paragraph>
-							{num !== about.split('<br>').length && (
+							{num !== about.split('\n').length && (
 								<br />
 							)}
 						</>

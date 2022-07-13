@@ -23,7 +23,7 @@ const EmployerAboutPage = (): JSX.Element => {
 
 			if(!state) {
 				formik.setValues({
-					about: data.payload.about.replaceAll('<br>', '\n'),
+					about: data.payload.about,
 				});
 			}
 		},
@@ -40,7 +40,7 @@ const EmployerAboutPage = (): JSX.Element => {
 		onSubmit: (values) => {
 			mutate({
 				employer: {
-					about: values.about.replaceAll('\n', '<br>'),
+					about: values.about,
 				},
 			});
 		},

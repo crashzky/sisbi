@@ -74,8 +74,8 @@ const ProfilePageEmployer = (): JSX.Element => {
 							</a>
 						</Link>
 					</div>
-					{(data && data.about) && data.about.split('<br>').map((i, num) => {
-						if(num != data.about.split('<br>').length - 1) {
+					{(data && data.about) && data.about.split('\n').map((i, num) => {
+						if(num != data.about.split('\n').length - 1) {
 							return (
 								<Paragraph key={num} variant='5' tag='p' className='max-w-[550px]'>
 									{i}
@@ -114,7 +114,7 @@ const ProfilePageEmployer = (): JSX.Element => {
 									lastUpdate={new Date(i.updated_at)}
 									label={i.title}
 									minPrice={i.salary}
-									description={i.description ? i.description.replaceAll('<br>', '') : i.description}
+									description={i.description}
 									tags={[
 										i.job_category.name, EXPERIENCE[i.experience], ...i.type_employments.map((i) => i.name),
 										...i.schedules.map((i) => i.name)]} />

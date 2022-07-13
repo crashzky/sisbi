@@ -181,8 +181,8 @@ const ResumeIdPage = (): JSX.Element => {
 										Отправить приглашение
 									</Button>
 								)}
-								{about && about.split('<br>').map((i, num) => {
-									if(num != about.split('<br>').length - 1) {
+								{about && about.split('\n').map((i, num) => {
+									if(num != about.split('\n').length - 1) {
 										return (
 											<Paragraph key={num} variant='5' tag='p'>
 												{i}

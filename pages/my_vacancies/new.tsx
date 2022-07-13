@@ -141,7 +141,7 @@ const NewVacancyPage = (): JSX.Element => {
 					full_name: values.contactFullName,
 					email: values.contactEmail,
 					phone: '+7' + (values.contactPhone as string).replaceAll(' ', ''),
-					description: description.replaceAll('\n', '<br>'),
+					description: description,
 					job_category_id: jobCategory,
 					city_id: +city.value,
 					visible: isSaveWithPublish,

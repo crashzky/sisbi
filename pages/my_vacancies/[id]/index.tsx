@@ -121,8 +121,8 @@ const MyVacancyPage = (): JSX.Element => {
 								Показать контакты
 							</Button>
 						</div>
-						{(data && description) && description.split('<br>').map((i, num) => {
-							if(num != description.split('<br>').length - 1) {
+						{(data && description) && description.split('\n').map((i, num) => {
+							if(num != description.split('\n').length - 1) {
 								return (
 									<Paragraph key={num} variant='5' tag='p'>
 										{i}

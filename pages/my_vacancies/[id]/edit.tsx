@@ -60,7 +60,10 @@ const NewVacancyPage = (): JSX.Element => {
 
 			if(title) {
 				getSuggestions({ name: title })
-					.then((res) => setSuggestion({ value: res.payload[0].id.toString(), label: res.payload[0].name }));
+					.then((res) => {
+						if(res.total_entries)	
+							setSuggestion({ value: res.payload[0].id.toString(), label: res.payload[0].name });
+					});
 			}
 
 			formik.setValues({
@@ -75,7 +78,7 @@ const NewVacancyPage = (): JSX.Element => {
 				contactEmail: email,
 			});
 
-			setDescription(description.replaceAll('<br>', '\n'));
+			setDescription(description);
 			setJobCategory(job_category.id);
 			setPrevAvatar(avatar);
 			setCity({ value: city.id.toString(), label: city.name });
@@ -192,7 +195,7 @@ const NewVacancyPage = (): JSX.Element => {
 				full_name: values.contactFullName,
 				email: values.contactEmail,
 				phone: '+7' + (values.contactPhone as string).replaceAll(' ', ''),
-				description: description.replaceAll('\n', '<br>'),
+				description: description,
 				job_category_id: jobCategory,
 				city_id: +city.value,
 				visible: isSaveWithPublish,

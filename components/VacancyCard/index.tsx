@@ -68,12 +68,12 @@ const VacancyCard: React.FC<Props> = ({ className = '', imageSrc, companyName, l
 					</span>
 				</Paragraph>
 				<div className='h-[60px] overflow-y-hidden mb-3'>
-					{description && description.split('<br>').filter((i) => i.length).map((i, num) => (
+					{description && description.split('\n').filter((i) => i.length).map((i, num) => (
 						<>
 							<Paragraph variant='6' tag='p' key={num}>
 								{i}
 							</Paragraph>
-							{num !== description.split('<br>').length && (
+							{num !== description.split('\n').length && (
 								<br />
 							)}
 						</>
