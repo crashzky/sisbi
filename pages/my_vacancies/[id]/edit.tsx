@@ -29,6 +29,7 @@ import { addSchedulesVacancy, addTypeEmployementsVacancy,
 	removeSchedulesVacancy, removeTypeEmployementsVacancy } from '../../../shared/api/vacancies';
 import * as Yup from 'yup';
 import removeItemFromArray from '../../../utils/removeItemFromArray';
+import { getSuggestions } from '../../../shared/api/vacancies_suggestions';
 
 import LoaderIcon from '../../../assets/loader.svg';
 
@@ -49,11 +50,18 @@ const NewVacancyPage = (): JSX.Element => {
 	const [errorsList, setErrorsList] = useState<string[]>([]);
 	const [isSaveWithPublish, setIsSaveWithPublish] = useState(true);
 
+	const [suggestion, setSuggestion] = useState<ISelectOption>();
+
 	useQuery([{ id: router.query.id }], getVacancyById, {
 		enabled: !!(router && router.query),
 		onSuccess: (res) => {
 			const { title, salary, experience, type_employments, schedules, full_name, phone, email,
 				description, job_category, avatar, city } = res.payload;
+
+			if(title) {
+				getSuggestions({ name: title })
+					.then((res) => setSuggestion({ value: res.payload[0].id.toString(), label: res.payload[0].name }));
+			}
 
 			formik.setValues({
 				title,
@@ -108,6 +116,7 @@ const NewVacancyPage = (): JSX.Element => {
 	});
 
 	const citiesMutation = useMutation(getCities);
+	const suggestsMutation = useMutation(getSuggestions);
 
 	const putVacancyMutation = useMutation(putVacancy, {
 		onSuccess: (res) => removeSchedulesMutation.mutate({
@@ -177,7 +186,7 @@ const NewVacancyPage = (): JSX.Element => {
 
 			putVacancyMutation.mutate({
 				id: +router.query.id,
-				title: values.title,
+				title: suggestion.label,
 				salary: values.salary,
 				experience: TO_EXPERIENCE[values.experience],
 				full_name: values.contactFullName,
@@ -242,12 +251,19 @@ const NewVacancyPage = (): JSX.Element => {
 							<Paragraph variant='5' tag='p'>
 								Название вакансии
 							</Paragraph>
-							<Input
-								value={formik.values.title}
-								name='title'
-								isDanger={!!formik.errors.title}
-								onChange={formik.handleChange}
-								placeholder='Например, менеджер по продажам' />
+							<Select
+								variant='primary'
+								placeholder='Например, менеджер по продажам'
+								isDanger={!suggestion && !!formik.errors.title}
+								onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+								noOptionsMessage={() => 'Ничего не найдено'}
+								loadingMessage={() => 'Загрузка...'}
+								isLoading={suggestsMutation.isLoading}
+								value={suggestion}
+								onChange={setSuggestion}
+								options={suggestsMutation.isSuccess
+									? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
+									: []} />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности
 							</Paragraph>
