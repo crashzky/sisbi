@@ -23,6 +23,7 @@ import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
 import CloseIcon from '../../assets/general/close.svg';
+import Link from 'next/link';
 
 const VacancyPage = (): JSX.Element => {
 	const router = useRouter();
@@ -153,21 +154,23 @@ const VacancyPage = (): JSX.Element => {
 											</span>
 										))}
 								</div>
-								<div className='grid grid-flow-col gap-3 w-fit mb-5'>
-									{employer && employer.avatar ? (
-										<Image
-											width={20}
-											height={20}
-											alt='Company'
-											className='object-cover rounded-full'
-											src={employer.avatar} />
-									) : (
-										<CompanyIcon />
-									)}
-									<Paragraph variant='4' tag='p' className='text-text'>
-										{employer && employer.name}
-									</Paragraph>
-								</div>
+								<Link href={employer ? `/companies/${employer.id}` : ''}>
+									<a className='grid grid-flow-col gap-3 w-fit mb-5'>
+										{employer && employer.avatar ? (
+											<Image
+												width={20}
+												height={20}
+												alt='Company'
+												className='object-cover rounded-full'
+												src={employer.avatar} />
+										) : (
+											<CompanyIcon />
+										)}
+										<Paragraph variant='4' tag='p' className='text-text'>
+											{employer && employer.name}
+										</Paragraph>
+									</a>
+								</Link>
 								<Headline variant='3' tag='h1' className='mb-2 font-bold'>
 									{isSuccess ? title : 'Загрузка...'}
 								</Headline>

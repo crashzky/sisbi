@@ -47,6 +47,7 @@ const NewVacancyPage = (): JSX.Element => {
 	const [isSaveWithPublish, setIsSaveWithPublish] = useState(true);
 
 	const [suggestion, setSuggestion] = useState<ISelectOption>();
+	const [suggestRequest, setSuggestRequest] = useState<string>();
 
 	const jobCategoriesQuery = useQuery('job_categories', getJobCategories, {
 		initialData: {
@@ -151,6 +152,19 @@ const NewVacancyPage = (): JSX.Element => {
 			}
 		},
 	});
+
+	function getSuggestOptions() {
+		if(suggestsMutation.isSuccess && suggestRequest) {
+			return [
+				{ value: suggestRequest, label: suggestRequest },
+				...suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name })),
+			];
+		}
+		else if(suggestsMutation.isSuccess)
+			return suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }));
+		else 
+			return [];
+	}
 	
 	useEffect(() => citiesMutation.mutate({ name: '' }), []);
 
@@ -204,15 +218,20 @@ const NewVacancyPage = (): JSX.Element => {
 								variant='primary'
 								placeholder='Например, менеджер по продажам'
 								isDanger={!suggestion && !!formik.errors.title}
-								onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+								onInputChange={(newValue) => {
+									if(newValue)
+										setSuggestRequest(newValue);
+									else
+										setSuggestRequest(undefined);
+
+									suggestsMutation.mutate({ name: newValue });
+								}}
 								noOptionsMessage={() => 'Ничего не найдено'}
 								loadingMessage={() => 'Загрузка...'}
 								isLoading={suggestsMutation.isLoading}
 								value={suggestion}
 								onChange={setSuggestion}
-								options={suggestsMutation.isSuccess
-									? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
-									: []} />
+								options={getSuggestOptions()} />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности
 							</Paragraph>

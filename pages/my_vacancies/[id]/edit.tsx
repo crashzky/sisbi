@@ -51,6 +51,7 @@ const NewVacancyPage = (): JSX.Element => {
 	const [isSaveWithPublish, setIsSaveWithPublish] = useState(true);
 
 	const [suggestion, setSuggestion] = useState<ISelectOption>();
+	const [suggestRequest, setSuggestRequest] = useState<string>();
 
 	useQuery([{ id: router.query.id }], getVacancyById, {
 		enabled: !!(router && router.query),
@@ -61,8 +62,10 @@ const NewVacancyPage = (): JSX.Element => {
 			if(title) {
 				getSuggestions({ name: title })
 					.then((res) => {
-						if(res.total_entries)	
+						if(res.total_entries && res.payload[0].name === title)	
 							setSuggestion({ value: res.payload[0].id.toString(), label: res.payload[0].name });
+						else if(res.total_entries)
+							setSuggestion({ value: title, label: title });
 					});
 			}
 
@@ -205,6 +208,19 @@ const NewVacancyPage = (): JSX.Element => {
 			setIsSaveWithPublish(true);
 		},
 	});
+
+	function getSuggestOptions() {
+		if(suggestsMutation.isSuccess && suggestRequest) {
+			return [
+				{ value: suggestRequest, label: suggestRequest },
+				...suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name })),
+			];
+		}
+		else if(suggestsMutation.isSuccess)
+			return suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }));
+		else 
+			return [];
+	}
 	
 	useEffect(() => citiesMutation.mutate({ name: '' }), []);
 
@@ -258,15 +274,20 @@ const NewVacancyPage = (): JSX.Element => {
 								variant='primary'
 								placeholder='Например, менеджер по продажам'
 								isDanger={!suggestion && !!formik.errors.title}
-								onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+								onInputChange={(newValue) => {
+									if(newValue)
+										setSuggestRequest(newValue);
+									else
+										setSuggestRequest(undefined);
+
+									suggestsMutation.mutate({ name: newValue });
+								}}
 								noOptionsMessage={() => 'Ничего не найдено'}
 								loadingMessage={() => 'Загрузка...'}
 								isLoading={suggestsMutation.isLoading}
 								value={suggestion}
 								onChange={setSuggestion}
-								options={suggestsMutation.isSuccess
-									? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
-									: []} />
+								options={getSuggestOptions()} />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности
 							</Paragraph>

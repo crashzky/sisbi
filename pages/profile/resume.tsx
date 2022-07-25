@@ -21,12 +21,12 @@ import ProfileSelectJobModal from '../../modals/ProfileSelectJobModal';
 import { getJobCategories } from '../../shared/api/job_categories';
 import withCheckAuthLayout from '../../layouts/CheckAuthLayout';
 import * as Yup from 'yup';
-
-import CloseIcon from '../../assets/general/close.svg';
-import LoaderIcon from '../../assets/loader.svg';
 import { getSuggestions } from '../../shared/api/vacancies_suggestions';
 import Select from '../../components/Select';
 import { ISelectOption } from '../../components/Select/Select.props';
+
+import CloseIcon from '../../assets/general/close.svg';
+import LoaderIcon from '../../assets/loader.svg';
 
 const ResumePage = (): JSX.Element => {
 	const router = useRouter();
@@ -37,6 +37,7 @@ const ResumePage = (): JSX.Element => {
 	const [jobCategory, setJobCategory] = useState(null);
 	const [showJobSelect, setShowJobSelect] = useState(false);
 	const [suggestion, setSuggestion] = useState<ISelectOption>();
+	const [suggestRequest, setSuggestRequest] = useState<string>('');
 
 	const { data } = useQuery('my_profile_user', getMyProfileUser, {
 		onSuccess: (value) => {
@@ -58,8 +59,12 @@ const ResumePage = (): JSX.Element => {
 			if(value.payload.previous_job) {
 				getSuggestions({ name: value.payload.previous_job })
 					.then((res) => {
-						if(res.payload.length)
-							setSuggestion({ label: res.payload[0].name, value: res.payload[0].name });
+						if(res.payload.length) {
+							if(res.payload[0].name === value.payload.previous_job)
+								setSuggestion({ label: res.payload[0].name, value: res.payload[0].name });
+							else
+								setSuggestion({ label: value.payload.previous_job, value: value.payload.previous_job });
+						}
 					});
 			}
 		},
@@ -163,6 +168,19 @@ const ResumePage = (): JSX.Element => {
 		},
 	});
 
+	function getSuggestOptions() {
+		if(suggestsMutation.isSuccess && suggestRequest) {
+			return [
+				{ value: suggestRequest, label: suggestRequest },
+				...suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name })),
+			];
+		}
+		else if(suggestsMutation.isSuccess)
+			return suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }));
+		else 
+			return [];
+	}
+
 	useEffect(() => suggestsMutation.mutate({ name: '' }), []);
 
 	if(showSkillsSelect) {
@@ -209,15 +227,19 @@ const ResumePage = (): JSX.Element => {
 								variant='primary'
 								placeholder='Должность'
 								isDanger={!suggestion && !!formik.submitCount}
-								onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+								onInputChange={(newValue) => {
+									if(newValue !== '')
+										setSuggestRequest(newValue);
+									else
+										setSuggestRequest(null);
+									suggestsMutation.mutate({ name: newValue });
+								}}
 								noOptionsMessage={() => 'Ничего не найдено'}
 								loadingMessage={() => 'Загрузка...'}
 								isLoading={suggestsMutation.isLoading}
 								value={suggestion}
 								onChange={setSuggestion}
-								options={suggestsMutation.isSuccess
-									? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
-									: []} />
+								options={getSuggestOptions()} />
 							<Paragraph variant='5' tag='p'>
 								Сфера деятельности	
 							</Paragraph>

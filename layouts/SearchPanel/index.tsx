@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import Button from '../../components/Button';
-import Input from '../../components/Input';
 import Select from '../../components/Select';
 import { ISelectOption } from '../../components/Select/Select.props';
 import { getCities, getCityById } from '../../shared/api/cities';
@@ -15,6 +14,7 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 
 	const [city, setCity] = useState<ISelectOption>();
 	const [suggestion, setSuggestion] = useState<ISelectOption>();
+	const [suggestRequest, setSuggestRequest] = useState<string>();
 
 	const citiesMutation = useMutation(getCities);
 	const suggestsMutation = useMutation(getSuggestions);
@@ -36,7 +36,12 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 		
 		if(router.query && router.query.query) {
 			getSuggestions({ name: router.query.query as string })
-				.then((res) => setSuggestion({ value: res.payload[0].id.toString(), label: res.payload[0].name }));
+				.then((res) => {
+					if(res.total_entries && router.query.query === res.payload[0].name)
+						setSuggestion({ value: res.payload[0].id.toString(), label: res.payload[0].name });
+					else if(res.total_entries)
+						setSuggestion({ value: router.query.query as string, label: router.query.query as string });
+				});
 		}
 	}, [router]);
 
@@ -54,6 +59,19 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 			});
 		},
 	});
+
+	function getSuggestOptions() {
+		if(suggestsMutation.isSuccess && suggestRequest) {
+			return [
+				{ value: suggestRequest, label: suggestRequest },
+				...suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name })),
+			];
+		}
+		else if(suggestsMutation.isSuccess)
+			return suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }));
+		else 
+			return [];
+	}
 
 	return (
 		<section className={className + ' bg-darkBlue py-4 px-40'} {...props}>
@@ -76,15 +94,20 @@ const SearchPanel: React.FC<Props> = ({ className = '', ...props }) => {
 				<Select
 					variant='with_gap'
 					placeholder='Название должности'
-					onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+					onInputChange={(newValue) => {
+						if(newValue)
+							setSuggestRequest(newValue);
+						else
+							setSuggestRequest(undefined);
+
+						suggestsMutation.mutate({ name: newValue });
+					}}
 					noOptionsMessage={() => 'Ничего не найдено'}
 					loadingMessage={() => 'Загрузка...'}
 					isLoading={suggestsMutation.isLoading}
 					value={suggestion}
 					onChange={setSuggestion}
-					options={suggestsMutation.isSuccess
-						? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
-						: []} />
+					options={getSuggestOptions()} />
 				{/*
 					<Input
 						className='py-0 bg-white'

@@ -20,6 +20,7 @@ const SingupStep5Modal: React.FC<Props> = () => {
 
 	const [selectedValue, setSelectedValue] = useState<string>();
 	const [suggestion, setSuggestion] = useState<ISelectOption>();
+	const [suggestRequest, setSuggestRequest] = useState<string>();
 
 	const validationSchema = Yup.object({
 		minSalary: Yup.number().min(0).required(),
@@ -58,6 +59,19 @@ const SingupStep5Modal: React.FC<Props> = () => {
 
 	const suggestsMutation = useMutation(getSuggestions);
 
+	function getSuggestOptions() {
+		if(suggestsMutation.isSuccess && suggestRequest) {
+			return [
+				{ value: suggestRequest, label: suggestRequest },
+				...suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name })),
+			];
+		}
+		else if(suggestsMutation.isSuccess)
+			return suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }));
+		else 
+			return [];
+	}
+
 	return (
 		<SignupStepLayout
 			label='Кем бы вы хотели бы работать'
@@ -72,15 +86,19 @@ const SingupStep5Modal: React.FC<Props> = () => {
 				variant='primary'
 				placeholder='Название должности'
 				isDanger={!suggestion && !!formik.submitCount}
-				onInputChange={(newValue) => suggestsMutation.mutate({ name: newValue })}
+				onInputChange={(newValue) => {
+					if(newValue)
+						setSuggestRequest(newValue);
+					else
+						setSuggestRequest(undefined);
+					suggestsMutation.mutate({ name: newValue });
+				}}
 				noOptionsMessage={() => 'Ничего не найдено'}
 				loadingMessage={() => 'Загрузка...'}
 				isLoading={suggestsMutation.isLoading}
 				value={suggestion}
 				onChange={setSuggestion}
-				options={suggestsMutation.isSuccess
-					? suggestsMutation.data.payload.map((i) => ({ value: i.id.toString(), label: i.name }))
-					: []} />
+				options={getSuggestOptions()} />
 			<Paragraph variant='4' tag='h3' className='font-bold my-3'>
 				Опыт работы
 			</Paragraph>

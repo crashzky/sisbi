@@ -17,6 +17,11 @@ const SmsCode: React.FC<Props> = ({ className = '', onCodeChanged, isDanger, ...
 		onCodeChanged(code.join(''));
 	}, [code]);
 
+	useEffect(() => {
+		if(ref1.current)
+			ref1.current.focus();
+	}, []);
+
 	return (
 		<div className={className + ' grid grid-flow-col gap-2'} {...props}>
 			{BLOCKS_REFS.map((i, num) => (

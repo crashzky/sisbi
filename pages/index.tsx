@@ -23,6 +23,7 @@ import SingupStep6Modal from '../modals/SignupStep6Modal';
 import SingupStepFinalModal from '../modals/SignupStepFinalModal';
 import SignupStep1EmployerModal from '../modals/SignupStep1EmployerModal';
 import SignupStep2EmployerModal from '../modals/SignupStep2EmployerModal';
+import SingupStepFinal2Modal from '../modals/SignupStepFina2lModal';
 
 const MainPage = (): JSX.Element => {
 	const router = useRouter();
@@ -53,6 +54,7 @@ const MainPage = (): JSX.Element => {
 			'signupFinal': withCheckAuthLayout(SingupStepFinalModal, checkAuthConfig2) as JSX.Element,
 			'signup1employer': withCheckAuthLayout(SignupStep1EmployerModal, checkAuthConfig2) as JSX.Element,
 			'signup2employer': withCheckAuthLayout(SignupStep2EmployerModal, checkAuthConfig2) as JSX.Element,
+			'signupFinal2': withCheckAuthLayout(SingupStepFinal2Modal, checkAuthConfig2) as JSX.Element,
 		}}
 		>
 			<MainLayout headerItems={HEADER_PRIMARY_ITEMS}>

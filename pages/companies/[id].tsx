@@ -1,21 +1,20 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { formatPhoneNumberIntl } from 'react-phone-number-input';
+import { useQuery } from 'react-query';
 import Headline from '../../components/Headline';
 import Paragraph from '../../components/Paragraph';
 import MainLayout from '../../layouts/MainLayout';
+import { getEmployerById } from '../../shared/api/employer';
+import { IGetEmployerQueryKey } from '../../shared/types/api/employer';
 
 const CompanyPage = (): JSX.Element => {
-	const data = {
-		name: 'Its wooble',
-		phone: '79221642934',
-		email: 'mail@mail.ru',
-		avatar: `https://api.sisbi.ru/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2Fn
-		ZSI6IkJBaHBDdz09IiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--571a66a8d868bd1d0835aa595f37ee39ae3898fc/ey
-		JfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnN
-		IYVFJTkFXa0NEUUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--8b32305256f0ea7f55dbcdd0d7e4e0c4221cac8b/wooble.png`,
-		about: `Мы небольшая команда, создающая IT-решения для бизнеса разной направленности и сложности. Разрабатываем
-		сайты, приложения, дизайн и предоставляем услуги по доработке уже существующих продуктов.`,
-	};
+	const router = useRouter();
+
+	const { data, isSuccess } = useQuery([{ id: +(router.query.id as string) }, 'get_employer'] as IGetEmployerQueryKey,
+		getEmployerById, {
+			enabled: !!router && !!router.query.id,
+		});
 
 	return (
 		<MainLayout className='bg-[#FAFBFC] pt-10 px-40'>
@@ -24,25 +23,25 @@ const CompanyPage = (): JSX.Element => {
 			>
 				<div>
 					<Headline variant='5' tag='h1' className='font-bold mb-4'>
-						{data ? data.name : 'Загрузка...'}
+						{isSuccess ? data.payload.name : 'Загрузка...'}
 					</Headline>
 					<Paragraph variant='3' tag='p' className='mb-1'>
-						<a href={`tel:${data && data.phone}`}>
-							{data && data.phone ? formatPhoneNumberIntl('+' + data.phone) : ''}
+						<a href={`tel:${data && data.payload.phone}`}>
+							{isSuccess && data.payload.phone ? formatPhoneNumberIntl('+' + data.payload.phone) : ''}
 						</a>
 					</Paragraph>
 					<Paragraph variant='3' tag='p' className='mb-1'>
-						<a href={`mailto:${data && data.email}`}>
-							{data && data.email}
+						<a href={`mailto:${isSuccess && data.payload.email}`}>
+							{isSuccess && data.payload.email}
 						</a>
 					</Paragraph>
 				</div>
-				{data && data.avatar ? (
+				{isSuccess && data.payload.avatar ? (
 					<Image
 						width={173}
 						height={173}
 						className='object-cover rounded-2xl'
-						src={data.avatar}
+						src={data.payload.avatar}
 						alt='avatar' />
 				) : ''}
 			</section>
@@ -50,8 +49,8 @@ const CompanyPage = (): JSX.Element => {
 				<Paragraph variant='1' tag='h2' className='font-semibold mb-4'>
 					О компании
 				</Paragraph>
-				{(data && data.about) && data.about.split('\n').map((i, num) => {
-					if(num != data.about.split('\n').length - 1) {
+				{(isSuccess && data.payload.about) && data.payload.about.split('\n').map((i, num) => {
+					if(num != data.payload.about.split('\n').length - 1) {
 						return (
 							<Paragraph key={num} variant='5' tag='p' className='max-w-[550px]'>
 								{i}

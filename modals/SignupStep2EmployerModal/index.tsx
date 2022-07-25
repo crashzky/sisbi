@@ -32,7 +32,7 @@ const SingupStep2EmployerModal: React.FC<Props> = () => {
 
 	const { mutate, isLoading } = useMutation(putProfileEmployer, {
 		onSuccess: () => {
-			router.push(router.pathname + '/?modal=signupFinal');
+			router.push(router.pathname + '/?modal=signupFinal2');
 		},
 	});
 
