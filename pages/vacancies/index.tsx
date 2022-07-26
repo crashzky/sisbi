@@ -9,7 +9,7 @@ import { slide as Menu } from 'react-burger-menu';
 import { useEffect, useState } from 'react';
 import RespondVacancyMenu from '../../components/RespondVacancyMenu';
 import PageSlider from '../../components/PageSlider';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { getVacancies, respondVacancy } from '../../shared/api/vacancies';
 import withRouterParam from '../../utils/withRouterParam';
 import { EXPERIENCE } from '../../shared/consts/profile';
@@ -20,6 +20,7 @@ import SelectJobModal from '../../modals/SelectJobModal';
 import { addVacancyToFavorite, removeVacancyFromFavorites } from '../../shared/api/favorites';
 import useUserType from '../../hooks/useUserType';
 import Button from '../../components/Button';
+import { getMyProfileUser } from '../../shared/api/user';
 
 const VacanciesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -32,6 +33,8 @@ const VacanciesPage = (): JSX.Element => {
 	const { activeModal } = useModal(['job_categories']);
 
 	const { data, mutate, isSuccess } = useMutation(getVacancies);
+
+	const userProfileQuery = useQuery('user_profile', getMyProfileUser);
 
 	const respondMutation = useMutation(respondVacancy, {
 		onMutate: () => {
@@ -86,6 +89,23 @@ const VacanciesPage = (): JSX.Element => {
 		}
 	}
 
+	function getActionButton() {
+		if(userType === 'employer') {
+			return (
+				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/my_vacancies/new')}>
+					Добавить вакансию
+				</Button>
+			);
+		}
+		else if(userType === 'user' && userProfileQuery.isSuccess && !userProfileQuery.data.payload.city) {
+			return (
+				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/?modal=signup1')}>
+					Заполнить резюме
+				</Button>
+			);
+		}
+	}
+
 	return (
 		<ModalLayout modals={{
 			'job_categories': <SelectJobModal />,
@@ -129,11 +149,7 @@ const VacanciesPage = (): JSX.Element => {
 						{` ${data && data.total_entries ? data.total_entries : 0} `}
 						вакансий
 					</Headline>
-					{userType === 'employer' && (
-						<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/my_vacancies/new')}>
-							Добавить вакансию
-						</Button>
-					)}
+					{getActionButton()}
 				</div>
 				<div className='grid grid-cols-[216px_1fr] gap-[68px]'>
 					<VacanciesFiltres

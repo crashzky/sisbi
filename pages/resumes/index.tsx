@@ -7,7 +7,7 @@ import useModal from '../../hooks/useModal';
 import { slide as Menu } from 'react-burger-menu';
 import { useEffect, useState } from 'react';
 import PageSlider from '../../components/PageSlider';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import withRouterParam from '../../utils/withRouterParam';
 import SelectJobModal from '../../modals/SelectJobModal';
 import ResumeCard from '../../components/ResumeCard';
@@ -19,6 +19,8 @@ import { parse } from 'date-fns';
 import { createInvite } from '../../shared/api/invites';
 import { AxiosError } from 'axios';
 import { addUserToFavorite, removeUserFromFavorites } from '../../shared/api/favorite_users';
+import { getMyProfileUser } from '../../shared/api/user';
+import Button from '../../components/Button';
 
 const ResumesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -28,7 +30,10 @@ const ResumesPage = (): JSX.Element => {
 
 	const { activeModal } = useModal(['job_categories']);
 
+	const userProfileQuery = useQuery('user_profile', getMyProfileUser);
+
 	const { data, mutate, isSuccess, isLoading } = useMutation(getResumes);
+
 	const inviteMutation = useMutation(createInvite, {
 		onSuccess: () => setRespondedResumeId(null),
 	});
@@ -78,6 +83,16 @@ const ResumesPage = (): JSX.Element => {
 		}
 	}
 
+	function getActionButton() {
+		if(userProfileQuery.isSuccess && !userProfileQuery.data.payload.city) {
+			return (
+				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/?modal=signup1')}>
+					Заполнить резюме
+				</Button>
+			);
+		}
+	}
+
 	return (
 		<ModalLayout modals={{
 			'job_categories': <SelectJobModal />,
@@ -115,11 +130,14 @@ const ResumesPage = (): JSX.Element => {
 				)}
 			</Menu>
 			<SearchLayout className='px-40'>
-				<Headline variant='5' tag='h1' className='py-10 font-bold'>
-					Найдено
-					{` ${data && data.total_entries ? data.total_entries : 0} `}
-					резюме
-				</Headline>
+				<div className='flex justify-between items-center'>
+					<Headline variant='5' tag='h1' className='py-10 font-bold'>
+						Найдено
+						{` ${data && data.total_entries ? data.total_entries : 0} `}
+						резюме
+					</Headline>
+					{getActionButton()}
+				</div>
 				<div className='grid grid-cols-[216px_1fr] gap-[68px]'>
 					<VacanciesFiltres
 						variant='resumes'
