@@ -12,6 +12,8 @@ import CloseIcon from '../../assets/general/close.svg';
 import CompanyIcon from '../../assets/company.svg';
 import PhoneSolidIcon from '../../assets/communication/phone_solid.svg';
 import MailSolidIcon from '../../assets/communication/mail_solid.svg';
+import { useQuery } from 'react-query';
+import { getMyProfileUser } from '../../shared/api/user';
 
 const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, companyAvatar, vacancyName, minPrice, vacancyId,
 	contactName, contactPhone, contactMail, onContinue, onBack, isLoading, errorMessage, ...props }) => {
@@ -23,6 +25,10 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, comp
 		onSubmit: (values) => {
 			onContinue(values.message, !!values.allowSendContacts.length);
 		},
+	});
+
+	const profileQuery = useQuery('my_profile_user', getMyProfileUser, {
+		retryDelay: 2,
 	});
 
 	return (
@@ -125,14 +131,20 @@ const RespondVacancyMenu: React.FC<Props> = ({ className = '', companyName, comp
 						{errorMessage}
 					</Paragraph>
 				)}
+				{profileQuery.isSuccess && profileQuery.data.payload.state !== 'active' ? (
+					<Paragraph variant='5' tag='p' className='text-red font-semibold px-6 mt-3'>
+						Ваше резюме ещё на модерации
+					</Paragraph>
+				) : ''}
 				<div className='px-6 py-4 grid grid-cols-[auto_auto_1fr] gap-[10px]'>
-					{isLoading ? (
+					{isLoading && (
 						<PreloaderIcon className='h-9 w-9 mx-5' />
-					) : (
+					)}
+					{!isLoading && profileQuery.data && profileQuery.data.payload.state === 'active' ? (
 						<Button className='h-9 px-4'>
 							Отправить отклик
 						</Button>
-					)}
+					) : ''}
 					<Button variant='secondary' type='button' className='h-9 px-4' onClick={onBack}>
 						Отменить
 					</Button>

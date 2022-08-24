@@ -12,7 +12,7 @@ const SingupStepFinal2Modal: React.FC<Props> = () => {
 		<SignupStepLayout
 			HeaderImage={StepFinalImage}
 			continueButtonLabel='Искать сотрудников'
-			onClickContinue={() => router.push('/resumes')}
+			onClickContinue={() => router.push('/profile')}
 		>
 			<Paragraph variant='1' tag='p' className='font-semibold'>
 				Поздравляем!

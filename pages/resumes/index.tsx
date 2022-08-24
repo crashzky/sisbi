@@ -21,6 +21,7 @@ import { AxiosError } from 'axios';
 import { addUserToFavorite, removeUserFromFavorites } from '../../shared/api/favorite_users';
 import { getMyProfileUser } from '../../shared/api/user';
 import Button from '../../components/Button';
+import useUserType from '../../hooks/useUserType';
 
 const ResumesPage = (): JSX.Element => {
 	const router = useRouter();
@@ -29,6 +30,8 @@ const ResumesPage = (): JSX.Element => {
 	const [sendedResumeId, setSendedResumeId] = useState(null);
 
 	const { activeModal } = useModal(['job_categories']);
+
+	const { userType } = useUserType();
 
 	const userProfileQuery = useQuery('user_profile', getMyProfileUser);
 
@@ -84,9 +87,17 @@ const ResumesPage = (): JSX.Element => {
 	}
 
 	function getActionButton() {
-		if(userProfileQuery.isSuccess && !userProfileQuery.data.payload.city) {
+		if(userType === 'employer') {
 			return (
-				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/?modal=signup1')}>
+				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/my_vacancies/new')}>
+					Добавить вакансию
+				</Button>
+			);
+		}
+		else if(userProfileQuery.isSuccess && (!userProfileQuery.data.payload.city || !userProfileQuery.data.payload.avatar ||
+			!userProfileQuery.data.payload.about)) {
+			return (
+				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/profile')}>
 					Заполнить резюме
 				</Button>
 			);

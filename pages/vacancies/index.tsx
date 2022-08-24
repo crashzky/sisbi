@@ -97,9 +97,10 @@ const VacanciesPage = (): JSX.Element => {
 				</Button>
 			);
 		}
-		else if(userType === 'user' && userProfileQuery.isSuccess && !userProfileQuery.data.payload.city) {
+		else if(userProfileQuery.isSuccess && (!userProfileQuery.data.payload.city || !userProfileQuery.data.payload.avatar ||
+			!userProfileQuery.data.payload.about)) {
 			return (
-				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/?modal=signup1')}>
+				<Button variant='primary' className='h-10 px-4' onClick={() => router.push('/profile')}>
 					Заполнить резюме
 				</Button>
 			);
