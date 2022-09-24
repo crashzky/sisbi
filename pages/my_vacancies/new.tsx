@@ -104,7 +104,6 @@ const NewVacancyPage = (): JSX.Element => {
 	});
 
 	const validatiionSchema = Yup.object().shape({
-		title: Yup.string().required('required'),
 		salary: Yup.number().required('required'),
 		experience: Yup.string().required('required'),
 		contactFullName: Yup.string().required('required'),
@@ -114,7 +113,6 @@ const NewVacancyPage = (): JSX.Element => {
 
 	const formik = useFormik({
 		initialValues: {
-			title: '',
 			salary: null,
 			experience: null,
 			employement_types: [],
