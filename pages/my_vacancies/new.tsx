@@ -215,7 +215,7 @@ const NewVacancyPage = (): JSX.Element => {
 							<Select
 								variant='primary'
 								placeholder='Например, менеджер по продажам'
-								isDanger={!suggestion && !!formik.errors.title}
+								isDanger={!suggestion && !!formik.submitCount}
 								onInputChange={(newValue) => {
 									if(newValue)
 										setSuggestRequest(newValue);
